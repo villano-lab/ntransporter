@@ -1,0 +1,6 @@
+# list of subdirectories (under SUPERSIM_DIR) containing needed code
+# 
+CDMSg4base
+#CDMSgeometry/labs
+#CDMSgeometry/mechanical
+#CDMSgeometry/detectors
