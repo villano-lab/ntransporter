@@ -31,8 +31,9 @@
 int main(int argc, char **argv) {
 
   G4Neutron *theNeutron = G4Neutron::Definition();
+  const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
   
-  G4Material *rock = CDMSMaterialTable::GetMaterial("Norite");
+  G4Material *rock = theTable->GetMaterial("Norite");
 
 
   std::cout << "Did it" << std::endl;
