@@ -4,16 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#include "G4MTRunManager.hh"
-#include "G4UImanager.hh"
-
-#include "CDMSGeometryManager.hh"
-
 #include "SuperSim_Main.hh"
-
-#include "G4RegionStore.hh"
-#include "G4Region.hh"
-#include "G4ProductionCuts.hh"
 
 #include "G4ThreeVector.hh"
 #include "G4SystemOfUnits.hh"
@@ -24,13 +15,9 @@
 #include "G4ElementVector.hh"
 
 #include "G4Neutron.hh"
-#include "G4ParticleDefinition.hh"
-#include "Shielding.hh"
 
 #include "G4ProcessManager.hh"
-#include "G4PDefManager.hh"
 #include "G4ProcessVector.hh"
-#include "G4VProcess.hh"
 #include "G4HadronicProcess.hh"
 
 
