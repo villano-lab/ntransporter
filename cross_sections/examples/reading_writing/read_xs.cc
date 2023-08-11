@@ -1,5 +1,5 @@
-// hypothetically, script to grab cross section data from Geant
-// first attempt at script - grab for neutrons incident on silicon
+// script to grab cross section data from Geant
+// first attempt at script - print process cross sections for specific energy 
 
 #include <iostream>
 #include <vector>
@@ -36,82 +36,46 @@
 
 int main(int argc, char **argv) {
   
-  // needed to initialize correct world geometry and default region
-  //G4RunManager* rm = G4RunManager::GetRunManager();
-  //G4Region *worldRegion = new G4Region("DefaultRegionForTheWorld");
-  //worldRegion->SetProductionCuts(new G4ProductionCuts());
-  //G4RegionStore::Register(worldRegion);
-  
-  //G4MTRunManager *runManager = new G4MTRunManager();
-
-  //runManager->SetUserInitialization(new 
-  //runManager->SetUserInitialization(new Shielding());
-
-  //runManager->InitializePhysics();
-  //G4UImanager *UI = G4UImanager::GetUIpointer();
-
-  //CDMSGeometryManager *geomManager = CDMSGeometryManager::Instance();
+  // manager object to configure everything
   SuperSim_Main *sMain = new SuperSim_Main();
 
+  // set verbosity
   sMain->SetVerboseLevel(0);
   sMain->runManager.SetVerboseLevel(0);
+
   sMain->Configure("full"); // full Shielding physics list, etc
-  //CDMSRunManager runManager = sMain->runManager;
-
-  //G4UImanager *UI = sMain->UImanager;
-
+  
+  // configure geometry and detector (required for initialization)
   sMain->UImanager->ApplyCommand("/CDMS/lab NoLab");
   sMain->UImanager->ApplyCommand("/CDMS/detector ZIP");
-
+  
+  // initialize: among other things, build physics processes and attach to 
+  // particle process managers
   sMain->runManager.Initialize();
 
-  //if (UI) {
-	//UI->ApplyCommand("/run/initialize");
-  //} else {
-	//std::cout << "nope on the UI" << std::endl;
-  //}
-  
-
+  // neutron singleton
   G4Neutron *theNeutron = G4Neutron::Definition();
-  //theNeutron->SetParticleDefinitionID(1);
+
+  // pull material table from SuperSim
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
   
+  // pull material data
   G4Material *rock = theTable->GetMaterial("Norite");
   G4int nElm = rock->GetNumberOfElements();
   const G4ElementVector *elmVector = rock->GetElementVector();
   const G4double *fracVector = rock->GetFractionVector();
-
-  //G4NeutronHPElasticData *elastic;
-  //G4NeutronHPCaptureData *capture;
-  //G4NeutronHPInelasticData *inelastic;
-  
-  // "Shielding" list should be chosen by default in SuperSim_Main
-  //Shielding *shield = new Shielding(verbose); // create Shielding physics list object  
-  //shield->ConstructProcess(); // construct processes
-
-  //typedef std::vector<G4PhysicsConstructor*> G4PhysConstVectorData;
-  //G4PhysConstVectorData* physicsVector = 
-  //                  shield->GetSubInstanceManager().offset[0].physicsVector;
+  const G4Element *elm = (*elmVector)[6]; // silicon
 
   
   // get ProcessManager for the neutron
   G4ProcessManager *theMan = theNeutron->GetProcessManager();
-  //G4ProcessManager *theMan = theNeutron->GetMasterProcessManager();
-
-  //const G4PDefManager pdef = G4ParticleDefinition::GetSubInstanceManager();
-  //G4PDefData dat = pdef.offset()[1];
-
-  std::cout << "n ID = " << theNeutron->GetInstanceID() << std::endl;
-  //std::cout << "pdef offset = " << dat << std::endl;
-  //G4ParticleDefinition::GetSubInstanceManager().CreateSubInstance();
-  //G4ProcessManager *theMan = (G4ParticleDefinition::GetSubInstanceManager().offset()[theNeutron->GetInstanceID()]).theProcessManager;
-
-  //std::cout << (theMan ? "Y\n" : "N\n") << std::endl;
   
-  // get element from material
+  // print neutron particle instance ID (should be >0)
+  if (0) std::cout << "n ID = " << theNeutron->GetInstanceID() << std::endl;
+  
+  // get vector of neutron processes
   G4int nProc = theMan->GetProcessListLength();
   G4ProcessVector *processes = theMan->GetProcessList();
-  const G4Element *elm = (*elmVector)[6]; // silicon
   
   // variables to store cross sections, neutron energy
   G4double x, Eneut = 2.*keV;
@@ -119,18 +83,20 @@ int main(int argc, char **argv) {
 
   std::cout << "Cross sections for " << elm->GetName() << " with " << Eneut 
             << " MeV neutron" << std::endl;
-
+  
+  // dynamic particle: set energy, momentum
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
                                               G4ThreeVector(0.,0.,1.), Eneut);
   
   std::cout << nProc << " processes" << std::endl;
   for (G4int i = 0; i < nProc; ++i) {
+    // if process is a hadronic process, print cross section
     G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>((*processes)[i]);
-    //std::cout << "i = " << i << std::endl;
     if (thisProc) {
+      // calculate and print
       x = thisProc->GetElementCrossSection(dynamicNeutron, elm, rock);
-      std::cout << "Cross section for " << thisProc->GetProcessName() << " : " << x 
-                << std::endl;
+      std::cout << "Cross section for " << thisProc->GetProcessName() 
+                << " : " << x << std::endl;
     }
   }
 
