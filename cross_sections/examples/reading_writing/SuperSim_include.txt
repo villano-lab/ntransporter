@@ -15,3 +15,6 @@ CDMSgeometry/readout
 CDMSgeometry/regions
 CDMSgeometry/scorers
 CDMSgeometry/sensitive
+CDMSactions
+CDMSapps
+#CDMSbuild
