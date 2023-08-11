@@ -3,8 +3,10 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 #include "SuperSim_Main.hh"
+#include "G4UImanager.hh"
 
 #include "G4ThreeVector.hh"
 #include "G4SystemOfUnits.hh"
@@ -20,9 +22,16 @@
 #include "G4ProcessVector.hh"
 #include "G4HadronicProcess.hh"
 
+#include "G4ios.hh"
+
 
 int main(int argc, char **argv) {
   
+  std::ofstream file("out.txt");
+  
+  auto G4cout_oldbuf = G4cout.rdbuf();
+  G4cout.rdbuf(file.rdbuf());
+
   // manager object to configure everything
   SuperSim_Main *sMain = new SuperSim_Main();
 
@@ -88,6 +97,8 @@ int main(int argc, char **argv) {
   }
 
   std::cout << "Done" << std::endl;
-	
+
+  G4cout.rdbuf(G4cout_oldbuf);
+
   return 0;
 }
