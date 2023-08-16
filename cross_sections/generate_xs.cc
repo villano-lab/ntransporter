@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <stdexcept>
 
 #include "SuperSim_Main.hh"
 #include "G4UImanager.hh"
@@ -33,8 +34,29 @@
 
 
 int main(int argc, char **argv) {
+
+  G4int ngroups, points_per_group;
+
+  // parse command line args
+  if (argc < 2)  {
+    throw std::runtime_error("Error in NT_XS: Not enough arguments.
+      Usage: ./NT_XS output_file_base_path material [ngroups=100] [points_per_group=10]");
+  } else {
+    std::string output_file = argv[1];
+    if (argc > 2) {
+      ngroups = dynamic_cast<G4int>(argv[2]);
+      if (argc > 3) {
+        points_per_group = dynamic_cast<G4int>(argv[3]);
+      } else {
+        points_per_group = 10;
+      }
+    } else {
+      ngroups = 100;
+    }
+
+  }
   
-  std::ofstream file("out.txt");
+  std::ofstream file("G4cout_redirected_output.txt");
   
   auto G4cout_oldbuf = G4cout.rdbuf();
   G4cout.rdbuf(file.rdbuf());
@@ -64,17 +86,14 @@ int main(int argc, char **argv) {
   
   // pull material data
   G4Material *rock = theTable->GetMaterial("Norite");
-  G4int nElm = rock->GetNumberOfElements();
-  const G4ElementVector *elmVector = rock->GetElementVector();
-  const G4double *fracVector = rock->GetFractionVector();
-  const G4Element *elm = (*elmVector)[6]; // silicon
+  //G4int nElm = rock->GetNumberOfElements();
+  //const G4ElementVector *elmVector = rock->GetElementVector();
+  //const G4double *fracVector = rock->GetFractionVector();
+  //const G4Element *elm = (*elmVector)[6]; // silicon
 
   
   // get ProcessManager for the neutron
   G4ProcessManager *theMan = theNeutron->GetProcessManager();
-  
-  // print neutron particle instance ID (should be >0)
-  if (0) std::cout << "n ID = " << theNeutron->GetInstanceID() << std::endl;
   
   // get vector of neutron processes
   G4int nProc = theMan->GetProcessListLength();
