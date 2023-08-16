@@ -1,0 +1,20 @@
+# list of subdirectories (under SUPERSIM_DIR) containing needed code
+# 
+CDMSg4base
+CDMSinfo
+CDMSphysics
+CDMSsources
+CDMSgeometry/data
+CDMSgeometry/detectors
+CDMSgeometry/fields
+CDMSgeometry/interface
+CDMSgeometry/labs
+CDMSgeometry/macros
+CDMSgeometry/mechanical
+CDMSgeometry/readout
+CDMSgeometry/regions
+CDMSgeometry/scorers
+CDMSgeometry/sensitive
+CDMSactions
+CDMSapps
+#CDMSbuild
