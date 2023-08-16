@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
     G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>((*processes)[i]);
     if (thisProc) {
       // calculate and print
-      x = thisProc->GetElementCrossSection(dynamicNeutron, rock);
+      x = thisProc->GetCrossSectionDataStore()->GetCrossSection(dynamicNeutron, rock);
       std::cout << "Cross section for " << thisProc->GetProcessName() 
                 << " : " << x << std::endl;
     }
