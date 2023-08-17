@@ -44,16 +44,13 @@ int main(int argc, char *argv[]) {
   } else {
     try {
       output_file = argv[1];
+      ngroups = 100;
+      points_per_group = 10;
       if (argc > 2) {
         ngroups = std::stoi(argv[2]);
         if (argc > 3) {
           points_per_group = std::stoi(argv[3]);
-        } else {
-          points_per_group = 10;
         }
-      } else {
-        ngroups = 100;
-        points_per_group = 10;
       }
     } catch (std::invalid_argument) {
       throw std::runtime_error("Error in NT_XS: Invalid arguments. ngroups and points_per_group must be numeric.\n    Usage: ./NT_XS output_file_base_path material [ngroups=100] [points_per_group=10]");
