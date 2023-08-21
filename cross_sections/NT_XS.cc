@@ -34,7 +34,7 @@
 #include "G4ios.hh"
 
 
-typedef doubles std::vector<G4double>;
+typedef std::vector<G4double> doubles;
 
 // thermal energy (25 C)
 global constexpr G4double Etherm = 0.025692579120652998*eV;
@@ -83,7 +83,7 @@ void initialize() {
 
 int main(int argc, char *argv[]) {
 
-  G4int ngroups, points_per_group;
+  G4int G, ng;
   std::string output_file_base, material;
 
   // parse command line args
