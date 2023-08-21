@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
 
 
   // array of group boundaries (one thermal group)
-  doubles Eg{G+2};
+  doubles Eg(G+2);
   Eg[0] = Emax;
 
   // calculate group boundaries
@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
 
   
   // vector of energies at which to evaluate approximated integrals
-  doubles Eeval{ng+1};
+  doubles Eeval(ng+1);
 
   throw std::runtime_error("End of this bit");
 
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
 
   // dynamic particle: set energy, momentum
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
-                                              G4ThreeVector(0.,0.,1.), Eneut);
+                                              G4ThreeVector(0.,0.,1.), 0.);
   
   for (G4int i = 0; i < nProc; ++i) {
     // if process is a hadronic process, print cross section
