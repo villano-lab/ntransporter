@@ -89,8 +89,8 @@ int main(int argc, char *argv[]) {
   // parse command line args
   if (argc < 3)  {
     throw std::runtime_error("Error in NT_XS: Not enough arguments."
-         + "\n    Usage: ./NT_XS output_file_base_path material " 
-         + "[ngroups=100] [points_per_group=10]");
+         "\n    Usage: ./NT_XS output_file_base_path material " 
+         "[ngroups=100] [points_per_group=10]");
   } else {
     try {
       output_file_base = argv[1];
@@ -105,9 +105,9 @@ int main(int argc, char *argv[]) {
       }
     } catch (std::invalid_argument) {
       throw std::runtime_error("Error in NT_XS: Invalid arguments. ngroups " 
-        + "and points_per_group must be numeric."
-        + "\n    Usage: ./NT_XS output_file_base_path material "
-        + "[ngroups=100] [points_per_group=10]");
+        "and points_per_group must be numeric."
+        "\n    Usage: ./NT_XS output_file_base_path material "
+        "[ngroups=100] [points_per_group=10]");
     }
   }
 
