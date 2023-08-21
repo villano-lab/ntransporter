@@ -98,9 +98,9 @@ int main(int argc, char *argv[]) {
       G = 100; // number of groups
       ng = 10; // points per group
       if (argc > 3) {
-        G = std::stoi(argv[2]);
+        G = std::stoi(argv[3]);
         if (argc > 4) {
-          ng = std::stoi(argv[3]);
+          ng = std::stoi(argv[4]);
         }
       }
     } catch (std::invalid_argument) {
