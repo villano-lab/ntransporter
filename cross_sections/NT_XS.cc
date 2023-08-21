@@ -168,18 +168,18 @@ int main(int argc, char *argv[]) {
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
                                               G4ThreeVector(0.,0.,1.), 0.);
   
-  for (G4int i = 0; i < nProc; ++i) {
-    // if process is a hadronic process, print cross section
-    G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>(
-      (*processes)[i]);
-    if (thisProc) {
-      // calculate and print
-      x = thisProc->GetCrossSectionDataStore()
-                  ->GetCrossSection(dynamicNeutron, rock);
-      std::cout << "Cross section for " << thisProc->GetProcessName() 
-                << " : " << x << std::endl;
-    }
-  }
+  //for (G4int i = 0; i < nProc; ++i) {
+  //  // if process is a hadronic process, print cross section
+  //  G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>(
+  //    (*processes)[i]);
+  //  if (thisProc) {
+  //    // calculate and print
+  //    x = thisProc->GetCrossSectionDataStore()
+  //                ->GetCrossSection(dynamicNeutron, rock);
+  //    std::cout << "Cross section for " << thisProc->GetProcessName() 
+  //              << " : " << x << std::endl;
+  //  }
+  //}
 
   std::cout << "Done" << std::endl;
 
