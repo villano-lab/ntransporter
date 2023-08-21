@@ -109,7 +109,7 @@ endforeach()
 # ============================================
 
 # link everything to executable
-add_executable(NT_XS generate_xs.cc ${SUPERSOURCES})
+add_executable(NT_XS NT_XS.cc ${SUPERSOURCES})
 
 target_link_libraries(NT_XS PUBLIC ${Geant4_LIBRARIES})
 target_link_libraries(NT_XS PUBLIC ${ROOT_LIBRARIES})
