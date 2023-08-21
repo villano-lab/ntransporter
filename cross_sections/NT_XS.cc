@@ -12,6 +12,7 @@
 #include <vector>
 #include <fstream>
 #include <stdexcept>
+#include <cmath>
 
 #include "SuperSim_Main.hh"
 #include "G4UImanager.hh"
@@ -33,38 +34,34 @@
 #include "G4ios.hh"
 
 
-int main(int argc, char *argv[]) {
+typedef doubles std::vector<G4double>;
 
-  G4int ngroups, points_per_group;
-  std::string output_file;
+// thermal energy (25 C)
+global constexpr G4double Etherm = 0.025692579120652998*eV;
 
-  // parse command line args
-  if (argc < 2)  {
-    throw std::runtime_error("Error in NT_XS: Not enough arguments.\n    Usage: ./NT_XS output_file_base_path material [ngroups=100] [points_per_group=10]");
-  } else {
-    try {
-      output_file = argv[1];
-      ngroups = 100;
-      points_per_group = 10;
-      if (argc > 2) {
-        ngroups = std::stoi(argv[2]);
-        if (argc > 3) {
-          points_per_group = std::stoi(argv[3]);
-        }
-      }
-    } catch (std::invalid_argument) {
-      throw std::runtime_error("Error in NT_XS: Invalid arguments. ngroups and points_per_group must be numeric.\n    Usage: ./NT_XS output_file_base_path material [ngroups=100] [points_per_group=10]");
-    }
+
+// kernel of a Maxwell-Boltzmann thermal distribution of energies
+G4double MaxwellBoltzmannKernel(G4double E) {
+  return std::sqrt(E)*std::exp(-E/Etherm);
+}
+
+// trapezoidal integration of (x,y) data
+G4double trap(const doubles &x, const doubles &y) {
+  size_t n = x.length();
+  if (n != y.length()) {
+    throw std::invalid_argument("Invalid arguments to function trap(). " 
+      + "Vectors must have the same length.");
   }
+  G4double s = 0;
+  for (size_t i = 1; i < n; ++i) {
+    s += (y[i] + y[i-1])*(x[i] - x[i-1])/2;
+  }
+  return s;
+}
 
-  //std::cout << "output_file = " << output_file << std::endl << "ngroups = " << ngroups << std::endl << "points_per_group = " << points_per_group << std::endl;
-  //throw std::runtime_error("End of this bit");
-  
-  std::ofstream file("G4cout_redirected_output.txt");
-  
-  auto G4cout_oldbuf = G4cout.rdbuf();
-  G4cout.rdbuf(file.rdbuf());
 
+// initialize Geant data with configured geometry and detector
+void initialize() {
   // manager object to configure everything
   SuperSim_Main *sMain = new SuperSim_Main();
 
@@ -81,6 +78,74 @@ int main(int argc, char *argv[]) {
   // initialize: among other things, build physics processes and attach to 
   // particle process managers
   sMain->runManager.Initialize();
+}
+
+
+int main(int argc, char *argv[]) {
+
+  G4int ngroups, points_per_group;
+  std::string output_file_base, material;
+
+  // parse command line args
+  if (argc < 3)  {
+    throw std::runtime_error("Error in NT_XS: Not enough arguments."
+         + "\n    Usage: ./NT_XS output_file_base_path material " 
+         + "[ngroups=100] [points_per_group=10]");
+  } else {
+    try {
+      output_file_base = argv[1];
+      material = argv[2];
+      G = 100; // number of groups
+      ng = 10; // points per group
+      if (argc > 3) {
+        G = std::stoi(argv[2]);
+        if (argc > 4) {
+          ng = std::stoi(argv[3]);
+        }
+      }
+    } catch (std::invalid_argument) {
+      throw std::runtime_error("Error in NT_XS: Invalid arguments. ngroups " 
+        + "and points_per_group must be numeric."
+        + "\n    Usage: ./NT_XS output_file_base_path material "
+        + "[ngroups=100] [points_per_group=10]");
+    }
+  }
+
+  
+  std::ofstream G4cout_file("G4cout_redirected_output.txt");
+  
+  auto G4cout_oldbuf = G4cout.rdbuf();
+  G4cout.rdbuf(G4cout_file.rdbuf());
+  
+  // bounds of fast energies
+  const G4double Emin = 0.1*eV, Emax = 20.*MeV; 
+
+  // alpha (common ratio of group boundaries)
+  G4double alpha = std::pow(Emax/Emin, 1/G);
+
+
+  // array of group boundaries (one thermal group)
+  doubles Eg{G+2};
+  Eg[0] = Emax;
+
+  // calculate group boundaries
+  for (G4int g = 1; g < G+1; ++g) {
+    Eg[g] = Eg[g-1]*alpha;
+  }
+  // lower bound
+  Eg[G+1] = 0.;
+  
+
+  std::cout << Eg[G] << " should equal " << Emin << std::endl;
+
+  
+  // vector of energies at which to evaluate approximated integrals
+  doubles Eeval{ng+1};
+
+  throw std::runtime_error("End of this bit");
+
+  // configure physics processes
+  initialize();
 
   // neutron singleton
   G4Neutron *theNeutron = G4Neutron::Definition();
@@ -90,10 +155,6 @@ int main(int argc, char *argv[]) {
   
   // pull material data
   G4Material *rock = theTable->GetMaterial("Norite");
-  //G4int nElm = rock->GetNumberOfElements();
-  //const G4ElementVector *elmVector = rock->GetElementVector();
-  //const G4double *fracVector = rock->GetFractionVector();
-  //const G4Element *elm = (*elmVector)[6]; // silicon
 
   
   // get ProcessManager for the neutron
@@ -102,25 +163,19 @@ int main(int argc, char *argv[]) {
   // get vector of neutron processes
   G4int nProc = theMan->GetProcessListLength();
   G4ProcessVector *processes = theMan->GetProcessList();
-  
-  // variables to store cross sections, neutron energy
-  G4double x, Eneut = 2.*keV;
 
-
-  //std::cout << "Cross sections for " << elm->GetName() << " with " << Eneut 
-  //          << " MeV neutron" << std::endl;
-  
   // dynamic particle: set energy, momentum
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
                                               G4ThreeVector(0.,0.,1.), Eneut);
   
-  std::cout << nProc << " processes" << std::endl;
   for (G4int i = 0; i < nProc; ++i) {
     // if process is a hadronic process, print cross section
-    G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>((*processes)[i]);
+    G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>(
+      (*processes)[i]);
     if (thisProc) {
       // calculate and print
-      x = thisProc->GetCrossSectionDataStore()->GetCrossSection(dynamicNeutron, rock);
+      x = thisProc->GetCrossSectionDataStore()
+                  ->GetCrossSection(dynamicNeutron, rock);
       std::cout << "Cross section for " << thisProc->GetProcessName() 
                 << " : " << x << std::endl;
     }
