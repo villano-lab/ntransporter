@@ -37,7 +37,7 @@
 typedef std::vector<G4double> doubles;
 
 // thermal energy (25 C)
-global constexpr G4double Etherm = 0.025692579120652998*eV;
+constexpr G4double Etherm = 0.025692579120652998*eV;
 
 
 // kernel of a Maxwell-Boltzmann thermal distribution of energies
@@ -50,7 +50,7 @@ G4double trap(const doubles &x, const doubles &y) {
   size_t n = x.length();
   if (n != y.length()) {
     throw std::invalid_argument("Invalid arguments to function trap(). " 
-      + "Vectors must have the same length.");
+      "Vectors must have the same length.");
   }
   G4double s = 0;
   for (size_t i = 1; i < n; ++i) {
