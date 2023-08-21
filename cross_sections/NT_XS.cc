@@ -47,8 +47,8 @@ G4double MaxwellBoltzmannKernel(G4double E) {
 
 // trapezoidal integration of (x,y) data
 G4double trap(const doubles &x, const doubles &y) {
-  size_t n = x.length();
-  if (n != y.length()) {
+  size_t n = x.size();
+  if (n != y.size()) {
     throw std::invalid_argument("Invalid arguments to function trap(). " 
       "Vectors must have the same length.");
   }
