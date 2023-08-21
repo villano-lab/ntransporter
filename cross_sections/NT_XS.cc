@@ -54,7 +54,7 @@ G4double trap(const doubles &x, const doubles &y) {
   }
   G4double s = 0;
   for (size_t i = 1; i < n; ++i) {
-    s += (y[i] + y[i-1])*(x[i] - x[i-1])/2;
+    s += (y[i] + y[i-1])*(x[i] - x[i-1])/2.;
   }
   return s;
 }
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
   const G4double Emin = 0.1*eV, Emax = 20.*MeV; 
 
   // alpha (common ratio of group boundaries)
-  G4double alpha = std::pow(Emax/Emin, 1/G);
+  G4double alpha = std::pow(Emax/Emin, 1./G);
 
 
   // array of group boundaries (one thermal group)
