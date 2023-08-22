@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
   auto data = new G4ParticleHPElasticData();
   G4Neutron *theNeutron = G4Neutron::Definition();
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
-  G4Material *rock = theTable->GetMaterial("Norite");
+  const G4Material *rock = theTable->GetMaterial("Norite");
   const G4ElementVector *elmVector = rock->GetElementVector();
   const G4Element *elm = (*elmVector)[6]; // silicon
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
