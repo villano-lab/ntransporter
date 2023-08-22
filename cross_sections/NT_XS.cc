@@ -84,7 +84,7 @@ void initialize() {
 int main(int argc, char *argv[]) {
 
   G4int G, ng;
-  std::string output_file_base, material;
+  std::string output_file_base, material_name;
 
   // parse command line args
   if (argc < 3)  {
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
   } else {
     try {
       output_file_base = argv[1];
-      material = argv[2];
+      material_name = argv[2];
       G = 100; // number of groups
       ng = 10; // points per group
       if (argc > 3) {
@@ -160,7 +160,10 @@ int main(int argc, char *argv[]) {
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
   
   // pull material data
-  G4Material *rock = theTable->GetMaterial("Norite");
+  G4Material *material = theTable->GetMaterial(material_name);
+  if (!material) {
+    throw std::invalid_argument("Error in NT_XS: invalid material. Could not find in CDMS or NIST material tables.")
+  }
 
   
   // get ProcessManager for the neutron
@@ -199,7 +202,7 @@ int main(int argc, char *argv[]) {
   //  if (thisProc) {
   //    // calculate and print
   //    //x = thisProc->GetCrossSectionDataStore()
-  //    //            ->GetCrossSection(dynamicNeutron, rock);
+  //    //            ->GetCrossSection(dynamicNeutron, material);
   //    std::cout << "Process " << i << " is " << thisProc->GetProcessName() 
   //              << std::endl;
   //    //thisProc->ProcessDescription(std::cout);
