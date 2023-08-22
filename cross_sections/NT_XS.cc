@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
     Eg[g] = Eg[g-1]*alpha;
   }
   // lower bound (basically zero)
-  Eg[G+1] = std::numeric_limits<G4double>::epsilon*eV;
+  Eg[G+1] = std::numeric_limits<G4double>::epsilon()*eV;
   
   // vectors of energies, cross sections, and fluxes at which to evaluate approximated integrals
   doubles E_eval(ng+1);
