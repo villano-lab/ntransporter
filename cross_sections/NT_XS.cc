@@ -153,15 +153,21 @@ int main(int argc, char *argv[]) {
   G4Neutron *theNeutron = G4Neutron::Definition();
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
   G4Material *rock = theTable->GetMaterial("Norite");
+  const G4ElementVector *elmVector = rock->GetElementVector();
+  const G4Element *elm = (*elmVector)[6]; // silicon
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
                                               G4ThreeVector(0.,0.,1.), 2.*keV);
-  G4float x = data->GetCrossSection(dynamicNeutron, rock);
+  G4float x = data->GetCrossSection(dynamicNeutron, elm, rock);
+
+  std::cout << "Done" << std::endl;
+
+  G4cout.rdbuf(G4cout_oldbuf);
 
   return 0;
 }
 
 
-int donothing() {
+int dontdothis() {
 
 
   //throw std::runtime_error("End of this bit");
@@ -201,9 +207,7 @@ int donothing() {
   //thisProc->GetCrossSectionDataStore()->GetCrossSection(dynamicNeutron, rock);
 
 
-  std::cout << "Done" << std::endl;
-
-  G4cout.rdbuf(G4cout_oldbuf);
+  
 
   return 0;
 }
