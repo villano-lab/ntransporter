@@ -13,6 +13,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <cmath>
+#include <limits>
 
 #include "SuperSim_Main.hh"
 #include "G4UImanager.hh"
@@ -136,8 +137,8 @@ int main(int argc, char *argv[]) {
   for (G4int g = 1; g < G+1; ++g) {
     Eg[g] = Eg[g-1]*alpha;
   }
-  // lower bound
-  Eg[G+1] = 0.;
+  // lower bound (basically zero)
+  Eg[G+1] = std::numeric_limits<G4double>::epsilon*eV;
   
   // vectors of energies, cross sections, and fluxes at which to evaluate approximated integrals
   doubles E_eval(ng+1);
@@ -278,8 +279,6 @@ int main(int argc, char *argv[]) {
   }
 
   std::cout << "Group constants calculated" << std::endl;
-
-  std::cout << MaxwellBoltzmannKernel(0.) << std::endl;
 
   std::string filename = output_file_base + "_" + material_name + "_xs.dat";
 
