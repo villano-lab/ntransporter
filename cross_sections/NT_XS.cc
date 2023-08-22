@@ -156,12 +156,15 @@ int main(int argc, char *argv[]) {
   //throw std::runtime_error("End of this bit");
 
   // configure physics processes
+
+  std::cout << "Initializing" << std::endl;
   initialize();
 
   // neutron singleton
   G4Neutron *theNeutron = G4Neutron::Definition();
 
   // pull material table from SuperSim
+  std::cout << "Fetching material " << material_name << std::endl;
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
   
   // pull material data
@@ -269,20 +272,17 @@ int main(int argc, char *argv[]) {
     xt[G+1] = xs[G+1] + trap(E_eval, xa_eval)/phi_g;
   }
 
+  std::string filename = output_file_base + "_" + material_name + "_xs.dat"
 
-  //for (G4int i = 0; i < nProc; ++i) {
-  //  // if process is a hadronic process, print cross section
-  //  G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>(
-  //    (*processes)[i]);
-  //  if (thisProc) {
-  //    // calculate and print
-  //    //x = thisProc->GetCrossSectionDataStore()
-  //    //            ->GetCrossSection(dynamicNeutron, material);
-  //    std::cout << "Process " << i << " is " << thisProc->GetProcessName() 
-  //              << std::endl;
-  //    //thisProc->ProcessDescription(std::cout);
-  //  }
-  //}
+  std::cout << "Writing cross section data to " << filename << std::endl;
+
+  std::ofstream outputStream(filename);
+
+  for (int g = 0; g < G+2; ++g) {
+    outputStream << g << " " << xs[g] << " " << xt[g] << "\n";
+  }
+
+  outputStream.close();
 
   std::cout << "Done" << std::endl;
 
