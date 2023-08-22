@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
 
   
   // vector of energies at which to evaluate approximated integrals
-  doubles Eeval(ng+1);
+  doubles E_eval(ng+1);
 
 
   // vector of cross sections (first element always zero; xsec[g] refers to group g)
@@ -192,14 +192,14 @@ int main(int argc, char *argv[]) {
   
   G4double Emin, Emax, r;
 
-  for (int g = 1; g < G+1; ++g) { // group g
+  for (int g = 1; g < G+1; ++g) { // group g (fast groups)
     Emin = Eg[g]; // lower bound of group
     Emax = Eg[g-1]; // upper bound of group
     r = std::pow(Emax/Emin, 1./ng); // common ratio between evaluation points
     
     // evaluation points for integral
     E_eval[0] = Emin;
-    for (int i = 1; i < ng+1; ++i) {
+    for (int i = 1; i < ng; ++i) {
       E_eval[i] = E_eval[i-1]*r;
     }
     E_eval[ng] = Emax;
