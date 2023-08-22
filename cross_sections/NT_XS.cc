@@ -252,7 +252,7 @@ int main(int argc, char *argv[]) {
     }
     E_eval[ng] = group_max;
 
-    std::cout << E_eval[ng] << " should equal " << E_eval[ng-1] + r << std::endl;
+    std::cout << E_eval[ng-1] << " should equal " << E_eval[ng] - r << std::endl;
 
     // evaluate cross sections and fluxes
     for (int i = 0; i < E_eval.size(); ++i) {
