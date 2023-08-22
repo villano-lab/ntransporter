@@ -30,6 +30,7 @@
 #include "G4ProcessManager.hh"
 #include "G4ProcessVector.hh"
 #include "G4HadronicProcess.hh"
+#include "G4ParticleHPElasticData.hh"
 
 #include "G4ios.hh"
 
@@ -156,8 +157,14 @@ int main(int argc, char *argv[]) {
                                               G4ThreeVector(0.,0.,1.), 2.*keV);
   G4float x = data->GetCrossSection(dynamicNeutron, rock);
 
+  return 0;
+}
 
-  throw std::runtime_error("End of this bit");
+
+int donothing() {
+
+
+  //throw std::runtime_error("End of this bit");
 
   // configure physics processes
   initialize();
