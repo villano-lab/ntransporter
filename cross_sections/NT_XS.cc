@@ -139,13 +139,18 @@ int main(int argc, char *argv[]) {
   std::cout << Eg[G] << " should equal " << Emin << std::endl;
 
   
-  // vector of energies at which to evaluate approximated integrals
+  // vectors of energies, cross sections, and fluxes at which to evaluate approximated integrals
   doubles E_eval(ng+1);
+  doubles xs_eval(ng+1); // scatters
+  doubles xa_eval(ng+1); // absorption (captures)
+  doubles phi_eval(ng+1);
 
 
   // vector of cross sections (first element always zero; xsec[g] refers to group g)
-  doubles xsec(G+2);
-  xsec[0] = 0.;
+  doubles xs(G+2); // scatters
+  xs[0] = 0.;
+  doubles xt(G+2);
+  xt[0] = 0.; // total
 
 
   //throw std::runtime_error("End of this bit");
@@ -189,8 +194,13 @@ int main(int argc, char *argv[]) {
     throw std::runtime_error("Error in NT_XS: casting one or more processes as "
     "G4HadronicProcess failed. Exitting.");
   }
+
+  G4CrossSectionDataStore *elasticDataStore = elasticProc->GetCrossSectionDataStore();
+  G4CrossSectionDataStore *inelasticDataStore = inelasticProc->GetCrossSectionDataStore();
+  G4CrossSectionDataStore *captureDataStore = captureProc->GetCrossSectionDataStore();
   
-  G4double group_min, group_max, r;
+  
+  G4double group_min, group_max, r, phi_g;
 
   for (int g = 1; g < G+1; ++g) { // group g (fast groups)
     group_min = Eg[g]; // lower bound of group
@@ -204,15 +214,60 @@ int main(int argc, char *argv[]) {
     }
     E_eval[ng] = group_max;
 
+    // evaluate cross sections and fluxes
+    for (int i = 0; i < E_eval.size(); ++i) {
 
+      phi_eval[i] = 1/E_eval[i];
+
+      dynamicNeutron->SetKineticEnergy(E_eval[i]);
+
+      xs_eval[i] = phi_eval[i]
+            *(elasticDataStore->GetCrossSection(dynamicNeutron, material) 
+            + inelasticDataStore->GetCrossSection(dynamicNeutron, material));
+
+      xa_eval[i] = phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
+                                  material);
+
+    }
+    phi_g = trap(E_eval, phi_eval);
+    
+    xs[g] = trap(E_eval, xs_eval)/phi_g;
+    xt[g] = xs[g] + trap(E_eval, xa_eval)/phi_g;
   }
 
-  std::cout << group_min << " to " << group_max << std::endl;
+  { // thermal group (group G+1)
 
-  for (int i = 0; i < E_eval.size(); ++i) {
-    std::cout << E_eval[i];
+    group_min = Eg[G+1]; // lower bound of group
+    group_max = Eg[G]; // upper bound of group
+    r = std::pow(group_max/group_min, 1./ng); // common ratio between evaluation points
+    
+    // evaluation points for integral
+    E_eval[0] = group_min;
+    for (int i = 1; i < ng; ++i) {
+      E_eval[i] = E_eval[i-1]*r;
+    }
+    E_eval[ng] = group_max;
+
+    // evaluate cross sections and fluxes
+    for (int i = 0; i < E_eval.size(); ++i) {
+
+      phi_eval[i] = MaxwellBoltzmannKernel(E_eval[i]);
+
+      dynamicNeutron->SetKineticEnergy(E_eval[i]);
+
+      xs_eval[i] = phi_eval[i]
+            *(elasticDataStore->GetCrossSection(dynamicNeutron, material) 
+            + inelasticDataStore->GetCrossSection(dynamicNeutron, material));
+
+      xa_eval[i] = phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
+                                  material);
+
+    }
+    phi_g = trap(E_eval, phi_eval);
+
+    xs[G+1] = trap(E_eval, xs_eval)/phi_g;
+    xt[G+1] = xs[G+1] + trap(E_eval, xa_eval)/phi_g;
   }
-  std::cout << std::endl;
 
 
   //for (G4int i = 0; i < nProc; ++i) {
