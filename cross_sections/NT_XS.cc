@@ -207,7 +207,12 @@ int main(int argc, char *argv[]) {
 
   }
 
-  std::cout << Emin << " " << Emax << std::endl << E_eval << std::endl;
+  std::cout << Emin << " " << Emax << std::endl;
+
+  for (int i = 0; i < E_eval.size(); ++i) {
+    std::cout << E_eval[i];
+  }
+  std::cout << std::endl;
 
 
   //for (G4int i = 0; i < nProc; ++i) {
