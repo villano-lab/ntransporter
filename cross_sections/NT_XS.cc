@@ -175,12 +175,12 @@ int main(int argc, char *argv[]) {
                                               G4ThreeVector(0.,0.,1.), 0.);
 
   // process info
--  G4HadronicProcess *elasticProc = dynamic_cast<G4HadronicProcess*>(
--      (*processes)[2]);
--  G4HadronicProcess *inelasticProc = dynamic_cast<G4HadronicProcess*>(
--      (*processes)[3]);
--  G4HadronicProcess *captureProc = dynamic_cast<G4HadronicProcess*>(
--      (*processes)[4]);
+  G4HadronicProcess *elasticProc = dynamic_cast<G4HadronicProcess*>(
+      (*processes)[2]);
+  G4HadronicProcess *inelasticProc = dynamic_cast<G4HadronicProcess*>(
+      (*processes)[3]);
+  G4HadronicProcess *captureProc = dynamic_cast<G4HadronicProcess*>(
+      (*processes)[4]);
 
   if (!elasticProc || !inelasticProc || !captureProc) {
     throw std::runtime_error("Error: casting one or more processes as "
