@@ -9,6 +9,7 @@
 // ./NT_XS output_file_base_path material [ngroups=100] [points_per_group=10]
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <fstream>
 #include <stdexcept>
