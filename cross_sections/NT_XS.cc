@@ -272,7 +272,7 @@ int main(int argc, char *argv[]) {
     xt[G+1] = xs[G+1] + trap(E_eval, xa_eval)/phi_g;
   }
 
-  std::string filename = output_file_base + "_" + material_name + "_xs.dat"
+  std::string filename = output_file_base + "_" + material_name + "_xs.dat";
 
   std::cout << "Writing cross section data to " << filename << std::endl;
 
