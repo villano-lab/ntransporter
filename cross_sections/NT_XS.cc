@@ -163,6 +163,13 @@ int main(int argc, char *argv[]) {
   G4Material *material = theTable->GetMaterial(material_name);
   if (!material) {
     throw std::invalid_argument("Error in NT_XS: invalid material. Could not find in CDMS or NIST material tables.")
+  } else {
+    std::cout << material_name << " should equal " << material->GetName() << std::endl;
+    G4ElementVector *elmVector = material->GetElementVector();
+    G4int nElm = (*elmVector).size();
+    for (int i = 0; i < nElm; ++i) {
+      std::cout << i+1 << ": " << (*elmVector)[i]->GetName() << std::endl;
+    }
   }
 
   
