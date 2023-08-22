@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
 
   
   // get ProcessManager for the neutron
-  std::cout << "Fetching neutron process manager" << std::cout;
+  std::cout << "Fetching neutron process manager" << std::endl;
   G4ProcessManager *theMan = theNeutron->GetProcessManager();
   
   // get vector of neutron processes
