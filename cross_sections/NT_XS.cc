@@ -190,24 +190,24 @@ int main(int argc, char *argv[]) {
     "G4HadronicProcess failed. Exitting.");
   }
   
-  G4double Emin, Emax, r;
+  G4double group_min, group_max, r;
 
   for (int g = 1; g < G+1; ++g) { // group g (fast groups)
-    Emin = Eg[g]; // lower bound of group
-    Emax = Eg[g-1]; // upper bound of group
-    r = std::pow(Emax/Emin, 1./ng); // common ratio between evaluation points
+    group_min = Eg[g]; // lower bound of group
+    group_max = Eg[g-1]; // upper bound of group
+    r = std::pow(group_max/group_min, 1./ng); // common ratio between evaluation points
     
     // evaluation points for integral
-    E_eval[0] = Emin;
+    E_eval[0] = group_min;
     for (int i = 1; i < ng; ++i) {
       E_eval[i] = E_eval[i-1]*r;
     }
-    E_eval[ng] = Emax;
+    E_eval[ng] = group_max;
 
 
   }
 
-  std::cout << Emin << " " << Emax << std::endl;
+  std::cout << group_min << " to " << group_max << std::endl;
 
   for (int i = 0; i < E_eval.size(); ++i) {
     std::cout << E_eval[i];
