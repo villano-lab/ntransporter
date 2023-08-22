@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
     Eg[g] = Eg[g-1]*alpha;
   }
   // lower bound (basically zero)
-  Eg[G+1] = std::numeric_limits<G4double>::epsilon()*eV;
+  Eg[G+1] = std::numeric_limits<G4double>::epsilon()*Eg[G];
   
   // vectors of energies, cross sections, and fluxes at which to evaluate approximated integrals
   doubles E_eval(ng+1);
@@ -268,8 +268,6 @@ int main(int argc, char *argv[]) {
 
       xa_eval[i] = phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
                                   material);
-
-      std::cout << i << " " << phi_eval[i] << " " << xs_eval[i] << " " << xa_eval[i] << std::endl;
 
     }
     phi_g = trap(E_eval, phi_eval);
