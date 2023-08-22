@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
 
   if (!elasticProc || !inelasticProc || !captureProc) {
     throw std::runtime_error("Error: casting one or more processes as "
-    "G4HadronicProcess failed. Exitting.")
+    "G4HadronicProcess failed. Exitting.");
   }
 
   std::cout << elasticProc->GetProcessName() << std::endl;
