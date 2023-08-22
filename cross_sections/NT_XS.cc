@@ -63,20 +63,24 @@ G4double trap(const doubles &x, const doubles &y) {
 // initialize Geant data with configured geometry and detector
 void initialize() {
   // manager object to configure everything
+  std::cout << "Starting SuperSim_Main" << std::endl;
   SuperSim_Main *sMain = new SuperSim_Main();
 
   // set verbosity
   sMain->SetVerboseLevel(0);
   sMain->runManager.SetVerboseLevel(0);
-
+  
+  std::cout << "Configuring physics list" << std::endl;
   sMain->Configure("full"); // full Shielding physics list, etc
   
   // configure geometry and detector (required for initialization)
+  std::cout << "Configuring environment geometry" << std::endl;
   sMain->UImanager->ApplyCommand("/CDMS/lab NoLab");
   sMain->UImanager->ApplyCommand("/CDMS/detector ZIP");
   
   // initialize: among other things, build physics processes and attach to 
   // particle process managers
+  std::cout << "Initializing" << std::endl;
   sMain->runManager.Initialize();
 }
 
@@ -135,10 +139,6 @@ int main(int argc, char *argv[]) {
   // lower bound
   Eg[G+1] = 0.;
   
-
-  std::cout << Eg[G] << " should equal " << Emin << std::endl;
-
-  
   // vectors of energies, cross sections, and fluxes at which to evaluate approximated integrals
   doubles E_eval(ng+1);
   doubles xs_eval(ng+1); // scatters
@@ -153,20 +153,16 @@ int main(int argc, char *argv[]) {
   xt[0] = 0.; // total
 
 
-  //throw std::runtime_error("End of this bit");
-
   // configure physics processes
-
-  std::cout << "Initializing" << std::endl;
   initialize();
 
   // neutron singleton
+  std::cout << "Fetching neutron singleton" << std::endl;
   G4Neutron *theNeutron = G4Neutron::Definition();
 
   // pull material table from SuperSim
   std::cout << "Fetching material " << material_name << std::endl;
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
-  
   // pull material data
   G4Material *material = theTable->GetMaterial(material_name);
   if (!material) {
@@ -175,17 +171,14 @@ int main(int argc, char *argv[]) {
 
   
   // get ProcessManager for the neutron
+  std::cout << "Fetching neutron process manager" << std::cout;
   G4ProcessManager *theMan = theNeutron->GetProcessManager();
   
   // get vector of neutron processes
-  G4int nProc = theMan->GetProcessListLength();
   G4ProcessVector *processes = theMan->GetProcessList();
 
-  // dynamic particle: set energy, momentum
-  G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
-                                              G4ThreeVector(0.,0.,1.), 0.);
-
   // hadronic processes (except nFission, (*processes)[5])
+  std::cout << "Fetching neutron hadronic processes" << std::endl;
   G4HadronicProcess *elasticProc = dynamic_cast<G4HadronicProcess*>(
       (*processes)[2]);
   G4HadronicProcess *inelasticProc = dynamic_cast<G4HadronicProcess*>(
@@ -201,10 +194,17 @@ int main(int argc, char *argv[]) {
   G4CrossSectionDataStore *elasticDataStore = elasticProc->GetCrossSectionDataStore();
   G4CrossSectionDataStore *inelasticDataStore = inelasticProc->GetCrossSectionDataStore();
   G4CrossSectionDataStore *captureDataStore = captureProc->GetCrossSectionDataStore();
+
+  // dynamic particle: set energy, momentum
+  std::cout << "Creating dynamic neutron" << std::endl;
+  G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
+                                              G4ThreeVector(0.,0.,1.), 0.);
+
   
   
   G4double group_min, group_max, r, phi_g;
-
+  
+  std::cout << "Beginning fast group constant calculations" << std::endl;
   for (int g = 1; g < G+1; ++g) { // group g (fast groups)
     group_min = Eg[g]; // lower bound of group
     group_max = Eg[g-1]; // upper bound of group
@@ -238,18 +238,21 @@ int main(int argc, char *argv[]) {
     xt[g] = xs[g] + trap(E_eval, xa_eval)/phi_g;
   }
 
+  std::cout << "Beginning thermal group constant calculations" << std::endl;
   { // thermal group (group G+1)
 
     group_min = Eg[G+1]; // lower bound of group
     group_max = Eg[G]; // upper bound of group
-    r = std::pow(group_max/group_min, 1./ng); // common ratio between evaluation points
+    r = (group_max - group_min)/ng; // common difference between evaluation points
     
     // evaluation points for integral
     E_eval[0] = group_min;
     for (int i = 1; i < ng; ++i) {
-      E_eval[i] = E_eval[i-1]*r;
+      E_eval[i] = E_eval[i-1] + r;
     }
     E_eval[ng] = group_max;
+
+    std::cout << E_eval[ng] << " should equal " << E_eval[ng-1] + r << std::endl;
 
     // evaluate cross sections and fluxes
     for (int i = 0; i < E_eval.size(); ++i) {
@@ -271,6 +274,8 @@ int main(int argc, char *argv[]) {
     xs[G+1] = trap(E_eval, xs_eval)/phi_g;
     xt[G+1] = xs[G+1] + trap(E_eval, xa_eval)/phi_g;
   }
+
+  std::cout << "Group constants calculated" << std::endl;
 
   std::string filename = output_file_base + "_" + material_name + "_xs.dat";
 
