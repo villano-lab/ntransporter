@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
   const G4Element *elm = (*elmVector)[6]; // silicon
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
                                               G4ThreeVector(0.,0.,1.), 2.*keV);
-  G4float x = data->GetCrossSection(dynamicNeutron, elm, rock);
+  G4float x = data->GetCrossSection(dynamicNeutron, elm, 300);
 
   std::cout << "Done" << std::endl;
 
