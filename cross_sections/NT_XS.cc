@@ -173,20 +173,38 @@ int main(int argc, char *argv[]) {
   // dynamic particle: set energy, momentum
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
                                               G4ThreeVector(0.,0.,1.), 0.);
-  
-  for (G4int i = 0; i < nProc; ++i) {
-    // if process is a hadronic process, print cross section
-    G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>(
-      (*processes)[i]);
-    if (thisProc) {
-      // calculate and print
-      //x = thisProc->GetCrossSectionDataStore()
-      //            ->GetCrossSection(dynamicNeutron, rock);
-      std::cout << "Process " << i << " is " << thisProc->GetProcessName() 
-                << std::endl;
-      thisProc->ProcessDescription(std::cout);
-    }
+
+  // process info
+-  G4HadronicProcess *elasticProc = dynamic_cast<G4HadronicProcess*>(
+-      (*processes)[2]);
+-  G4HadronicProcess *inelasticProc = dynamic_cast<G4HadronicProcess*>(
+-      (*processes)[3]);
+-  G4HadronicProcess *captureProc = dynamic_cast<G4HadronicProcess*>(
+-      (*processes)[4]);
+
+  if (!elasticProc || !inelasticProc || !captureProc) {
+    throw std::runtime_error("Error: casting one or more processes as "
+    "G4HadronicProcess failed. Exitting.")
   }
+
+  std::cout << elasticProc->GetProcessName() << std::endl;
+  std::cout << inelasticProc->GetProcessName() << std::endl;
+  std::cout << captureProc->GetProcessName() << std::endl;
+  
+
+  //for (G4int i = 0; i < nProc; ++i) {
+  //  // if process is a hadronic process, print cross section
+  //  G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>(
+  //    (*processes)[i]);
+  //  if (thisProc) {
+  //    // calculate and print
+  //    //x = thisProc->GetCrossSectionDataStore()
+  //    //            ->GetCrossSection(dynamicNeutron, rock);
+  //    std::cout << "Process " << i << " is " << thisProc->GetProcessName() 
+  //              << std::endl;
+  //    //thisProc->ProcessDescription(std::cout);
+  //  }
+  //}
 
   std::cout << "Done" << std::endl;
 
