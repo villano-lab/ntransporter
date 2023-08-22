@@ -146,9 +146,18 @@ int main(int argc, char *argv[]) {
   // vector of cross sections (first element always zero; xsec[g] refers to group g)
   doubles xsec(G+2);
   xsec[0] = 0.;
+  
+  // try to directly grab NeutronHP process info
+  auto data = new G4ParticleHPElasticData();
+  G4Neutron *theNeutron = G4Neutron::Definition();
+  const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
+  G4Material *rock = theTable->GetMaterial("Norite");
+  G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
+                                              G4ThreeVector(0.,0.,1.), 2.*keV);
+  G4float x = data->GetCrossSection(dynamicNeutron, rock);
 
 
-  //throw std::runtime_error("End of this bit");
+  throw std::runtime_error("End of this bit");
 
   // configure physics processes
   initialize();
@@ -174,19 +183,16 @@ int main(int argc, char *argv[]) {
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
                                               G4ThreeVector(0.,0.,1.), 0.);
   
-  for (G4int i = 0; i < nProc; ++i) {
-    // if process is a hadronic process, print cross section
-    G4HadronicProcess *thisProc = dynamic_cast<G4HadronicProcess*>(
-      (*processes)[i]);
-    if (thisProc) {
-      // calculate and print
-      //x = thisProc->GetCrossSectionDataStore()
-      //            ->GetCrossSection(dynamicNeutron, rock);
-      std::cout << "Process " << i << " is " << thisProc->GetProcessName() 
-                << std::endl;
-      thisProc->ProcessDescription(std::cout);
-    }
-  }
+  // process info
+  G4HadronicProcess *elasticProc = dynamic_cast<G4HadronicProcess*>(
+      (*processes)[2]);
+  G4HadronicProcess *inelasticProc = dynamic_cast<G4HadronicProcess*>(
+      (*processes)[3]);
+  G4HadronicProcess *captureProc = dynamic_cast<G4HadronicProcess*>(
+      (*processes)[4]);
+
+  //thisProc->GetCrossSectionDataStore()->GetCrossSection(dynamicNeutron, rock);
+
 
   std::cout << "Done" << std::endl;
 
