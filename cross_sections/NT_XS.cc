@@ -252,7 +252,7 @@ int main(int argc, char *argv[]) {
     }
     E_eval[ng] = group_max;
 
-    std::cout << E_eval[ng-1] << " should equal " << E_eval[ng] - r << std::endl;
+    //std::cout << E_eval[ng-1] << " should equal " << E_eval[ng] - r << std::endl;
 
     // evaluate cross sections and fluxes
     for (int i = 0; i < E_eval.size(); ++i) {
@@ -267,6 +267,8 @@ int main(int argc, char *argv[]) {
 
       xa_eval[i] = phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
                                   material);
+
+      std::cout << i << " " << phi_eval[i] << " " << xs_eval[i] << " " << xa_eval[i] << std::endl;
 
     }
     phi_g = trap(E_eval, phi_eval);
