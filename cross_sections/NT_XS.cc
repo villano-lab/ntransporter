@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
   // pull material data
   G4Material *material = theTable->GetMaterial(material_name);
   if (!material) {
-    throw std::invalid_argument("Error in NT_XS: invalid material. Could not find in CDMS or NIST material tables.")
+    throw std::invalid_argument("Error in NT_XS: invalid material. Could not find in CDMS or NIST material tables.");
   } else {
     std::cout << material_name << " should equal " << material->GetName() << std::endl;
     G4ElementVector *elmVector = material->GetElementVector();
