@@ -279,7 +279,7 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Group constants calculated" << std::endl;
 
-  std::cout << MaxwellBoltzmannKernel(0.) << std:endl;
+  std::cout << MaxwellBoltzmannKernel(0.) << std::endl;
 
   std::string filename = output_file_base + "_" + material_name + "_xs.dat";
 
