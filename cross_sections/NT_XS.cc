@@ -285,7 +285,7 @@ int main(int argc, char *argv[]) {
 
   std::ofstream outputStream(filename);
 
-  outputStream << std::setPrecision(17);
+  outputStream << std::setprecision(17);
 
   for (int g = 0; g < G+2; ++g) {
     outputStream << g << " " << xs[g] << " " << xt[g] << "\n";
