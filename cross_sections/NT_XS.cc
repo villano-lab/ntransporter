@@ -162,14 +162,7 @@ int main(int argc, char *argv[]) {
   // pull material data
   G4Material *material = theTable->GetMaterial(material_name);
   if (!material) {
-    throw std::invalid_argument("Error in NT_XS: invalid material" + material_name + ". Could not find in CDMS or NIST material tables.");
-  } else {
-    std::cout << material_name << " should equal " << material->GetName() << std::endl;
-    const G4ElementVector *elmVector = material->GetElementVector();
-    G4int nElm = (*elmVector).size();
-    for (int i = 0; i < nElm; ++i) {
-      std::cout << i+1 << ": " << (*elmVector)[i]->GetName() << std::endl;
-    }
+    throw std::invalid_argument("Error in NT_XS: invalid material \"" + material_name + "\". Could not find in CDMS or NIST material tables.");
   }
 
   
@@ -184,7 +177,7 @@ int main(int argc, char *argv[]) {
   G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, 
                                               G4ThreeVector(0.,0.,1.), 0.);
 
-  // process info
+  // hadronic processes (except nFission, (*processes)[5])
   G4HadronicProcess *elasticProc = dynamic_cast<G4HadronicProcess*>(
       (*processes)[2]);
   G4HadronicProcess *inelasticProc = dynamic_cast<G4HadronicProcess*>(
@@ -193,14 +186,29 @@ int main(int argc, char *argv[]) {
       (*processes)[4]);
 
   if (!elasticProc || !inelasticProc || !captureProc) {
-    throw std::runtime_error("Error: casting one or more processes as "
+    throw std::runtime_error("Error in NT_XS: casting one or more processes as "
     "G4HadronicProcess failed. Exitting.");
   }
-
-  std::cout << elasticProc->GetProcessName() << std::endl;
-  std::cout << inelasticProc->GetProcessName() << std::endl;
-  std::cout << captureProc->GetProcessName() << std::endl;
   
+  G4double Emin, Emax, r;
+
+  for (int g = 1; g < G+1; ++g) { // group g
+    Emin = Eg[g]; // lower bound of group
+    Emax = Eg[g-1]; // upper bound of group
+    r = std::pow(Emax/Emin, 1./ng); // common ratio between evaluation points
+    
+    // evaluation points for integral
+    E_eval[0] = Emin;
+    for (int i = 1; i < ng+1; ++i) {
+      E_eval[i] = E_eval[i-1]*r;
+    }
+    E_eval[ng] = Emax;
+
+
+  }
+
+  std::cout << Emin << " " << Emax << std::endl << E_eval << std::endl;
+
 
   //for (G4int i = 0; i < nProc; ++i) {
   //  // if process is a hadronic process, print cross section
