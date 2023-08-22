@@ -142,6 +142,12 @@ int main(int argc, char *argv[]) {
   // vector of energies at which to evaluate approximated integrals
   doubles Eeval(ng+1);
 
+
+  // testing trapezoidal integration function
+  doubles x{2.1, 2.2, 4.0, 4.2, 5.1, 5.2, 5.5, 5.9};
+  doubles y{3.3 ,1.2, 5.5, 4.4, 3.1, 2.1, 6.7, 4.4};
+  std::cout << trap(x,y) << " should equal " << 14.42 << std::endl;
+
   throw std::runtime_error("End of this bit");
 
   // configure physics processes
