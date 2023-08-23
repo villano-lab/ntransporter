@@ -279,7 +279,11 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Group constants calculated" << std::endl;
 
-  std::string filename = output_file_base + "_" + material_name + "_xs.dat";
+  std::string filename = output_file_base + "_" 
+                       + material_name + "_" 
+                       + std::to_string(G) + "_" 
+                       + std::to_string(ng) 
+                       + "_xs.dat";
 
   std::cout << "Writing cross section data to " << filename << std::endl;
 
