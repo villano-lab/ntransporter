@@ -292,7 +292,7 @@ int main(int argc, char *argv[]) {
   outputStream << std::setprecision(17);
 
   for (int g = 0; g < G+2; ++g) {
-    outputStream << g << " " << xs[g] << " " << xt[g] << "\n";
+    outputStream << g << " " << Eg[g] << " "<< xs[g] << " " << xt[g] << "\n";
   }
 
   outputStream.close();
