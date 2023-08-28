@@ -21,7 +21,7 @@ double MaxwellBoltzmannKernel(double E) {
 }
 
 // trapezoidal integration of (x,y) data
-G4double trap(const doubles &x, const doubles &y) {
+double trap(const doubles &x, const doubles &y) {
     size_t n = x.size();
     if (n != y.size()) {
         throw std::invalid_argument("Invalid arguments to function trap(). " 
@@ -33,5 +33,10 @@ G4double trap(const doubles &x, const doubles &y) {
     }
     return s;
 }
+
+double interp(double x, double x1, double y1, double x2, double y2) {
+    return y1 + (x - x1)*(y2 - y1)/(x2 - x1);
+}
+
 
 #endif // NTUTILITIES_HH
