@@ -205,9 +205,16 @@ int main(int argc, char *argv[]) {
   
   
   G4double group_min, group_max, r, phi_g;
+
+  double (*phi_func)(double);
   
-  std::cout << "Beginning fast group constant calculations" << std::endl;
-  for (int g = 1; g < G+1; ++g) { // group g (fast groups)
+  std::cout << "Beginning group constant calculations" << std::endl;
+  for (int g = 1; g < G+2; ++g) { // group g
+    if (g == G+1) { // thermal group
+      phi_func = MaxwellBoltzmannKernel;
+    } else { // fast group
+      phi_func = fast_kernel;
+    }
     group_min = Eg[g]; // lower bound of group
     group_max = Eg[g-1]; // upper bound of group
     r = std::pow(group_max/group_min, 1./ng); // common ratio between evaluation points
@@ -222,7 +229,7 @@ int main(int argc, char *argv[]) {
     // evaluate cross sections and fluxes
     for (int i = 0; i < E_eval.size(); ++i) {
 
-      phi_eval[i] = 1/E_eval[i];
+      phi_eval[i] = phi_func(E_eval[i]);
 
       dynamicNeutron->SetKineticEnergy(E_eval[i]);
 
@@ -240,42 +247,7 @@ int main(int argc, char *argv[]) {
     xt[g] = xs[g] + trap(E_eval, xa_eval)/phi_g;
   }
 
-  std::cout << "Beginning thermal group constant calculations" << std::endl;
-  { // thermal group (group G+1)
-
-    group_min = Eg[G+1]; // lower bound of group
-    group_max = Eg[G]; // upper bound of group
-    r = (group_max - group_min)/ng; // common difference between evaluation points
-    
-    // evaluation points for integral
-    E_eval[0] = group_min;
-    for (int i = 1; i < ng; ++i) {
-      E_eval[i] = E_eval[i-1] + r;
-    }
-    E_eval[ng] = group_max;
-
-    //std::cout << E_eval[ng-1] << " should equal " << E_eval[ng] - r << std::endl;
-
-    // evaluate cross sections and fluxes
-    for (int i = 0; i < E_eval.size(); ++i) {
-
-      phi_eval[i] = MaxwellBoltzmannKernel(E_eval[i]);
-
-      dynamicNeutron->SetKineticEnergy(E_eval[i]);
-
-      xs_eval[i] = phi_eval[i]
-            *(elasticDataStore->GetCrossSection(dynamicNeutron, material) 
-            + inelasticDataStore->GetCrossSection(dynamicNeutron, material));
-
-      xa_eval[i] = phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
-                                  material);
-
-    }
-    phi_g = trap(E_eval, phi_eval);
-
-    xs[G+1] = trap(E_eval, xs_eval)/phi_g;
-    xt[G+1] = xs[G+1] + trap(E_eval, xa_eval)/phi_g;
-  }
+  
 
   std::cout << "Group constants calculated" << std::endl;
 
