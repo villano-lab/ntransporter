@@ -124,8 +124,14 @@ endforeach()
 
 # define SUPERSIM as a library with all source files and link to Geant and ROOT
 add_library(SUPERSIM STATIC "${SUPERSOURCES}")
+
 target_link_libraries(SUPERSIM PUBLIC "${Geant4_LIBRARIES}")
 target_link_libraries(SUPERSIM PUBLIC "${ROOT_LIBRARIES}")
+
+foreach(SUBDIR ${SUPERSIM_LIBRARIES})
+	message(STATUS "SuperSim linking in ${SUPERSIM_DIR}/${SUBDIR}")
+	target_include_directories(SUPERSIM PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
+endforeach()
 
 
 # ============================================
