@@ -11,8 +11,7 @@ message("source directory: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 project(NTransporter VERSION 1.0
         LANGUAGES CXX
-        DESCRIPTION "Direct-coupled multigroup diffusion approximation with
-         zeroth-order evaluated group constants")
+        DESCRIPTION "Direct-coupled multigroup diffusion approximation with zeroth-order evaluated group constants")
 
 
 set(CMAKE_CXX_STANDARD 14) # same as typically used for SuperSim
@@ -67,7 +66,7 @@ include("${ROOT_USE_FILE}")
 set(SUPERSIM_DIR "/home/ajbiffl3/supersim" CACHE PATH "Path to base directory of SuperSim")
 
 # SuperSim_include file
-set(SUPERSIM_INCLUDE "../SuperSim_include.txt" CACHE PATH "List of SuperSim directories to include")
+set(SUPERSIM_INCLUDE "SuperSim_include.txt" CACHE PATH "List of SuperSim directories to include")
 
 message("Configuring SuperSim")
 message(STATUS "SuperSim base directory: ${SUPERSIM_DIR}")
