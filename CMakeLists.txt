@@ -141,8 +141,6 @@ add_subdirectory(sources)
 add_subdirectory(boundary_conditions)
 
 
-message("Done")
-
 
 
 
