@@ -77,7 +77,7 @@ message(STATUS "Using SuperSim include list: ${SUPERSIM_INCLUDE}")
 file(READ "${SUPERSIM_INCLUDE}" SUPERSIM_LIBRARIES_FILE)
 string(REPLACE "\n" ";" SUPERSIM_LIBRARIES_FILE "${SUPERSIM_LIBRARIES_FILE}")
 set(SUPERSIM_LIBRARIES "")
-foreach (LIB "${SUPERSIM_LIBRARIES_FILE}")
+foreach (LIB ${SUPERSIM_LIBRARIES_FILE})
 	if ("${LIB}" MATCHES "^[^#]")
 		list(APPEND SUPERSIM_LIBRARIES "${LIB}")
 	endif()
@@ -97,7 +97,7 @@ set(SUPERSOURCES "")
 
 
 # read in all source files from directories listed in SuperSim_include
-foreach (SUBDIR "${SUPERSIM_LIBRARIES}")
+foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	message(STATUS "Finding source in ${SUPERSIM_DIR}/${SUBDIR}")
 	execute_process(
 		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.cc"
@@ -108,7 +108,7 @@ foreach (SUBDIR "${SUPERSIM_LIBRARIES}")
 		message("No source in ${SUPERSIM_DIR}/${SUBDIR}")
 	else()
 		string(REPLACE "\n" ";" SUBDIR_SOURCES "${SUBDIR_SOURCES}")
-		foreach(SOURCE_FILE "${SUBDIR_SOURCES}")
+		foreach(SOURCE_FILE ${SUBDIR_SOURCES})
 			#message(${SOURCE_FILE})
 			if (("${SUBDIR}" STREQUAL "CDMSapps") AND 
 				(("${SOURCE_FILE}" MATCHES "CDMS_.*") OR 
