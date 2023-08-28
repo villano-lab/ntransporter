@@ -63,6 +63,9 @@ int main(int argc, char *argv[]) {
     "\n    Material must be one of: Norite, "))
   }
 
+  double sweight_total = std::accumulate(source_weights.begin(), source_weights.end(), 0.);
+
+
   // alpha (common ratio of group boundaries)
   double alpha = std::pow(Emin/Emax, 1./G);
 
@@ -76,102 +79,114 @@ int main(int argc, char *argv[]) {
   }
   // lower bound (basically zero)
   Eg[G+1] = std::numeric_limits<G4double>::epsilon()*Eg[G];
+
+
+  // vectors of energies, source rates, and fluxes for which there is data in the .dat files
+  doubles E_eval(1);
+  doubles S_eval(1);
+  doubles phi_eval(1);
   
 
-  // vector of group sources (first element always zero; Sg[g] refers to group g)
+  // vector of group sources (Sg[g] refers to group g)
   doubles Sg(G+2);
-  Sg[0] = 0.;
-
-
-  
-  double group_min, group_max, r, phi_g;
-  
-  std::cout << "Beginning fast group constant calculations" << std::endl;
-  for (int g = 1; g < G+1; ++g) { // group g (fast groups)
-    group_min = Eg[g]; // lower bound of group
-    group_max = Eg[g-1]; // upper bound of group
-    r = std::pow(group_max/group_min, 1./ng); // common ratio between evaluation points
-    
-    // evaluation points for integral
-    E_eval[0] = group_min;
-    for (int i = 1; i < ng; ++i) {
-      E_eval[i] = E_eval[i-1]*r;
-    }
-    E_eval[ng] = group_max;
-
-    // evaluate cross sections and fluxes
-    for (int i = 0; i < E_eval.size(); ++i) {
-
-      phi_eval[i] = 1/E_eval[i];
-
-      dynamicNeutron->SetKineticEnergy(E_eval[i]);
-
-      xs_eval[i] = phi_eval[i]
-            *getSourceStrength(E_eval[i]);
-
-      xa_eval[i] = phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
-                                  material);
-
-    }
-    phi_g = trap(E_eval, phi_eval);
-    
-    xs[g] = trap(E_eval, xs_eval)/phi_g;
-    xt[g] = xs[g] + trap(E_eval, xa_eval)/phi_g;
+  // initialize to zero
+  for (int g = 0; g < G+2; ++g) {
+    Sg[g] = 0;
   }
 
-  std::cout << "Beginning thermal group constant calculations" << std::endl;
-  { // thermal group (group G+1)
 
-    group_min = Eg[G+1]; // lower bound of group
-    group_max = Eg[G]; // upper bound of group
-    r = (group_max - group_min)/ng; // common difference between evaluation points
-    
-    // evaluation points for integral
-    E_eval[0] = group_min;
-    for (int i = 1; i < ng; ++i) {
-      E_eval[i] = E_eval[i-1] + r;
+  double gmin, gmax, r, phi_g;
+  double E1, E2, s1, s2;
+
+  bool calc_this;
+
+  std::ifstream sourcefile;
+
+
+  double (*phi_func)(double);
+  
+
+  for (int k = 0; k < source_files.size(); ++k) {
+    // k - pull source data from file k in file list
+
+    std::cout << "Reading spectrum from " << source_files[k] << std::endl;
+
+    sourcefile = std::ifstream(source_files[k]);
+
+    sourcefile >> E1 >> s1 >> E2 >> s2;
+
+
+    // if E2 < Eg[G+1], ignore the (E1,s1) ordered pair and move on
+    while (E2 < Eg[G+1]) {
+      E1 = E2;
+      s1 = s2;
+      sourcefile >> E2 >> s2;
     }
-    E_eval[ng] = group_max;
 
-    //std::cout << E_eval[ng-1] << " should equal " << E_eval[ng] - r << std::endl;
+    for (int g = G+1; g > 0; --g) { // for each group
+      if (g == G+1) { // thermal group
+        phi_func = MaxwellBoltzmannKernel;
+      } else { // fast group
+        phi_func = fast_kernel;
+      }
 
-    // evaluate cross sections and fluxes
-    for (int i = 0; i < E_eval.size(); ++i) {
 
-      phi_eval[i] = MaxwellBoltzmannKernel(E_eval[i]);
+      gmin = Eg[g]; // lower bound of group
+      gmax = Eg[g-1]; // upper bound of group
 
-      dynamicNeutron->SetKineticEnergy(E_eval[i]);
+      E_eval.clear();
+      phi_eval.clear();
+      S_eval.clear();
+      calc_this = true;
 
-      xs_eval[i] = phi_eval[i]
-            *(elasticDataStore->GetCrossSection(dynamicNeutron, material) 
-            + inelasticDataStore->GetCrossSection(dynamicNeutron, material));
+      do {
+        if (gmin < E1) {
+          if (gmax < E1) {
+            calc_this = false; 
+            break; // skip this group
+          } else {
+            E_eval.push_back(E1);
+            phi_eval.push_back(phi_func(E1));
+            S_eval.push_back(s1*phi_eval.back());            
+          }
+        } else {
+          E_eval.push_back(gmin);
+          phi_eval.push_back(phi_func(gmin));
+          S_eval.push_back(phi_eval.back()*interp(gmin, E1, s1, E2, s2));
+        }
+        if (E2 < gmax) { // read in next values
+          E1 = E2;
+          s1 = s2;
+          sourcefile >> E2 >> s2;
+        } else {
+          E_eval.push_back(gmax);
+          phi_eval.push_back(phi_func(gmax));
+          S_eval.push_back(phi_eval.back()*interp(gmax, E1, s1, E2, s2));
+        }
+      } while (E2 < gmax);
 
-      xa_eval[i] = phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
-                                  material);
-
+      if (calc_this) {
+        phi_g = trap(E_eval, phi_eval);
+        Sg[g] += (source_weights[k]/sweight_total)*trap(E_eval, S_eval)/phi_g;
+      }
     }
-    phi_g = trap(E_eval, phi_eval);
-
-    xs[G+1] = trap(E_eval, xs_eval)/phi_g;
-    xt[G+1] = xs[G+1] + trap(E_eval, xa_eval)/phi_g;
   }
 
-  std::cout << "Group constants calculated" << std::endl;
+  std::cout << "All group constants calculated" << std::endl;
 
   std::string filename = output_file_base + "_" 
                        + material_name + "_" 
-                       + std::to_string(G) + "_" 
-                       + std::to_string(ng) 
-                       + "_xs.dat";
+                       + std::to_string(G)
+                       + "_Sg.dat";
 
-  std::cout << "Writing cross section data to " << filename << std::endl;
+  std::cout << "Writing group source data to " << filename << std::endl;
 
   std::ofstream outputStream(filename);
 
   outputStream << std::setprecision(17);
 
   for (int g = 0; g < G+2; ++g) {
-    outputStream << g << " " << Eg[g] << " "<< xs[g] << " " << xt[g] << "\n";
+    outputStream << g << " " << Eg[g] << " "<< Sg[g] << "\n";
   }
 
   outputStream.close();
