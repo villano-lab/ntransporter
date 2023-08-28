@@ -35,31 +35,10 @@
 
 #include "G4ios.hh"
 
+#include "NTUtilities.hh"
+
 
 typedef std::vector<G4double> doubles;
-
-// thermal energy (25 C)
-constexpr G4double Etherm = 0.025692579120652998*eV;
-
-
-// kernel of a Maxwell-Boltzmann thermal distribution of energies
-G4double MaxwellBoltzmannKernel(G4double E) {
-  return std::sqrt(E)*std::exp(-E/Etherm);
-}
-
-// trapezoidal integration of (x,y) data
-G4double trap(const doubles &x, const doubles &y) {
-  size_t n = x.size();
-  if (n != y.size()) {
-    throw std::invalid_argument("Invalid arguments to function trap(). " 
-      "Vectors must have the same length.");
-  }
-  G4double s = 0;
-  for (size_t i = 1; i < n; ++i) {
-    s += (y[i] + y[i-1])*(x[i] - x[i-1])/2.;
-  }
-  return s;
-}
 
 
 // initialize Geant data with configured geometry and detector
