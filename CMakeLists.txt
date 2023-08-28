@@ -63,13 +63,16 @@ include("${ROOT_USE_FILE}")
 # ============================================
 # SuperSim
 
-message("Configuring SuperSim")
-
 # base supersim directory
 set(SUPERSIM_DIR "/home/ajbiffl3/supersim" CACHE PATH "Path to base directory of SuperSim")
 
 # SuperSim_include file
 set(SUPERSIM_INCLUDE "../SuperSim_include.txt" CACHE PATH "List of SuperSim directories to include")
+
+message("Configuring SuperSim")
+message(STATUS "SuperSim base directory: ${SUPERSIM_DIR}")
+message(STATUS "Using SuperSim include list: ${SUPERSIM_INCLUDE}")
+
 
 # read SuperSim_include into list
 file(READ "${SUPERSIM_INCLUDE}" SUPERSIM_LIBRARIES_FILE)
@@ -120,17 +123,20 @@ foreach (SUBDIR "${SUPERSIM_LIBRARIES}")
 	endif()
 endforeach()
 
-# define SUPERSIM as a library with all source files
+# define SUPERSIM as a library with all source files and link to Geant and ROOT
 add_library(SUPERSIM STATIC "${SUPERSOURCES}")
+target_link_libraries(SUPERSIM PUBLIC "${Geant4_LIBRARIES}")
+target_link_libraries(SUPERSIM PUBLIC "${ROOT_LIBRARIES}")
+
 
 # ============================================
+# add subdirectories
+add_subdirectory(cross_sections)
+add_subdirectory(sources)
+add_subdirectory(boundary_conditions)
 
 
-
-
-
-
-
+message("Done")
 
 
 
