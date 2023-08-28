@@ -20,6 +20,11 @@ double MaxwellBoltzmannKernel(double E) {
     return std::sqrt(E)*std::exp(-E/Etherm);
 }
 
+// assumed kernel of fast flux
+double fast_kernel(double E) {
+    return 1./E;
+}
+
 // trapezoidal integration of (x,y) data
 double trap(const doubles &x, const doubles &y) {
     size_t n = x.size();
