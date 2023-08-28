@@ -9,7 +9,7 @@ target_include_directories(NT_XS PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}") # for NTU
 
 # supersim
 target_link_libraries(NT_XS PUBLIC SUPERSIM)
-target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}")
+target_include_directories(NT_XS PUBLIC ${SUPERSIM_DIR})
 
 foreach(SUBDIR "${SUPERSIM_LIBRARIES}")
 	message(STATUS "NT_XS linking in ${SUPERSIM_DIR}/${SUBDIR}")
