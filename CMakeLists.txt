@@ -135,6 +135,9 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
 endforeach()
 
+get_target_property(HEADERS_THING SUPERSIM_LIB PUBLIC_HEADERS)
+message("The thing:" ${HEADER_THING})
+
 
 # ============================================
 # add subdirectories
