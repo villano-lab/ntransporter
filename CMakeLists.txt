@@ -100,7 +100,7 @@ set(SUPERSOURCES "")
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	message(STATUS "Finding source in ${SUPERSIM_DIR}/${SUBDIR}")
 	execute_process(
-		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.cc"
+		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.[ch][ch]"
 		WORKING_DIRECTORY $ENV{HOME}
 		OUTPUT_VARIABLE SUBDIR_SOURCES
 		)
@@ -128,10 +128,7 @@ add_library(SUPERSIM STATIC "${SUPERSOURCES}")
 target_link_libraries(SUPERSIM PUBLIC "${Geant4_LIBRARIES}")
 target_link_libraries(SUPERSIM PUBLIC "${ROOT_LIBRARIES}")
 
-foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-	message(STATUS "SuperSim linking in ${SUPERSIM_DIR}/${SUBDIR}")
-	target_include_directories(SUPERSIM PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
-endforeach()
+
 
 
 # ============================================
