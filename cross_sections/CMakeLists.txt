@@ -7,7 +7,7 @@ message("CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
 
 # I don't think these are needed (SuperSim on top of Geant and ROOT)
 target_link_libraries(NT_XS PUBLIC "${Geant4_LIBRARIES}")
-#target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
+target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
 
 # supersim
 #target_link_libraries(NT_XS PUBLIC SUPERSIM_LIB)
