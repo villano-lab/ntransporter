@@ -100,7 +100,7 @@ set(SUPERSOURCES "")
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	message(STATUS "Finding source in ${SUPERSIM_DIR}/${SUBDIR}")
 	execute_process(
-		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.[ch][ch]"
+		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.cc"
 		WORKING_DIRECTORY $ENV{HOME}
 		OUTPUT_VARIABLE SUBDIR_SOURCES
 		)
@@ -134,11 +134,6 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	message(STATUS "SuperSim linking in ${SUPERSIM_DIR}/${SUBDIR}")
 	target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
 endforeach()
-
-#set_target_properties(SUPERSIM_LIB PROPERTIES PUBLIC_HEADER "${SUPERSOURCES}")
-
-get_target_property(HEADERS_THING SUPERSIM_LIB PUBLIC_HEADER)
-message("The thing:" ${HEADER_THING})
 
 
 # ============================================

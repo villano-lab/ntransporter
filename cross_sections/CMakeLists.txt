@@ -20,6 +20,4 @@ target_include_directories(NT_XS PUBLIC "${CMAKE_BINARY_DIR}") # for CDMSVersion
 
 message("NT_XS built")
 
-get_target_property(HEADERS_THING SUPERSIM_LIB PUBLIC_HEADER)
-message("The thing:" ${HEADER_THING})
 
