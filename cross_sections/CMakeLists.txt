@@ -10,7 +10,7 @@ message("CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
 #target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
 
 # supersim
-target_link_libraries(NT_XS PUBLIC SUPERSIM_LIB)
+#target_link_libraries(NT_XS PUBLIC SUPERSIM_LIB)
 target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}")
 
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
