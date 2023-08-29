@@ -3,6 +3,8 @@ message("Building NT_XS")
 add_executable(NT_XS NT_XS.cc ${SUPERSOURCES})
 target_include_directories(NT_XS PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}") # for NTUtilities.hh
 
+message("CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
+
 # I don't think these are needed (SuperSim on top of Geant and ROOT)
 #target_link_libraries(NT_XS PUBLIC "${Geant4_LIBRARIES}")
 #target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
