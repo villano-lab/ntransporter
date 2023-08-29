@@ -135,10 +135,9 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
 endforeach()
 
-set_target_properties(SUPERSIM_LIB PROPERTIES
-                        PUBLIC_HEADER "${SUPERSOURCES}")
+#set_target_properties(SUPERSIM_LIB PROPERTIES PUBLIC_HEADER "${SUPERSOURCES}")
 
-get_target_property(HEADERS_THING SUPERSIM_LIB PUBLIC_HEADERS)
+get_target_property(HEADERS_THING SUPERSIM_LIB PUBLIC_HEADER)
 message("The thing:" ${HEADER_THING})
 
 
