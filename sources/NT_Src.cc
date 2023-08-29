@@ -11,6 +11,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <cmath>
+#include <numeric>
 #include <limits>
 
 #include "NTUtilities.hh"
@@ -60,7 +61,7 @@ int main(int argc, char *argv[]) {
 
   } else {
     throw (std::runtime_error("Error in NT_Src: material not in candidate list."
-    "\n    Material must be one of: Norite, "))
+    "\n    Material must be one of: Norite, "));
   }
 
   double sweight_total = std::accumulate(source_weights.begin(), source_weights.end(), 0.);
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]) {
     Eg[g] = Eg[g-1]*alpha;
   }
   // lower bound (basically zero)
-  Eg[G+1] = std::numeric_limits<G4double>::epsilon()*Eg[G];
+  Eg[G+1] = std::numeric_limits<double>::epsilon()*Eg[G];
 
 
   // vectors of energies, source rates, and fluxes for which there is data in the .dat files
