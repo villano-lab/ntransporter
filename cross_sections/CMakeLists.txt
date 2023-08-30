@@ -10,12 +10,12 @@ target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
 
 # supersim
 target_link_libraries(NT_XS PUBLIC SUPERSIM_LIB)
-target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}")
+# target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}")
 
-foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-	message(STATUS "NT_XS linking in ${SUPERSIM_DIR}/${SUBDIR}")
-	target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
-endforeach()
+# foreach(SUBDIR ${SUPERSIM_LIBRARIES})
+# 	message(STATUS "NT_XS linking in ${SUPERSIM_DIR}/${SUBDIR}")
+# 	target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
+# endforeach()
 
 target_include_directories(NT_XS PUBLIC "${CMAKE_BINARY_DIR}") # for CDMSVersion.hh
 
