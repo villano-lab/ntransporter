@@ -151,7 +151,7 @@ ExternalProject_Add(SUPERSIM_LIB
 					INSTALL_COMMAND ""
 					)
 
-add_library(SUPERSIM_LIB STATIC)
+					
 #target_link_libraries(SUPERSIM_LIB PUBLIC "${Geant4_LIBRARIES}")
 #target_link_libraries(SUPERSIM_LIB PUBLIC "${ROOT_LIBRARIES}")
 
