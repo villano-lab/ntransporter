@@ -135,6 +135,7 @@ endforeach()
 #	target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
 #endforeach()
 
+include(ExternalProject)
 
 # define SUPERSIM_LIB as an external project
 ExternalProject_Add(SUPERSIM_LIB
