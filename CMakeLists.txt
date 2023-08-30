@@ -130,10 +130,13 @@ target_link_libraries(SUPERSIM_LIB PUBLIC ${ROOT_LIBRARIES})
 
 target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERISM_DIR}")
 
+set(SUPERSIM_INCLUDES "")
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-	message(STATUS "SuperSim linking in ${SUPERSIM_DIR}/${SUBDIR}")
-	target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
+	#target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
+	LIST(APPEND SUPERSIM_INCLUDES "${SUPERSIM_DIR}/${SUBDIR}")
 endforeach()
+
+set_target_properties(SUPERSIM_LIB PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES})
 
 
 # ============================================
