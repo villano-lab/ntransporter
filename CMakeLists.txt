@@ -140,7 +140,7 @@ include(ExternalProject)
 
 #set(MAKE_EXE "/cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/bin/make" CACHE PATH "Path to make executable")
 
-find_program(MAKE_EXE NAMES gmake nmake make)
+find_program(MAKE_EXE NAMES make)
 message("Configuring SuperSim with ${MAKE_EXE}")
 
 # define SUPERSIM_LIB as an external project
@@ -151,7 +151,7 @@ ExternalProject_Add(SUPERSIM_LIB
 					UPDATE_COMMAND ""
 					BUILD_IN_SOURCE 1
 					CONFIGURE_COMMAND ""
-					BUILD_COMMAND "${MAKE_EXE} all"
+					BUILD_COMMAND ${MAKE_EXE} all
 					BUILD_IN_SOURCE TRUE
 					BUILD_ALWAYS TRUE
 					INSTALL_COMMAND ""
