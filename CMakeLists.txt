@@ -138,7 +138,9 @@ message(STATUS "SuperSim base directory: ${SUPERSIM_DIR}")
 include(ExternalProject)
 
 
-set(MAKE_EXE "/cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/bin/make" CACHE PATH "Path to make executable")
+#set(MAKE_EXE "/cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/bin/make" CACHE PATH "Path to make executable")
+
+message("Configuring SuperSim with ${MAKE_EXE}")
 
 # define SUPERSIM_LIB as an external project
 ExternalProject_Add(SUPERSIM_LIB
