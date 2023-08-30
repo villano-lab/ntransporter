@@ -136,6 +136,21 @@ endforeach()
 #endforeach()
 
 
+# define SUPERSIM_LIB as an external project
+ExternalProject_Add(SUPERSIM_LIB
+					PREFIX "./supersim_lib"
+					SOURCE_DIR "${SUPERSIM_DIR}"
+					URL ""
+					UPDATE_COMMAND ""
+					BUILD_IN_SOURCE 1
+					CONFIGURE_COMMAND ""
+					BUILD_COMMAND "make all"
+					BUILD_IN_SOURCE TRUE
+					BUILD_ALWAYS TRUE
+					INSTALL_COMMAND ""
+					)
+
+
 # ============================================
 # add subdirectories
 add_subdirectory(cross_sections)
