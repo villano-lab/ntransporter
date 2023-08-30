@@ -137,6 +137,9 @@ message(STATUS "SuperSim base directory: ${SUPERSIM_DIR}")
 
 include(ExternalProject)
 
+
+set(MAKE_EXE "/cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/bin/make" CACHE PATH "Path to make executable")
+
 # define SUPERSIM_LIB as an external project
 ExternalProject_Add(SUPERSIM_LIB
 					PREFIX "./supersim_lib"
@@ -145,13 +148,13 @@ ExternalProject_Add(SUPERSIM_LIB
 					UPDATE_COMMAND ""
 					BUILD_IN_SOURCE 1
 					CONFIGURE_COMMAND ""
-					BUILD_COMMAND "make all"
+					BUILD_COMMAND "${MAKE_EXE} all"
 					BUILD_IN_SOURCE TRUE
 					BUILD_ALWAYS TRUE
 					INSTALL_COMMAND ""
 					)
 
-					
+
 #target_link_libraries(SUPERSIM_LIB PUBLIC "${Geant4_LIBRARIES}")
 #target_link_libraries(SUPERSIM_LIB PUBLIC "${ROOT_LIBRARIES}")
 
