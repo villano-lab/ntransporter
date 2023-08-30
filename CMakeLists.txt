@@ -66,22 +66,22 @@ include("${ROOT_USE_FILE}")
 set(SUPERSIM_DIR "/home/ajbiffl3/supersim" CACHE PATH "Path to base directory of SuperSim")
 
 # SuperSim_include file
-#set(SUPERSIM_INCLUDE "SuperSim_include.txt" CACHE PATH "List of SuperSim directories to include")
+set(SUPERSIM_INCLUDE "SuperSim_include.txt" CACHE PATH "List of SuperSim directories to include")
 
 message("Configuring SuperSim")
 message(STATUS "SuperSim base directory: ${SUPERSIM_DIR}")
-#message(STATUS "Using SuperSim include list: ${SUPERSIM_INCLUDE}")
+message(STATUS "Using SuperSim include list: ${SUPERSIM_INCLUDE}")
 
 
-# # read SuperSim_include into list
-# file(READ "${SUPERSIM_INCLUDE}" SUPERSIM_LIBRARIES_FILE)
-# string(REPLACE "\n" ";" SUPERSIM_LIBRARIES_FILE "${SUPERSIM_LIBRARIES_FILE}")
-# set(SUPERSIM_LIBRARIES "")
-# foreach (LIB ${SUPERSIM_LIBRARIES_FILE})
-# 	if ("${LIB}" MATCHES "^[^#]")
-# 		list(APPEND SUPERSIM_LIBRARIES "${LIB}")
-# 	endif()
-# endforeach()
+# read SuperSim_include into list
+file(READ "${SUPERSIM_INCLUDE}" SUPERSIM_LIBRARIES_FILE)
+string(REPLACE "\n" ";" SUPERSIM_LIBRARIES_FILE "${SUPERSIM_LIBRARIES_FILE}")
+set(SUPERSIM_LIBRARIES "")
+foreach (LIB ${SUPERSIM_LIBRARIES_FILE})
+	if ("${LIB}" MATCHES "^[^#]")
+		list(APPEND SUPERSIM_LIBRARIES "${LIB}")
+	endif()
+endforeach()
 
 # # execute script to configure SuperSim version header file in build directory
 # execute_process(
