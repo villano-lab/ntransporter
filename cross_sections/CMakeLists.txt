@@ -9,8 +9,8 @@ target_link_libraries(NT_XS PUBLIC "${Geant4_LIBRARIES}")
 target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
 
 # supersim
-message("Linking ${SUPERSIM_LIB_LIBRARIES}")
-target_link_libraries(NT_XS PUBLIC "${SUPERSIM_LIB_LIBRARIES}")
+#message("Linking ${SUPERSIM_LIB_LIBRARIES}")
+target_link_libraries(NT_XS PUBLIC SUPERSIM_LIB)
 target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}")
 
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
