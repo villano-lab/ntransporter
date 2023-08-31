@@ -99,11 +99,12 @@ set(SUPERSOURCES "")
 # read in all source files from directories listed in SuperSim_include
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	message(STATUS "Finding source in ${SUPERSIM_DIR}/${SUBDIR}")
-	execute_process(
-		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.cc"
-		WORKING_DIRECTORY $ENV{HOME}
-		OUTPUT_VARIABLE SUBDIR_SOURCES
-		)
+    file(GLOB SUBDIR_SOURCES CONFIGURE_DEPENDS "${SUPERSIM_DIR}/${SUBDIR}/*.cc")
+	# execute_process(
+	# 	COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.cc"
+	# 	WORKING_DIRECTORY $ENV{HOME}
+	# 	OUTPUT_VARIABLE SUBDIR_SOURCES
+	# 	)
 	if ("${SUBDIR_SOURCES}" STREQUAL "")
 		message("No source in ${SUPERSIM_DIR}/${SUBDIR}")
 	else()
