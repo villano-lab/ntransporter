@@ -148,37 +148,30 @@ add_library(SUPERSIM_GEOMETRY SHARED IMPORTED)
 
 
 set_target_properties(SUPERSIM_G4BASE PROPERTIES 
-					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSg4base.so"
 					  )
 
 set_target_properties(SUPERSIM_APPS PROPERTIES 
-					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSapps.so"
 					  )
 
 set_target_properties(SUPERSIM_ACTIONS PROPERTIES 
-					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSactions.so"
 					  )
 
 set_target_properties(SUPERSIM_SOURCES PROPERTIES 
-					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSsources.so"
 					  )
 
 set_target_properties(SUPERSIM_INFO PROPERTIES 
-					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSinfo.so"
 					  )                                        
 
 set_target_properties(SUPERSIM_PHYSICS PROPERTIES 
-					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSg4base.so"
 					  )
                     
 set_target_properties(SUPERSIM_GEOMETRY PROPERTIES 
-					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSgeometry.so"
 					  )
 
