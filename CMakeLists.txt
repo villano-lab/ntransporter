@@ -123,7 +123,7 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 endforeach()
 
 # define SUPERSIM_LIB as a library with all source files and link to Geant and ROOT
-add_library(SUPERSIM_LIB STATIC IMPORTED ${SUPERSOURCES} GLOBAL)
+add_library(SUPERSIM_LIB SHARED IMPORTED ${SUPERSOURCES} GLOBAL)
 
 #target_link_libraries(SUPERSIM_LIB PUBLIC ${Geant4_LIBRARIES})
 #target_link_libraries(SUPERSIM_LIB PUBLIC ${ROOT_LIBRARIES})
