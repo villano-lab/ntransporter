@@ -191,14 +191,7 @@ set_target_properties(SUPERSIM::GEOMETRY PROPERTIES
 
 add_library(SUPERSIM_LIB INTERFACE IMPORTED)
 set_target_properties(SUPERSIM_LIB PROPERTIES
-                      INTERFACE_LINK_LIBRARIES 
-                      SUPERSIM::G4BASE
-                      SUPERSIM::APPS
-                      SUPERSIM::ACTIONS
-                      SUPERSIM::SOURCES
-                      SUPERSIM::INFO
-                      SUPERSIM::PHYSICS
-                      SUPERSIM::GEOMETRY
+                      INTERFACE_LINK_LIBRARIES SUPERSIM::G4BASE SUPERSIM::APPS SUPERSIM::ACTIONS SUPERSIM::SOURCES SUPERSIM::INFO SUPERSIM::PHYSICS SUPERSIM::GEOMETRY
                      )
 
 
