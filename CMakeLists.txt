@@ -123,12 +123,6 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 endforeach()
 
 # define SUPERSIM_LIB as a library with all source files and link to Geant and ROOT
-add_library(SUPERSIM_LIB SHARED IMPORTED ${SUPERSOURCES} GLOBAL)
-
-#target_link_libraries(SUPERSIM_LIB PUBLIC ${Geant4_LIBRARIES})
-#target_link_libraries(SUPERSIM_LIB PUBLIC ${ROOT_LIBRARIES})
-
-#target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERISM_DIR}")
 
 set(SUPERSIM_INCLUDES "${SUPERSIM_DIR}")
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
@@ -136,11 +130,84 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	LIST(APPEND SUPERSIM_INCLUDES "${SUPERSIM_DIR}/${SUBDIR}")
 endforeach()
 
-set_target_properties(SUPERSIM_LIB PROPERTIES 
+
+add_library(SUPERSIM::G4BASE SHARED IMPORTED)
+add_library(SUPERSIM::APPS SHARED IMPORTED)
+add_library(SUPERSIM::ACTIONS SHARED IMPORTED)
+add_library(SUPERSIM::SOURCES SHARED IMPORTED)
+add_library(SUPERSIM::INFO SHARED IMPORTED)
+add_library(SUPERSIM::PHYSICS SHARED IMPORTED)
+add_library(SUPERSIM::GEOMETRY SHARED IMPORTED)
+
+
+
+#target_link_libraries(SUPERSIM_LIB PUBLIC ${Geant4_LIBRARIES})
+#target_link_libraries(SUPERSIM_LIB PUBLIC ${ROOT_LIBRARIES})
+
+#target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERISM_DIR}")
+
+
+set_target_properties(SUPERSIM::G4BASE PROPERTIES 
 					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
-					  INTERFACE_SOURCES ${SUPERSOURCES}
+					  # INTERFACE_SOURCES ${SUPERSOURCES}
+					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSg4base.so"
+					  )
+
+set_target_properties(SUPERSIM::APPS PROPERTIES 
+					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
+					  # INTERFACE_SOURCES ${SUPERSOURCES}
 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSapps.so"
 					  )
+
+set_target_properties(SUPERSIM::ACTIONS PROPERTIES 
+					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
+					  # INTERFACE_SOURCES ${SUPERSOURCES}
+					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSactions.so"
+					  )
+
+set_target_properties(SUPERSIM::SOURCES PROPERTIES 
+					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
+					  # INTERFACE_SOURCES ${SUPERSOURCES}
+					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSsources.so"
+					  )
+
+set_target_properties(SUPERSIM::INFO PROPERTIES 
+					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
+					  # INTERFACE_SOURCES ${SUPERSOURCES}
+					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSinfo.so"
+					  )                                        
+
+set_target_properties(SUPERSIM::PHYSICS PROPERTIES 
+					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
+					  # INTERFACE_SOURCES ${SUPERSOURCES}
+					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSg4base.so"
+					  )
+                    
+set_target_properties(SUPERSIM::GEOMETRY PROPERTIES 
+					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
+					  # INTERFACE_SOURCES ${SUPERSOURCES}
+					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSgeometry.so"
+					  )
+
+
+# set_target_properties(SUPERSIM_LIB PROPERTIES 
+# 					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
+# 					  INTERFACE_SOURCES ${SUPERSOURCES}
+# 					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSapps.so"
+# 					  )
+
+add_library(SUPERSIM_LIB INTERFACE IMPORTED)
+set_target_properties(SUPERSIM_LIB PROPERTIES
+                      INTERFACE_LINK_LIBRARIES 
+                      SUPERSIM::G4BASE
+                      SUPERSIM::APPS
+                      SUPERSIM::ACTIONS
+                      SUPERSIM::SOURCES
+                      SUPERSIM::INFO
+                      SUPERSIM::PHYSICS
+                      SUPERSIM::GEOMETRY
+                     )
+
 
 # ============================================
 # add subdirectories
