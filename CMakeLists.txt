@@ -123,7 +123,7 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 endforeach()
 
 # define SUPERSIM_LIB as a library with all source files and link to Geant and ROOT
-add_library(SUPERSIM_LIB UNKNOWN IMPORTED ${SUPERSOURCES} GLOBAL)
+add_library(SUPERSIM_LIB SHARED IMPORTED ${SUPERSOURCES} GLOBAL)
 
 #target_link_libraries(SUPERSIM_LIB PUBLIC ${Geant4_LIBRARIES})
 #target_link_libraries(SUPERSIM_LIB PUBLIC ${ROOT_LIBRARIES})
@@ -139,7 +139,7 @@ endforeach()
 set_target_properties(SUPERSIM_LIB PROPERTIES 
 					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  INTERFACE_SOURCES ${SUPERSOURCES}
-					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/CDMS_GGSim"
+					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++/libCDMSapps.so"
 					  )
 
 # ============================================
