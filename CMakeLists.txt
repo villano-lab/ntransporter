@@ -1,7 +1,7 @@
 # Base CMakeLists file - set up all executables
 
 # Setup the project
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
 
 set(CMAKE_BUILD_TYPE None)
