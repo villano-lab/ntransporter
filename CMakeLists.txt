@@ -139,7 +139,7 @@ endforeach()
 set_target_properties(SUPERSIM_LIB PROPERTIES 
 					  INTERFACE_INCLUDE_DIRECTORIES ${SUPERSIM_INCLUDES}
 					  INTERFACE_SOURCES ${SUPERSOURCES}
-					  IMPORTED_LOCATION ${SUPERSIM_INCLUDES}
+					  IMPORTED_LOCATION "${SUPERSIM_DIR}/CDMSbuild/lib/Linux-g++"
 					  )
 
 # ============================================
