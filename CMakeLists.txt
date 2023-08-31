@@ -130,8 +130,7 @@ add_library(SUPERSIM_LIB STATIC IMPORTED ${SUPERSOURCES} GLOBAL)
 
 #target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERISM_DIR}")
 
-#set(SUPERSIM_INCLUDES "${SUPERSIM_DIR}")
-set(SUPERSIM_INCLUDES "")
+set(SUPERSIM_INCLUDES "${SUPERSIM_DIR}")
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	#target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
 	LIST(APPEND SUPERSIM_INCLUDES "${SUPERSIM_DIR}/${SUBDIR}")
@@ -140,7 +139,8 @@ endforeach()
 set_target_properties(SUPERSIM_LIB PROPERTIES 
 					  INTERFACE_INCLUDE_DIRECTORIES "${SUPERSIM_INCLUDES}"
 					  INTERFACE_SOURCES "${SUPERSOURCES}"
-					  IMPORTED_LOCATION "${SUPERSIM_DIR}")
+					  #IMPORTED_LOCATION "${SUPERSIM_DIR}"
+					  )
 
 # ============================================
 # add subdirectories
