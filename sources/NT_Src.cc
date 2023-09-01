@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
       if (!sourcefile.eof()) {
         sourcefile >> E2 >> s2;
       } else {
-        throw (std::runtime_error("The file " source_files[k] " does not appear to contain data in the region of interest"));
+        throw (std::runtime_error("The file " + source_files[k] + " does not appear to contain data in the region of interest"));
       }
     }
 
