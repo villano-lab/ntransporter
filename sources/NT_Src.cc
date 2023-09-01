@@ -121,7 +121,11 @@ int main(int argc, char *argv[]) {
     while (E2 < Eg[G+1]) {
       E1 = E2;
       s1 = s2;
-      sourcefile >> E2 >> s2;
+      if (!sourcefile.eof()) {
+        sourcefile >> E2 >> s2;
+      } else {
+        throw std::exception("The file " source_files[k] " does not appear to contain data in the region of interest");
+      }
     }
 
     for (int g = G+1; g > 0; --g) { // for each group
@@ -161,7 +165,11 @@ int main(int argc, char *argv[]) {
         if (E2 < gmax) { // read in next values
           E1 = E2;
           s1 = s2;
-          sourcefile >> E2 >> s2;
+          if (!sourcefile.eof()) {
+            sourcefile >> E2 >> s2;
+          } else {
+            E2 = gmax;
+          }
         } else {
           E_eval.push_back(gmax);
           phi_eval.push_back(phi_func(gmax));
