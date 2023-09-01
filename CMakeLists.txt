@@ -154,7 +154,7 @@ ExternalProject_Add(SUPERSIM_LIB
 					BUILD_COMMAND ${MAKE_EXE} all
 					BUILD_IN_SOURCE FALSE
 					BUILD_ALWAYS TRUE
-					INSTALL_COMMAND ""
+					INSTALL_COMMAND ${MAKE_EXE} install
 					)
 
 
