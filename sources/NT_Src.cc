@@ -163,9 +163,9 @@ int main(int argc, char *argv[]) {
           S_eval.push_back(phi_eval.back()*interp(gmin, E1, s1, E2, s2));
         }
         if (E2 < gmax) { // read in next values
-          E1 = E2;
-          s1 = s2;
           if (!sourcefile.eof()) {
+            E1 = E2;
+            s1 = s2;
             sourcefile >> E2 >> s2;
           } else {
             E1 = Eg[0];
@@ -182,6 +182,17 @@ int main(int argc, char *argv[]) {
 
       if (calc_this) {
         phi_g = trap(E_eval, phi_eval);
+        if (phi_g == 0) {
+          std::cout << "phi_g = 0, g = " << g << ", gmin = " << gmin << " , gmax = " << gmax << std::endl;
+          std::cout << "E_eval = " << std::endl;
+          for (auto E : E_eval) {
+            std::cout << E << std::endl;
+          }
+          std::cout << "phi_eval = " << std::endl;
+          for (auto phi : phi_eval) {
+            std::cout << phi << std::endl;
+          }
+        }
         Sg[g] += (source_weights[k]/sweight_total)*trap(E_eval, S_eval)/phi_g;
       }
     }
