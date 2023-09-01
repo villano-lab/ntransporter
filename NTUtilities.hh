@@ -40,6 +40,10 @@ double trap(const doubles &x, const doubles &y) {
 }
 
 double interp(double x, double x1, double y1, double x2, double y2) {
+    if (x1 == x2) {
+        std::cerr << "Warning: interp() tried to interpolate between points on vertical line. Returning mean of endpoints." << std::endl;
+        return (y1 + y2)/2;
+    }
     return y1 + (x - x1)*(y2 - y1)/(x2 - x1);
 }
 
