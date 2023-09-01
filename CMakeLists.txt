@@ -154,9 +154,9 @@ ExternalProject_Add(SUPERSIM_LIB
 					BUILD_COMMAND ${MAKE_EXE} all
 					BUILD_IN_SOURCE FALSE
 					BUILD_ALWAYS TRUE
-					INSTALL_COMMAND ${MAKE_EXE} install
+					INSTALL_COMMAND ""
 					)
-
+#${MAKE_EXE} install
 
 #target_link_libraries(SUPERSIM_LIB PUBLIC "${Geant4_LIBRARIES}")
 #target_link_libraries(SUPERSIM_LIB PUBLIC "${ROOT_LIBRARIES}")
