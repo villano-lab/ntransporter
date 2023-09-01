@@ -100,11 +100,6 @@ set(SUPERSOURCES "")
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	message(STATUS "Finding source in ${SUPERSIM_DIR}/${SUBDIR}")
     file(GLOB SUBDIR_SOURCES CONFIGURE_DEPENDS "${SUPERSIM_DIR}/${SUBDIR}/*.cc")
-	# execute_process(
-	# 	COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.cc"
-	# 	WORKING_DIRECTORY $ENV{HOME}
-	# 	OUTPUT_VARIABLE SUBDIR_SOURCES
-	# 	)
 	if ("${SUBDIR_SOURCES}" STREQUAL "")
 		message("No source in ${SUPERSIM_DIR}/${SUBDIR}")
 	else()
@@ -122,19 +117,6 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 		endforeach()
 	endif()
 endforeach()
-
-# define SUPERSIM_LIB as a library with all source files and link to Geant and ROOT
-#add_library(SUPERSIM_LIB STATIC "${SUPERSOURCES}")
-
-#target_link_libraries(SUPERSIM_LIB PUBLIC "${Geant4_LIBRARIES}")
-#target_link_libraries(SUPERSIM_LIB PUBLIC "${ROOT_LIBRARIES}")
-
-#target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERISM_DIR}")
-
-#foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-#	message(STATUS "SuperSim linking in ${SUPERSIM_DIR}/${SUBDIR}")
-#	target_include_directories(SUPERSIM_LIB PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
-#endforeach()
 
 
 # ============================================
