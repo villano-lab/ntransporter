@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
   if (argc < 4)  {
     throw std::runtime_error("Error in NT_Src: Not enough arguments."
          "\n    Usage: ./NT_Src output_file_base_path material path_to_supersim " 
-         "[ngroups=100] [points_per_group=10]");
+         "[ngroups=100]");
   } else {
     try {
       output_file_base = argv[1];
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
       throw std::runtime_error("Error in NT_Src: Invalid arguments. ngroups " 
         "must be numeric."
         "\n    Usage: ./NT_Src output_file_base_path material path_to_supersim "
-        "[ngroups=100] [points_per_group=10]");
+        "[ngroups=100]");
     }
   }
   
@@ -83,9 +83,9 @@ int main(int argc, char *argv[]) {
 
 
   // vectors of energies, source rates, and fluxes for which there is data in the .dat files
-  doubles E_eval(1);
-  doubles S_eval(1);
-  doubles phi_eval(1);
+  doubles E_eval{0.};
+  doubles S_eval{0.};
+  doubles phi_eval{0.};
   
 
   // vector of group sources (Sg[g] refers to group g)
