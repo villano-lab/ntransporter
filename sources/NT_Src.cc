@@ -168,7 +168,10 @@ int main(int argc, char *argv[]) {
           if (!sourcefile.eof()) {
             sourcefile >> E2 >> s2;
           } else {
-            E2 = gmax;
+            E1 = Eg[0];
+            E2 = Eg[0];
+            s1 = 0.;
+            s2 = 0.;
           }
         } else {
           E_eval.push_back(gmax);
