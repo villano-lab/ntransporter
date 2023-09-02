@@ -167,8 +167,8 @@ int main(int argc, char *argv[]) {
             s1 = s2;
             sourcefile >> E2 >> s2;
           } else {
-            E1 = Eg[0];
-            E2 = Eg[0];
+            E1 = Eg[0] + 1;
+            E2 = Eg[0] + 1;
             s1 = 0.;
             s2 = 0.;
           }
