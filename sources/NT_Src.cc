@@ -183,7 +183,7 @@ int main(int argc, char *argv[]) {
       if (calc_this) {
         phi_g = trap(E_eval, phi_eval);
         if (phi_g == 0) {
-          std::cout << "\nphi_g = 0\ng = " << g << ", gmin = " << gmin << " , gmax = " << gmax << std::endl << std::end;
+          std::cout << "\nphi_g = 0\ng = " << g << ", gmin = " << gmin << " , gmax = " << gmax << std::endl << std::endl;
           std::cout << "E_eval = " << std::endl;
           for (auto E : E_eval) {
             std::cout << E << std::endl;
