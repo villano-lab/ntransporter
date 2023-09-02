@@ -129,9 +129,6 @@ int main(int argc, char *argv[]) {
     }
 
     for (int g = G+1; g > 0; --g) { // for each group
-      if (g%10 == 1) {
-        std::cout << (G+2-g) << " / " << G+1 << std::endl;
-      }
       if (g == G+1) { // thermal group
         phi_func = MaxwellBoltzmannKernel;
       } else { // fast group
@@ -183,7 +180,7 @@ int main(int argc, char *argv[]) {
       if (calc_this) {
         phi_g = trap(E_eval, phi_eval);
         if (phi_g == 0) {
-          std::cout << "\nphi_g = 0\ng = " << g << ", gmin = " << gmin << " , gmax = " << gmax << std::endl << std::endl;
+          std::cout << "\nphi_g = 0\ng = " << g << ", gmin = " << gmin << " , gmax = " << gmax << std::endl;
           std::cout << "E_eval = " << std::endl;
           for (auto E : E_eval) {
             std::cout << E << std::endl;
@@ -192,6 +189,7 @@ int main(int argc, char *argv[]) {
           for (auto phi : phi_eval) {
             std::cout << phi << std::endl;
           }
+          std::cout << '\n';
         }
         Sg[g] += (source_weights[k]/sweight_total)*trap(E_eval, S_eval)/phi_g;
       }
