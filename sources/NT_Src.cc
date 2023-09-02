@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
   double gmin, gmax, r, phi_g;
   double E1, E2, s1, s2;
 
-  bool calc_this;
+  bool calc_this, loop_again;
 
   std::ifstream sourcefile;
 
@@ -143,11 +143,13 @@ int main(int argc, char *argv[]) {
       phi_eval.clear();
       S_eval.clear();
       calc_this = true;
+      loop_again = true;
 
       do {
         if (gmin < E1) {
           if (gmax < E1) {
             calc_this = false; 
+            loop_again = false;
             break; // skip this group
           } else {
             E_eval.push_back(E1);
@@ -174,8 +176,9 @@ int main(int argc, char *argv[]) {
           E_eval.push_back(gmax);
           phi_eval.push_back(phi_func(gmax));
           S_eval.push_back(phi_eval.back()*interp(gmax, E1, s1, E2, s2));
+          loop_again = false;
         }
-      } while (E2 < gmax);
+      } while (loop_again);
 
       if (calc_this) {
         phi_g = trap(E_eval, phi_eval);
