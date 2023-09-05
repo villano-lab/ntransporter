@@ -150,6 +150,9 @@ int main(int argc, char *argv[]) {
         }
         if (E2 < gmax) { // read in next values
           if (!sourcefile.eof()) {
+            if (g==4) {
+              std::cout << E1 << ", " << E2 << std::endl;
+            }
             E1 = E2;
             s1 = s2;
             sourcefile >> E2 >> s2;
