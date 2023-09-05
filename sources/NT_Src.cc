@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
   double gmin, gmax;
   double E1, E2, s1, s2;
 
-  bool calc_this, loop_again;
+  bool loop_again;
 
   std::ifstream sourcefile;
   
@@ -131,13 +131,11 @@ int main(int argc, char *argv[]) {
 
       E_eval.clear();
       S_eval.clear();
-      calc_this = true;
       loop_again = true;
 
       do {
         if (gmin < E1) {
           if (gmax < E1) {
-            calc_this = false; 
             loop_again = false;
             break; // skip this group
           } else {
@@ -163,7 +161,7 @@ int main(int argc, char *argv[]) {
         }
       } while (loop_again);
 
-      if (calc_this) {
+      if (E_eval.size() > 0) {
         Sg[g] += (source_weights[k]/sweight_total)*trap(E_eval, S_eval);
       }
     }
