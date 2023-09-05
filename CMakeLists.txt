@@ -84,12 +84,17 @@ foreach (LIB ${SUPERSIM_LIBRARIES_FILE})
 endforeach()
 
 # execute script to configure SuperSim version header file in build directory
-execute_process(
-	COMMAND bash -c "source CDMSbuild/makeVersion-hh.sh CDMSbuild/CDMSVersion.template .cdms-gittag > ${CMAKE_BINARY_DIR}/CDMSVersion.hh"
-	WORKING_DIRECTORY "${SUPERSIM_DIR}"
-	OUTPUT_VARIABLE SUPERSIM_VERSION_HH
-	)
-message(STATUS "Configuring CDMSVersion.hh in ${CMAKE_BINARY_DIR}/CDMSVersion.hh")
+option(REGEN_CDMSVERSION "force re-generate CDMSVersion header in build directory" OFF)
+if ((NOT EXISTS "${CMAKE_BINARY_DIR}/CDMSVersion.hh")
+	OR (REGEN_CDMSVERSION))
+	execute_process(
+		COMMAND bash -c "source CDMSbuild/makeVersion-hh.sh CDMSbuild/CDMSVersion.template .cdms-gittag > ${CMAKE_BINARY_DIR}/CDMSVersion.hh"
+		WORKING_DIRECTORY "${SUPERSIM_DIR}"
+		OUTPUT_VARIABLE SUPERSIM_VERSION_HH
+		)
+	message(STATUS "Configuring CDMSVersion.hh in ${CMAKE_BINARY_DIR}/CDMSVersion.hh")
+endif()
+set(REGEN_CDMSVERSION OFF CACHE INTERNAL "" FORCE)
 
 
 # variable to hold list of SuperSim source files
