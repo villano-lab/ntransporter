@@ -84,7 +84,9 @@ int main(int argc, char *argv[]) {
     std::cout << "Reading group source data from " << Sg_filename << std::endl;
 
     doubles Sg(G+2);
+
     double Eg2; // dummy variable
+
     // tolerance for relative error in group boundaries
     const double energy_tol = 1e-13;
 
@@ -102,6 +104,35 @@ int main(int argc, char *argv[]) {
 
     Sg_stream.close();
 
+    std::cout << "Done reading group source data" << std::endl;
+
+
+    // calculate fluxes
+    doubles phi(G+2);
+    phi[0] = 0.;
+
+    for (int g = 1; g < G+2; ++g) {
+        phi[g] = (xs[g-1]*phi[g-1] + Sg[g])/xt[g];
+    }
+
+    std::string output_filename = output_file_base + "_"
+                        + material_name + "_"
+                        + std::to_string(G) 
+                        + "_BC_V1.dat";
+
+    std::cout << "Writing flux data to " << output_filename << std::endl;
+
+    std::ofstream output_stream(output_filename);
+
+    output_stream << std::setprecision(17);
+
+    for (int g = 0; g < G+2; ++g) {
+        output_stream << g << " " << phi[g] << "\n";
+    }
+
+    output_stream.close();
+
+    std::cout << "Done" << std::endl;
 
     return 0;
 }
