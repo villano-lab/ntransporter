@@ -149,20 +149,12 @@ int main(int argc, char *argv[]) {
           S_eval.push_back(interp(gmin, E1, s1, E2, s2));
         }
         if (E2 < gmax) { // read in next values
-          if (!sourcefile.eof()) {
-            if (g==4) {
-              std::cout << E1 << ", " << E2 << std::endl;
-            }
-            E1 = E2;
-            s1 = s2;
-            sourcefile >> E2 >> s2;
-          } else {
-            std::cout << "Found end of file\n";
-            std::cout << g << ":" << E1 << ", " << E2 << std::endl << std::endl;
-            E1 = Eg[0] + 1;
-            E2 = Eg[0] + 1;
-            s1 = 0.;
-            s2 = 0.;
+          E1 = E2;
+          s1 = s2;
+          if (!(sourcefile >> E2 >> s2)) {
+            E_eval.push_back(E1);
+            S_eval.push_back(s1);
+            loop_again = false;
           }
         } else {
           E_eval.push_back(gmax);
