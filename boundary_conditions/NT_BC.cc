@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
                         + std::to_string(G) 
                         + "_Sg.dat";
 
-    std::ifstream Sg_stream(SG_filename);
+    std::ifstream Sg_stream(Sg_filename);
 
     std::cout << "Reading group source data from " << Sg_filename << std::endl;
 
