@@ -20,7 +20,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <cmath>
-#include <cstlib>
+#include <cstdlib>
 
 typedef std::vector<double> doubles;
 
