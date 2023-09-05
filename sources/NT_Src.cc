@@ -149,10 +149,11 @@ int main(int argc, char *argv[]) {
         if (E2 < gmax) { // read in next values
           E1 = E2;
           s1 = s2;
-          sourcefile >> E2;
-          if (!(sourcefile >> s2)) {
+          if (!(sourcefile >> E2 >> s2)) {
             E_eval.push_back(E1);
             S_eval.push_back(s1);
+            E1 = Eg[0] + 1.;
+            E2 = Eg[0] + 1.;
             loop_again = false;
           }
         } else {
