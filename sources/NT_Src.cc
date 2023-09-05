@@ -85,7 +85,6 @@ int main(int argc, char *argv[]) {
   // vectors of energies, source rates, and fluxes for which there is data in the .dat files
   doubles E_eval{0.};
   doubles S_eval{0.};
-  doubles phi_eval{0.};
   
 
   // vector of group sources (Sg[g] refers to group g)
@@ -96,15 +95,12 @@ int main(int argc, char *argv[]) {
   }
 
 
-  double gmin, gmax, r, phi_g;
+  double gmin, gmax;
   double E1, E2, s1, s2;
 
   bool calc_this, loop_again;
 
   std::ifstream sourcefile;
-
-
-  double (*phi_func)(double);
   
 
   for (int k = 0; k < source_files.size(); ++k) {
@@ -129,18 +125,11 @@ int main(int argc, char *argv[]) {
     }
 
     for (int g = G+1; g > 0; --g) { // for each group
-      if (g == G+1) { // thermal group
-        phi_func = MaxwellBoltzmannKernel;
-      } else { // fast group
-        phi_func = fast_kernel;
-      }
-
 
       gmin = Eg[g]; // lower bound of group
       gmax = Eg[g-1]; // upper bound of group
 
       E_eval.clear();
-      phi_eval.clear();
       S_eval.clear();
       calc_this = true;
       loop_again = true;
@@ -153,13 +142,11 @@ int main(int argc, char *argv[]) {
             break; // skip this group
           } else {
             E_eval.push_back(E1);
-            phi_eval.push_back(phi_func(E1));
-            S_eval.push_back(s1*phi_eval.back());            
+            S_eval.push_back(s1);            
           }
         } else {
           E_eval.push_back(gmin);
-          phi_eval.push_back(phi_func(gmin));
-          S_eval.push_back(phi_eval.back()*interp(gmin, E1, s1, E2, s2));
+          S_eval.push_back(interp(gmin, E1, s1, E2, s2));
         }
         if (E2 < gmax) { // read in next values
           if (!sourcefile.eof()) {
@@ -174,27 +161,13 @@ int main(int argc, char *argv[]) {
           }
         } else {
           E_eval.push_back(gmax);
-          phi_eval.push_back(phi_func(gmax));
-          S_eval.push_back(phi_eval.back()*interp(gmax, E1, s1, E2, s2));
+          S_eval.push_back(interp(gmax, E1, s1, E2, s2));
           loop_again = false;
         }
       } while (loop_again);
 
       if (calc_this) {
-        phi_g = trap(E_eval, phi_eval);
-        if (phi_g == 0) {
-          std::cout << "\nphi_g = 0\ng = " << g << ", gmin = " << gmin << " , gmax = " << gmax << std::endl;
-          std::cout << "E_eval = " << std::endl;
-          for (auto E : E_eval) {
-            std::cout << E << std::endl;
-          }
-          std::cout << "phi_eval = " << std::endl;
-          for (auto phi : phi_eval) {
-            std::cout << phi << std::endl;
-          }
-          std::cout << '\n';
-        }
-        Sg[g] += (source_weights[k]/sweight_total)*trap(E_eval, S_eval)/phi_g;
+        Sg[g] += (source_weights[k]/sweight_total)*trap(E_eval, S_eval);
       }
     }
   }
