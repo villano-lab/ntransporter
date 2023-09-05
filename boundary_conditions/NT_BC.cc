@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
     output_stream << std::setprecision(17);
 
     for (int g = 0; g < G+2; ++g) {
-        output_stream << g << " " << phi[g] << "\n";
+        output_stream << g << " " << Eg[g] << " " << phi[g] << "\n";
     }
 
     output_stream.close();
