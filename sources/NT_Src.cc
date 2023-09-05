@@ -52,19 +52,30 @@ int main(int argc, char *argv[]) {
 
   std::vector<std::string> source_files;
   doubles source_weights;
+  // source_weights:
+  // the spectrum data in CDMSsources/spectra/neutron have 
+  // units of neutrons per second per cm^3 per ppb contamination
+  // 
+  // we need our group source constants to have units of neutrons 
+  // per second per cm^3
+  // --> need to multiply by the concentration (in ppb) of each isotope
+  //     (this will be stored in source_weights)
+  //     (data from Table 6 of https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=383932067)
+  // --> after integral, need to divide by the group width to get rid 
+  //     of the units of energy
   if (material_name == "Norite") {
     source_files.push_back(source_folder + "norite_2013_U_1ppb.dat");
-    source_weights.push_back(1.);
+    source_weights.push_back(1.095);
 
     source_files.push_back(source_folder + "norite_2013_Th_1ppb.dat");
-    source_weights.push_back(1.);
+    source_weights.push_back(5.715);
 
   } else {
     throw (std::runtime_error("Error in NT_Src: material not in candidate list."
     "\n    Material must be one of: Norite, "));
   }
 
-  double sweight_total = std::accumulate(source_weights.begin(), source_weights.end(), 0.);
+  // double sweight_total = std::accumulate(source_weights.begin(), source_weights.end(), 0.);
 
 
   // alpha (common ratio of group boundaries)
@@ -164,7 +175,7 @@ int main(int argc, char *argv[]) {
       } while (loop_again);
 
       if (E_eval.size() > 0) {
-        Sg[g] += (source_weights[k]/sweight_total)*trap(E_eval, S_eval);
+        Sg[g] += source_weights[k]*trap(E_eval, S_eval)/(gmax - gmin);
       }
     }
   }
