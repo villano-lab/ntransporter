@@ -16,17 +16,17 @@ const double Etherm = 0.025692579120652998*1e-6;
 const double Emin = 1e-7, Emax = 20.; 
 
 // kernel of a Maxwell-Boltzmann thermal distribution of energies
-double MaxwellBoltzmannKernel(double E) {
+inline double MaxwellBoltzmannKernel(double E) {
     return std::sqrt(E)*std::exp(-E/Etherm);
 }
 
 // assumed kernel of fast flux
-double fast_kernel(double E) {
+inline double fast_kernel(double E) {
     return 1./E;
 }
 
 // trapezoidal integration of (x,y) data
-double trap(const doubles &x, const doubles &y) {
+inline double trap(const doubles &x, const doubles &y) {
     size_t n = x.size();
     if (n != y.size()) {
         throw std::invalid_argument("Invalid arguments to function trap(). " 
@@ -39,7 +39,7 @@ double trap(const doubles &x, const doubles &y) {
     return s;
 }
 
-double interp(double x, double x1, double y1, double x2, double y2) {
+inline double interp(double x, double x1, double y1, double x2, double y2) {
     if (x1 == x2) {
         std::cerr << "Warning: interp() tried to interpolate between points on vertical line. Returning mean of endpoints." << std::endl << '\t' << x1 << " == " << x2 << std::endl;
         return (y1 + y2)/2;
