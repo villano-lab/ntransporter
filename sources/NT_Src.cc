@@ -65,10 +65,10 @@ int main(int argc, char *argv[]) {
   //     of the units of energy
   if (material_name == "Norite") {
     source_files.push_back(source_folder + "norite_2013_U_1ppb.dat");
-    source_weights.push_back(1.095);
+    source_weights.push_back(1.095e3);
 
     source_files.push_back(source_folder + "norite_2013_Th_1ppb.dat");
-    source_weights.push_back(5.715);
+    source_weights.push_back(5.715e3);
 
   } else {
     throw (std::runtime_error("Error in NT_Src: material not in candidate list."
