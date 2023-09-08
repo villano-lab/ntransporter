@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
 
 
   double gmin, gmax;
-  double E1, E2, , dE1, dE2, s1, s2;
+  double E1, E2, dE1, dE2, s1, s2;
 
   bool loop_again;
 
