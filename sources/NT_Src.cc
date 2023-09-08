@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
       } while (loop_again);
 
       if (E_eval.size() > 0) {
-        Sg[g] += source_weights[k]*trap(E_eval, S_eval)/(gmax - gmin);
+        Sg[g] += source_weights[k]*trap(E_eval, S_eval);
       }
     }
   }
