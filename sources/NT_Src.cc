@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
 
 
   double gmin, gmax;
-  double E1, E2, s1, s2;
+  double E1, E2, , dE1, dE2, s1, s2;
 
   bool loop_again;
 
@@ -123,13 +123,19 @@ int main(int argc, char *argv[]) {
 
     sourcefile >> E1 >> s1 >> E2 >> s2;
 
+    // bin widths - need to divide "s" data by bins (assume (E2,s2) data corresponds to area of source spectrum between E1 and E2)
+    dE1 = E1; // assume first "bin" in sources extends down to zero energy
+    dE2 = E2 - E1;
+
 
     // if E2 < Eg[G+1], ignore the (E1,s1) ordered pair and move on
     while (E2 < Eg[G+1]) {
       E1 = E2;
       s1 = s2;
+      dE1 = dE2;
       if (!sourcefile.eof()) {
         sourcefile >> E2 >> s2;
+        dE2 = E2 - E1;
       } else {
         throw (std::runtime_error("The file " + source_files[k] + " does not appear to contain data in the region of interest"));
       }
@@ -151,25 +157,26 @@ int main(int argc, char *argv[]) {
             break; // skip this group
           } else {
             E_eval.push_back(E1);
-            S_eval.push_back(s1);            
+            S_eval.push_back(s1/dE1);            
           }
         } else {
           E_eval.push_back(gmin);
-          S_eval.push_back(interp(gmin, E1, s1, E2, s2));
+          S_eval.push_back(interp(gmin, E1, s1/dE1, E2, s2/dE2));
         }
         if (E2 < gmax) { // read in next values
           E1 = E2;
+          dE1 = dE2;
           s1 = s2;
           if (!(sourcefile >> E2 >> s2)) {
             E_eval.push_back(E1);
-            S_eval.push_back(s1);
+            S_eval.push_back(s1/dE1);
             E1 = Eg[0] + 1.;
             E2 = Eg[0] + 1.;
             loop_again = false;
           }
         } else {
           E_eval.push_back(gmax);
-          S_eval.push_back(interp(gmax, E1, s1, E2, s2));
+          S_eval.push_back(interp(gmax, E1, s1/dE1, E2, s2/dE2));
           loop_again = false;
         }
       } while (loop_again);
