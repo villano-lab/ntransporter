@@ -61,8 +61,8 @@ int main(int argc, char *argv[]) {
   // --> need to multiply by the concentration (in ppb) of each isotope
   //     (this will be stored in source_weights)
   //     (data from Table 6 of https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=383932067)
-  // --> after integral, need to divide by the group width to get rid 
-  //     of the units of energy
+  // --> also need to divide out units of energy in source spectra by dividing
+  //     by bin width of spectrum
   if (material_name == "Norite") {
     source_files.push_back(source_folder + "norite_2013_U_1ppb.dat");
     source_weights.push_back(1.095e3);
