@@ -153,7 +153,7 @@ int main(int argc, char *argv[]) {
       do {
         if (gmin < E1) {
           if (gmax < E1) {
-            //loop_again = false;
+            loop_again = false;
             break; // skip this group
           } else {
             E_eval.push_back(E1);
@@ -172,14 +172,14 @@ int main(int argc, char *argv[]) {
             S_eval.push_back(s1/dE1);
             E1 = Eg[0] + 1.;
             E2 = Eg[0] + 1.;
-            //loop_again = false;
+            loop_again = false;
           }
         } else {
           E_eval.push_back(gmax);
           S_eval.push_back(interp(gmax, E1, s1/dE1, E2, s2/dE2));
-          //loop_again = false;
+          loop_again = false;
         }
-      } while (E2 < gmax);
+      } while (loop_again);
 
       if (E_eval.size() > 0) {
         Sg[g] += source_weights[k]*trap(E_eval, S_eval);
