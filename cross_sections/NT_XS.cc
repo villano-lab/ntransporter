@@ -212,11 +212,11 @@ int main(int argc, char *argv[]) {
 
       dynamicNeutron->SetKineticEnergy(E_eval[i]);
 
-      xs_eval[i] = phi_eval[i]
+      xs_eval[i] = cm*phi_eval[i]
             *(elasticDataStore->GetCrossSection(dynamicNeutron, material) 
             + inelasticDataStore->GetCrossSection(dynamicNeutron, material));
 
-      xa_eval[i] = phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
+      xa_eval[i] = cm*phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
                                   material);
 
     }
