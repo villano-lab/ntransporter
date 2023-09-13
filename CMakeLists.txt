@@ -133,6 +133,7 @@ endforeach()
 add_subdirectory(cross_sections)
 add_subdirectory(sources)
 add_subdirectory(boundary_conditions)
+add_subdirectory(process_reader)
 
 
 
