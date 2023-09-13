@@ -4,6 +4,7 @@
 //
 // usage: ./PROCINFO
 
+#include <iostream>
 
 #include "SuperSim_Main.hh"
 #include "G4UImanager.hh"
@@ -51,6 +52,11 @@ void initialize() {
 
 int main(int argc, char *argv[]) {
 
+    std::ofstream G4cout_file("G4cout_procinfo_redirected_output.txt");
+
+    auto G4cout_oldbuf = G4cout.rdbuf();
+    G4cout.rdbuf(G4cout_file.rdbuf());
+
     // configure physics processes
     initialize();
 
@@ -79,7 +85,10 @@ int main(int argc, char *argv[]) {
 
         (*processes)[i]->DumpInfo();
         (*processes)[i]->ProcessDescription(std::cout);
+
     }
+
+    G4cout.rdbuf(G4cout_oldbuf);
 
 }
 
