@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
     for (G4int i = 0; i < nProc; ++i) {
 
         G4String procName = (*processes)[i]->GetProcessName();
-        G4String procType = (*processes)[i]->GetProcessTypeName();
+        G4String procType = G4VProcess::GetProcessTypeName((*processes)[i]->GetProcessType());
 
         std::cout << "Process " << i << " : " << " name = " << procName << ", type = " << procType << std::endl;
 
