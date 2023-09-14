@@ -127,6 +127,10 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	endif()
 endforeach()
 
+# ============================================
+# configure executables to all be put in base build directory
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 
 # ============================================
 # add subdirectories
