@@ -100,14 +100,22 @@ set(REGEN_CDMSVERSION OFF CACHE INTERNAL "" FORCE)
 # variable to hold list of SuperSim source files
 set(SUPERSOURCES "")
 
+# variable to hold list of SuperSim header files (starting with custom CDMSVersion.hh and SuperSim_Main.hh)
+set(SUPERHEADERS "${CMAKE_BINARY_DIR}/CDMSVersion.hh;${CMAKE_SOURCE_DIR}/SuperSim_Main.hh")
+
 
 # read in all source files from directories listed in SuperSim_include
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-	message(STATUS "Finding source in ${SUPERSIM_DIR}/${SUBDIR}")
+	message(STATUS "Finding files in ${SUPERSIM_DIR}/${SUBDIR}")
 	execute_process(
 		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.cc"
 		WORKING_DIRECTORY $ENV{HOME}
 		OUTPUT_VARIABLE SUBDIR_SOURCES
+		)
+	execute_process(
+		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.hh"
+		WORKING_DIRECTORY $ENV{HOME}
+		OUTPUT_VARIABLE SUBDIR_HEADERS
 		)
 	if ("${SUBDIR_SOURCES}" STREQUAL "")
 		message("No source in ${SUPERSIM_DIR}/${SUBDIR}")
@@ -125,7 +133,23 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 			endif()
 		endforeach()
 	endif()
+	if ("${SUBDIR_HEADERS}" STREQUAL "")
+		message("No headers in ${SUPERSIM_DIR}/${SUBDIR}")
+	else()
+		string(REPLACE "\n" ";" SUBDIR_HEADERS "${SUBDIR_HEADERS}")
+		foreach(HEADER_FILE ${SUBDIR_HEADERS})
+			#message(${HEADER_FILE})
+			if ("${HEADER_FILE}" MATCHES "SuperSim_Main.hh")
+				message("Skipping ${HEADER_FILE}")
+			else()
+				list(APPEND SUPERHEADERS "${HEADER_FILE}")
+			endif()
+		endforeach()
+	endif()
 endforeach()
+
+# add SuperSim as library
+add_library(SuperSim ${SUPERSOURCES} ${SUPERHEADERS})
 
 # ============================================
 # configure executables to all be put in base build directory
