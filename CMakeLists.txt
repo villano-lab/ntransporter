@@ -127,6 +127,13 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	endif()
 endforeach()
 
+# supersim also uses libuuid
+pkg_search_module(UUID REQUIRED uuid)
+
+if (NOT UUID_FOUND)
+	message(FATAL_ERROR "libuuid not found")
+endif()
+
 # ============================================
 # configure executables to all be put in base build directory
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
