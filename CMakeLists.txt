@@ -128,7 +128,7 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 endforeach()
 
 # supersim also uses libuuid
-find_package(libuuid REQUIRED)
+# find_package(libuuid REQUIRED)
 
 #if (NOT UUID_FOUND)
 #	message(FATAL_ERROR "libuuid not found")

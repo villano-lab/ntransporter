@@ -6,7 +6,7 @@ target_include_directories(NT_XS PUBLIC "${CMAKE_SOURCE_DIR}") # for NTUtilities
 
 target_link_libraries(NT_XS PUBLIC "${Geant4_LIBRARIES}")
 target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
-target_link_libraries(NT_XS PUBLIC "-luuid")
+target_link_libraries(NT_XS PUBLIC uuid)
 
 # supersim
 target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}")
