@@ -24,7 +24,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 list(APPEND CMAKE_PREFIX_PATH "$ENV{G4INSTALL}")
 list(APPEND CMAKE_PREFIX_PATH "$ENV{ROOTSYS}")
-list(APPEND CMAKE_PREFIX_PATH "/home/ajbiffl3/supersim")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{CDMS_SUPERSIM}")
 
 # =============================================
 # Geant4
@@ -62,14 +62,11 @@ include("${ROOT_USE_FILE}")
 # ============================================
 # SuperSim
 
-# base supersim directory
-set(SUPERSIM_DIR "/home/ajbiffl3/supersim" CACHE PATH "Path to base directory of SuperSim")
-
 # SuperSim_include file
 set(SUPERSIM_INCLUDE "SuperSim_include.txt" CACHE PATH "List of SuperSim directories to include")
 
 message("Configuring SuperSim")
-message(STATUS "SuperSim base directory: ${SUPERSIM_DIR}")
+message(STATUS "SuperSim base directory: $ENV{CDMS_SUPERSIM}")
 message(STATUS "Using SuperSim include list: ${SUPERSIM_INCLUDE}")
 
 
@@ -89,7 +86,7 @@ if ((NOT EXISTS "${CMAKE_BINARY_DIR}/CDMSVersion.hh")
 	OR (REGEN_CDMSVERSION))
 	execute_process(
 		COMMAND bash -c "source CDMSbuild/makeVersion-hh.sh CDMSbuild/CDMSVersion.template .cdms-gittag > ${CMAKE_BINARY_DIR}/CDMSVersion.hh"
-		WORKING_DIRECTORY "${SUPERSIM_DIR}"
+		WORKING_DIRECTORY "$ENV{CDMS_SUPERSIM}"
 		OUTPUT_VARIABLE SUPERSIM_VERSION_HH
 		)
 	message(STATUS "Configuring CDMSVersion.hh in ${CMAKE_BINARY_DIR}/CDMSVersion.hh")
@@ -103,14 +100,14 @@ set(SUPERSOURCES "")
 
 # read in all source files from directories listed in SuperSim_include
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-	message(STATUS "Finding source in ${SUPERSIM_DIR}/${SUBDIR}")
+	message(STATUS "Finding source in $ENV{CDMS_SUPERSIM}/${SUBDIR}")
 	execute_process(
-		COMMAND bash -c "find ${SUPERSIM_DIR}/${SUBDIR} -maxdepth 1 -name *.cc"
+		COMMAND bash -c "find $ENV{CDMS_SUPERSIM}/${SUBDIR} -maxdepth 1 -name *.cc"
 		WORKING_DIRECTORY $ENV{HOME}
 		OUTPUT_VARIABLE SUBDIR_SOURCES
 		)
 	if ("${SUBDIR_SOURCES}" STREQUAL "")
-		message("No source in ${SUPERSIM_DIR}/${SUBDIR}")
+		message("No source in $ENV{CDMS_SUPERSIM}/${SUBDIR}")
 	else()
 		string(REPLACE "\n" ";" SUBDIR_SOURCES "${SUBDIR_SOURCES}")
 		foreach(SOURCE_FILE ${SUBDIR_SOURCES})
