@@ -1,5 +1,3 @@
-message("Building PROCINFO")
-
 add_executable(PROCINFO read_process_info.cc ${SUPERSOURCES})
 target_include_directories(PROCINFO PUBLIC "${CMAKE_SOURCE_DIR}") # for NTUtilities.hh
 
@@ -11,12 +9,14 @@ target_link_libraries(PROCINFO PUBLIC "${ROOT_LIBRARIES}")
 target_include_directories(PROCINFO PUBLIC "$ENV{CDMS_SUPERSIM}")
 
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-	message(STATUS "PROCINFO linking in $ENV{CDMS_SUPERSIM}/${SUBDIR}")
+	if (SUBDIRS_VERBOSE)
+		message(STATUS "PROCINFO linking in $ENV{CDMS_SUPERSIM}/${SUBDIR}")
+	endif()
 	target_include_directories(PROCINFO PUBLIC "$ENV{CDMS_SUPERSIM}/${SUBDIR}")
 endforeach()
 
 target_include_directories(PROCINFO PUBLIC "${CMAKE_BINARY_DIR}") # for CDMSVersion.hh
 
-message("PROCINFO built")
+message("PROCINFO linked")
 
 
