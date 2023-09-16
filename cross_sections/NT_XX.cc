@@ -156,13 +156,13 @@ int main(int argc, char *argv[]) {
   doubles xa_eval(ng+1); // absorption (captures)
   doubles phi_eval(ng+1);
 
-  doubles Eg, xs, xt;
-
   int Gmax = *max_element(Gs.begin(), Gs.end());
 
-  Eg.reserve(Gmax+2);
-  xs.reserve(Gmax+2);
-  xt.reserve(Gmax+2);
+  doubles Eg(Gmax+2), xs(Gmax+2), xt(Gmax+2);
+  
+  Eg[0] = Emax;
+  xs[0] = 0.;
+  xt[0] = 0.;
 
 
   double (*phi_func)(double);
@@ -187,8 +187,7 @@ int main(int argc, char *argv[]) {
 
 
       // array of group boundaries (one thermal group)
-      Eg.resize(G+2);
-      Eg[0] = Emax;
+      //Eg.resize(G+2);
 
       // calculate group boundaries
       for (G4int g = 1; g < G+1; ++g) {
@@ -199,10 +198,10 @@ int main(int argc, char *argv[]) {
       
       
       // vector of cross sections (first element always zero; xsec[g] refers to group g)
-      xs.resize(G+2); // scatters
-      xs[0] = 0.;
-      xt.resize(G+2);
-      xt[0] = 0.; // total
+      //xs.resize(G+2); // scatters
+      //xs[0] = 0.;
+      //xt.resize(G+2);
+      //xt[0] = 0.; // total
       
       std::cout << "Beginning calculations for " << material_name << " with " << G << " fast groups" << std::endl;
       for (int g = 1; g < G+2; ++g) { // group g
