@@ -158,6 +158,12 @@ int main(int argc, char *argv[]) {
 
   doubles Eg, xs, xt;
 
+  int Gmax = *max_element(Gs.begin(), Gs.end());
+
+  Eg.reserve(Gmax+2);
+  xs.reserve(Gmax+2);
+  xt.reserve(Gmax+2);
+
 
   double (*phi_func)(double);
 
