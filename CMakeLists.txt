@@ -132,11 +132,18 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # ============================================
 # add subdirectories
+
+option(SUBDIRS_VERBOSE "Print additional linking info for executables" OFF)
+
 add_subdirectory(cross_sections)
 add_subdirectory(sources)
 add_subdirectory(boundary_conditions)
-add_subdirectory(process_reader)
 
+
+option(BUILD_PROCINFO "Build PROCINFO to print neutron physics process info" OFF)
+if (BUILD_PROCINFO)
+	add_subdirectory(process_reader)
+endif()
 
 
 
