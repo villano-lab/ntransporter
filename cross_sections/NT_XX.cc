@@ -70,7 +70,7 @@ void initialize() {
 int main(int argc, char *argv[]) {
 
   G4int G, ng = 20;
-  std::string output_file_base, 
+  std::string output_file_base;
   strings material_names;
 
   // parse command line args
