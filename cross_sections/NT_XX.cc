@@ -99,22 +99,7 @@ int main(int argc, char *argv[]) {
         "\n    Usage: ./NT_XX output_file_base_path material1 material2 ... [-n ngroups1=100 ngroups2 ...]");
     }
   }
-  std::cout << std::endl << "material_names:" << std::endl;
-  for (size_t i = 0; i < material_names.size(); ++i) {
-    std::cout << material_names[i] << std::endl;
-  }
-  std::cout << std::endl << std::endl << "Ns" << std::endl;
-  for (size_t i = 0; i < Gs.size(); ++i) {
-    std::cout << Gs[i] << std::endl;
-  }
 
-  if (1) {
-    return 0;
-  }
-  
-  int G = Gs[0];
-  std::string material_name = material_names[0];
-  
   std::ofstream G4cout_file("G4cout_redirected_output.txt");
   
   auto G4cout_oldbuf = G4cout.rdbuf();
@@ -123,52 +108,15 @@ int main(int argc, char *argv[]) {
   // bounds of fast energies
   const G4double Emin = 0.1*eV, Emax = 20.*MeV; 
 
-  // alpha (common ratio of group boundaries)
-  G4double alpha = std::pow(Emin/Emax, 1./G);
-
-
-  // array of group boundaries (one thermal group)
-  doubles Eg(G+2);
-  Eg[0] = Emax;
-
-  // calculate group boundaries
-  for (G4int g = 1; g < G+1; ++g) {
-    Eg[g] = Eg[g-1]*alpha;
-  }
-  // lower bound (basically zero)
-  Eg[G+1] = std::numeric_limits<G4double>::epsilon()*Eg[G];
-  
-  // vectors of energies, cross sections, and fluxes at which to evaluate approximated integrals
-  doubles E_eval(ng+1);
-  doubles xs_eval(ng+1); // scatters
-  doubles xa_eval(ng+1); // absorption (captures)
-  doubles phi_eval(ng+1);
-
-
-  // vector of cross sections (first element always zero; xsec[g] refers to group g)
-  doubles xs(G+2); // scatters
-  xs[0] = 0.;
-  doubles xt(G+2);
-  xt[0] = 0.; // total
-
 
   // configure physics processes
   initialize();
+
 
   // neutron singleton
   std::cout << "Fetching neutron singleton" << std::endl;
   G4Neutron *theNeutron = G4Neutron::Definition();
 
-  // pull material table from SuperSim
-  std::cout << "Fetching material " << material_name << std::endl;
-  const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
-  // pull material data
-  G4Material *material = theTable->GetMaterial(material_name);
-  if (!material) {
-    throw std::invalid_argument("Error in NT_XX: invalid material \"" + material_name + "\". Could not find in CDMS or NIST material tables.");
-  }
-
-  
   // get ProcessManager for the neutron
   std::cout << "Fetching neutron process manager" << std::endl;
   G4ProcessManager *theMan = theNeutron->GetProcessManager();
@@ -200,73 +148,123 @@ int main(int argc, char *argv[]) {
                                               G4ThreeVector(0.,0.,1.), 0.);
 
   
-  
-  G4double group_min, group_max, r, phi_g;
+  G4double group_min, group_max, r, phi_g, alpha;
+
+  // vectors of energies, cross sections, and fluxes at which to evaluate approximated integrals
+  doubles E_eval(ng+1);
+  doubles xs_eval(ng+1); // scatters
+  doubles xa_eval(ng+1); // absorption (captures)
+  doubles phi_eval(ng+1);
+
+  doubles Eg, xs, xt;
+
 
   double (*phi_func)(double);
-  
-  std::cout << "Beginning group constant calculations" << std::endl;
-  for (int g = 1; g < G+2; ++g) { // group g
-    if (g == G+1) { // thermal group
-      phi_func = MaxwellBoltzmannKernel;
-    } else { // fast group
-      phi_func = fast_kernel;
+
+  // loop over materials
+  for (std::string material_name : material_names) {
+
+    // pull material table from SuperSim
+    std::cout << "Fetching material " << material_name << std::endl;
+    const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
+    // pull material data
+    G4Material *material = theTable->GetMaterial(material_name);
+    if (!material) {
+      throw std::invalid_argument("Error in NT_XX: invalid material \"" + material_name + "\". Could not find in CDMS or NIST material tables.");
     }
-    group_min = Eg[g]; // lower bound of group
-    group_max = Eg[g-1]; // upper bound of group
-    r = std::pow(group_max/group_min, 1./ng); // common ratio between evaluation points
+
+    // loop over group numbers
+    for (int G : Gs) {
+
+      // common ratio of group boundaries
+      alpha = std::pow(Emin/Emax, 1./G);
+
+
+      // array of group boundaries (one thermal group)
+      Eg.resize(G+2);
+      Eg[0] = Emax;
+
+      // calculate group boundaries
+      for (G4int g = 1; g < G+1; ++g) {
+        Eg[g] = Eg[g-1]*alpha;
+      }
+      // lower bound (basically zero)
+      Eg[G+1] = std::numeric_limits<G4double>::epsilon()*Eg[G];
+      
+      
+      // vector of cross sections (first element always zero; xsec[g] refers to group g)
+      xs.resize(G+2); // scatters
+      xs[0] = 0.;
+      xt.resize(G+2);
+      xt[0] = 0.; // total
+      
+      std::cout << "Beginning calculations for " << material_name << " with " << G << " fast groups" << std::endl;
+      for (int g = 1; g < G+2; ++g) { // group g
+        if (g == G+1) { // thermal group
+          phi_func = MaxwellBoltzmannKernel;
+        } else { // fast group
+          phi_func = fast_kernel;
+        }
+        group_min = Eg[g]; // lower bound of group
+        group_max = Eg[g-1]; // upper bound of group
+        r = std::pow(group_max/group_min, 1./ng); // common ratio between evaluation points
+        
+        // evaluation points for integral
+        E_eval[0] = group_min;
+        for (int i = 1; i < ng; ++i) {
+          E_eval[i] = E_eval[i-1]*r;
+        }
+        E_eval[ng] = group_max;
+
+        // evaluate cross sections and fluxes
+        for (int i = 0; i < E_eval.size(); ++i) {
+
+          phi_eval[i] = phi_func(E_eval[i]);
+
+          dynamicNeutron->SetKineticEnergy(E_eval[i]);
+
+          xs_eval[i] = cm*phi_eval[i]
+                *(elasticDataStore->GetCrossSection(dynamicNeutron, material) 
+                + inelasticDataStore->GetCrossSection(dynamicNeutron, material));
+
+          xa_eval[i] = cm*phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
+                                      material);
+        }
+
+      }
+      phi_g = trap(E_eval, phi_eval);
+      
+      xs[g] = trap(E_eval, xs_eval)/phi_g;
+      xt[g] = xs[g] + trap(E_eval, xa_eval)/phi_g;
     
-    // evaluation points for integral
-    E_eval[0] = group_min;
-    for (int i = 1; i < ng; ++i) {
-      E_eval[i] = E_eval[i-1]*r;
-    }
-    E_eval[ng] = group_max;
 
-    // evaluate cross sections and fluxes
-    for (int i = 0; i < E_eval.size(); ++i) {
-
-      phi_eval[i] = phi_func(E_eval[i]);
-
-      dynamicNeutron->SetKineticEnergy(E_eval[i]);
-
-      xs_eval[i] = cm*phi_eval[i]
-            *(elasticDataStore->GetCrossSection(dynamicNeutron, material) 
-            + inelasticDataStore->GetCrossSection(dynamicNeutron, material));
-
-      xa_eval[i] = cm*phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
-                                  material);
-
-    }
-    phi_g = trap(E_eval, phi_eval);
     
-    xs[g] = trap(E_eval, xs_eval)/phi_g;
-    xt[g] = xs[g] + trap(E_eval, xa_eval)/phi_g;
+
+      std::cout << "Group constants calculated" << std::endl;
+
+      std::string filename = output_file_base + "_" 
+                          + material_name + "_" 
+                          + std::to_string(G) + "_" 
+                          + std::to_string(ng) 
+                          + "_xs.dat";
+
+      std::cout << "Writing cross section data to " << filename << std::endl;
+
+      std::ofstream outputStream(filename);
+
+      outputStream << std::setprecision(17);
+
+      for (int g = 0; g < G+2; ++g) {
+        outputStream << g << " " << Eg[g] << " "<< xs[g] << " " << xt[g] << "\n";
+      }
+
+      outputStream.close();
+
+    }
+
   }
 
-  
-
-  std::cout << "Group constants calculated" << std::endl;
-
-  std::string filename = output_file_base + "_" 
-                       + material_name + "_" 
-                       + std::to_string(G) + "_" 
-                       + std::to_string(ng) 
-                       + "_xs.dat";
-
-  std::cout << "Writing cross section data to " << filename << std::endl;
-
-  std::ofstream outputStream(filename);
-
-  outputStream << std::setprecision(17);
-
-  for (int g = 0; g < G+2; ++g) {
-    outputStream << g << " " << Eg[g] << " "<< xs[g] << " " << xt[g] << "\n";
-  }
-
-  outputStream.close();
-
-  std::cout << "Done" << std::endl;
+  //std::cout << "Done" << std::endl;
 
   G4cout.rdbuf(G4cout_oldbuf);
 
