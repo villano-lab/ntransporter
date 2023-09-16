@@ -124,12 +124,6 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	endif()
 endforeach()
 
-# supersim also uses libuuid
-# find_package(libuuid REQUIRED)
-
-#if (NOT UUID_FOUND)
-#	message(FATAL_ERROR "libuuid not found")
-#endif()
 
 # ============================================
 # configure executables to all be put in base build directory

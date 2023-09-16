@@ -6,7 +6,6 @@ target_include_directories(PROCINFO PUBLIC "${CMAKE_SOURCE_DIR}") # for NTUtilit
 
 target_link_libraries(PROCINFO PUBLIC "${Geant4_LIBRARIES}")
 target_link_libraries(PROCINFO PUBLIC "${ROOT_LIBRARIES}")
-#target_link_libraries(PROCINFO PUBLIC uuid)
 
 # supersim
 target_include_directories(PROCINFO PUBLIC "$ENV{CDMS_SUPERSIM}")
