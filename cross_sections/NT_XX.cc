@@ -69,9 +69,10 @@ void initialize() {
 
 int main(int argc, char *argv[]) {
 
-  G4int G, ng = 20;
+  G4int ng = 20;
   std::string output_file_base;
   strings material_names;
+  ints Gs;
 
   // parse command line args
   if (argc < 3)  {
@@ -83,14 +84,14 @@ int main(int argc, char *argv[]) {
       output_file_base = argv[1];
 
       size_t i = 2;
-      while (argv[i] != "-n" && i < argc) {
+      while (i < argc && argv[i][0] != '-' && argv[i][1] != 'n') {
         material_names.push_back(argv[i]);
         ++i;
       }
       for (size_t j = i+1; j < argc; ++j) {
         Gs.push_back(std::stoi(argv[j]));
       }
-      if (Gs.size == 0) {
+      if (Gs.size() == 0) {
         Gs.push_back(100);
       }
     } catch (std::invalid_argument) {
@@ -110,7 +111,9 @@ int main(int argc, char *argv[]) {
   if (1) {
     return 0;
   }
-
+  
+  int G = Gs[0];
+  std::string material_name = material_names[0];
   
   std::ofstream G4cout_file("G4cout_redirected_output.txt");
   
