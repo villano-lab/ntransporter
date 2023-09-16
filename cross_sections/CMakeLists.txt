@@ -6,14 +6,14 @@ target_include_directories(NT_XS PUBLIC "${CMAKE_SOURCE_DIR}") # for NTUtilities
 
 target_link_libraries(NT_XS PUBLIC "${Geant4_LIBRARIES}")
 target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
-target_link_libraries(NT_XS PUBLIC uuid)
+#target_link_libraries(NT_XS PUBLIC uuid)
 
 # supersim
-target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}")
+target_include_directories(NT_XS PUBLIC "$ENV{CDMS_SUPERSIM}")
 
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-	message(STATUS "NT_XS linking in ${SUPERSIM_DIR}/${SUBDIR}")
-	target_include_directories(NT_XS PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
+	message(STATUS "NT_XS linking in $ENV{CDMS_SUPERSIM}/${SUBDIR}")
+	target_include_directories(NT_XS PUBLIC "$ENV{CDMS_SUPERSIM}/${SUBDIR}")
 endforeach()
 
 target_include_directories(NT_XS PUBLIC "${CMAKE_BINARY_DIR}") # for CDMSVersion.hh

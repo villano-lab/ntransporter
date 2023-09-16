@@ -6,14 +6,14 @@ target_include_directories(PROCINFO PUBLIC "${CMAKE_SOURCE_DIR}") # for NTUtilit
 
 target_link_libraries(PROCINFO PUBLIC "${Geant4_LIBRARIES}")
 target_link_libraries(PROCINFO PUBLIC "${ROOT_LIBRARIES}")
-target_link_libraries(PROCINFO PUBLIC uuid)
+#target_link_libraries(PROCINFO PUBLIC uuid)
 
 # supersim
-target_include_directories(PROCINFO PUBLIC "${SUPERSIM_DIR}")
+target_include_directories(PROCINFO PUBLIC "$ENV{CDMS_SUPERSIM}")
 
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
-	message(STATUS "PROCINFO linking in ${SUPERSIM_DIR}/${SUBDIR}")
-	target_include_directories(PROCINFO PUBLIC "${SUPERSIM_DIR}/${SUBDIR}")
+	message(STATUS "PROCINFO linking in $ENV{CDMS_SUPERSIM}/${SUBDIR}")
+	target_include_directories(PROCINFO PUBLIC "$ENV{CDMS_SUPERSIM}/${SUBDIR}")
 endforeach()
 
 target_include_directories(PROCINFO PUBLIC "${CMAKE_BINARY_DIR}") # for CDMSVersion.hh
