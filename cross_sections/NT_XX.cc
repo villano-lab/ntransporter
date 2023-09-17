@@ -167,12 +167,13 @@ int main(int argc, char *argv[]) {
 
   double (*phi_func)(double);
 
+  const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
+
   // loop over materials
   for (std::string material_name : material_names) {
 
     // pull material table from SuperSim
     std::cout << "Fetching material " << material_name << std::endl;
-    const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
     // pull material data
     G4Material *material = theTable->GetMaterial(material_name);
     if (!material) {
@@ -180,7 +181,7 @@ int main(int argc, char *argv[]) {
     }
 
     // loop over group numbers
-    for (int G : Gs) {
+    for (G4int G : Gs) {
 
       // common ratio of group boundaries
       alpha = std::pow(Emin/Emax, 1./G);
