@@ -158,6 +158,8 @@ int main(int argc, char *argv[]) {
 
   int Gmax = *max_element(Gs.begin(), Gs.end());
 
+  std::cout << "Gmax = " << Gmax << std::endl;
+
   doubles Eg(Gmax+2), xs(Gmax+2), xt(Gmax+2);
   
   Eg[0] = Emax;
