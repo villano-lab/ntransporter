@@ -235,18 +235,14 @@ int main(int argc, char *argv[]) {
           xa_eval[i] = cm*phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
                                       material);
         }
+        
+        phi_g = trap(E_eval, phi_eval);
+        
+        xs[g] = trap(E_eval, xs_eval)/phi_g;
+        xt[g] = xs[g] + trap(E_eval, xa_eval)/phi_g;
 
       }
-      phi_g = trap(E_eval, phi_eval);
-      
-      xs[g] = trap(E_eval, xs_eval)/phi_g;
-      xt[g] = xs[g] + trap(E_eval, xa_eval)/phi_g;
     
-
-    
-
-      std::cout << "Group constants calculated" << std::endl;
-
       std::string filename = output_file_base + "_" 
                           + material_name + "_" 
                           + std::to_string(G) + "_" 
