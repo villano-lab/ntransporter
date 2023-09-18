@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
 
   material = theTable->GetMaterial(material_names[0]);
   if (!material) {
-    throw std::invalid_argument("Error in NT_XX: invalid material \"" + material_name + "\". Could not find in CDMS or NIST material tables.");
+    throw std::invalid_argument("Error in NT_XX: invalid material \"" + material_names[0] + "\". Could not find in CDMS or NIST material tables.");
   }
 
   dynamicNeutron->SetKineticEnergy(10.*keV);
