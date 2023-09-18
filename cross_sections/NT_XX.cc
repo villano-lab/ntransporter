@@ -172,23 +172,6 @@ int main(int argc, char *argv[]) {
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
   G4Material *material;
 
-  material = theTable->GetMaterial(material_names[0]);
-  if (!material) {
-    throw std::invalid_argument("Error in NT_XX: invalid material \"" + material_names[0] + "\". Could not find in CDMS or NIST material tables.");
-  }
-
-  dynamicNeutron->SetKineticEnergy(10.*keV);
-  std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
-  dynamicNeutron->SetKineticEnergy(20.*keV);
-  std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
-  dynamicNeutron->SetKineticEnergy(10.*keV);
-  std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
-  dynamicNeutron->SetKineticEnergy(20.*keV);
-  std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
-
-  if (1) { return 0; }
-
-
 
   // loop over materials
   for (std::string material_name : material_names) {
