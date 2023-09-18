@@ -37,8 +37,8 @@ int main(int argc, char *argv[]) {
     } else {
         try {
             output_file_base = argv[1];
-            material_name = argv[2];
-            NT_path_base = argv[3];
+            NT_path_base = argv[2];
+            material_name = argv[3];
             G = 100; // number of fast groups
             if (argc > 4) {
                 G = std::stoi(argv[4]);
