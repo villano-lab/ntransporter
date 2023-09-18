@@ -11,7 +11,7 @@
 // uses group sources data in ../sources/data/V1/data_<material>_<ngroups>_Sg.dat
 // 
 // usage:
-// ./NT_BC output_file_base_path material [ngroups=100]
+// ./NT_BC output_file_base_path path_to_ntransporter_base material [ngroups=100]
 
 
 #include <iostream>
@@ -28,29 +28,30 @@ typedef std::vector<double> doubles;
 int main(int argc, char *argv[]) {
 
     int G;
-    std::string output_file_base, material_name;
+    std::string output_file_base, NT_path_base, material_name;
 
     // parse command line args
-    if (argc < 3) {
+    if (argc < 4) {
         throw std::runtime_error("Error in NT_BC: Not enough arguments."
-        "\n     Usage: ./NT_BC output_file_base_path material [ngroups=100]");
+        "\n     Usage: ./NT_BC output_file_base_path path_to_ntransporter_base material [ngroups=100]");
     } else {
         try {
             output_file_base = argv[1];
             material_name = argv[2];
+            NT_path_base = argv[3];
             G = 100; // number of fast groups
-            if (argc > 3) {
-                G = std::stoi(argv[3]);
+            if (argc > 4) {
+                G = std::stoi(argv[4]);
             }
         } catch (std::invalid_argument) {
             throw std::runtime_error("Error in NT_BC: Invalid arguments. ngroups must be numeric."
-            "\n     Usage: ./NT_BC output_file_base_path material [ngroups=100]");
+            "\n     Usage: ./NT_BC output_file_base_path path_to_ntransporter_base material [ngroups=100]");
         }
     }
 
     doubles Eg(G+2), xs(G+2), xt(G+2);
 
-    std::string xs_filename = "../cross_sections/data/V1/data_" 
+    std::string xs_filename = NT_path_base + "/cross_sections/data/V1/data_" 
                         + material_name + "_" 
                         + std::to_string(G) 
                         + "_20_xs.dat";
@@ -74,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Done reading cross section data" << std::endl;
 
-    std::string Sg_filename = "../sources/data/V1/data_" 
+    std::string Sg_filename = NT_path_base + "/sources/data/V1/data_" 
                         + material_name + "_" 
                         + std::to_string(G) 
                         + "_Sg.dat";
