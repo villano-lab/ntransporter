@@ -172,15 +172,16 @@ int main(int argc, char *argv[]) {
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
   G4Material *material;
 
-  doubles Es = {0.01, 0.02, 0.01, 0.02};
-
   material = theTable->GetMaterial(material_names[0]);
 
-  for (auto E : Es) {
-    dynamicNeutron->SetKineticEnergy(E);
-    std::cout << E << " : " << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
-
-  }
+  dynamicNeutron->SetKineticEnergy(10.*keV);
+  std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
+  dynamicNeutron->SetKineticEnergy(20.*keV);
+  std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
+  dynamicNeutron->SetKineticEnergy(10.*keV);
+  std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
+  dynamicNeutron->SetKineticEnergy(20.*keV);
+  std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
 
   if (1) { return 0; }
 
