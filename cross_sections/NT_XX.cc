@@ -170,6 +170,8 @@ int main(int argc, char *argv[]) {
   double (*phi_func)(double);
 
   const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
+  G4Material *material;
+
 
   // loop over materials
   for (std::string material_name : material_names) {
@@ -177,7 +179,7 @@ int main(int argc, char *argv[]) {
     // pull material table from SuperSim
     std::cout << "Fetching material " << material_name << std::endl;
     // pull material data
-    G4Material *material = theTable->GetMaterial(material_name);
+    material = theTable->GetMaterial(material_name);
     if (!material) {
       throw std::invalid_argument("Error in NT_XX: invalid material \"" + material_name + "\". Could not find in CDMS or NIST material tables.");
     }
