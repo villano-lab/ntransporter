@@ -173,6 +173,9 @@ int main(int argc, char *argv[]) {
   G4Material *material;
 
   material = theTable->GetMaterial(material_names[0]);
+  if (!material) {
+    throw std::invalid_argument("Error in NT_XX: invalid material \"" + material_name + "\". Could not find in CDMS or NIST material tables.");
+  }
 
   dynamicNeutron->SetKineticEnergy(10.*keV);
   std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
