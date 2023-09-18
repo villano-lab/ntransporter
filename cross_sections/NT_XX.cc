@@ -193,8 +193,6 @@ int main(int argc, char *argv[]) {
 
       // array of group boundaries (one thermal group)
       //Eg.resize(G+2);
-      doubles Eg(G+2);
-      Eg[0] = Emax;
 
       // calculate group boundaries
       for (G4int g = 1; g < G+1; ++g) {
@@ -209,10 +207,6 @@ int main(int argc, char *argv[]) {
       //xs[0] = 0.;
       //xt.resize(G+2);
       //xt[0] = 0.; // total
-      doubles xs(G+2); // scatters
-      xs[0] = 0.;
-      doubles xt(G+2);
-      xt[0] = 0.; // total
       
       std::cout << "Beginning calculations for " << material_name << " with " << G << " fast groups" << std::endl;
       for (int g = 1; g < G+2; ++g) { // group g
