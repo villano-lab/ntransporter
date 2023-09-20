@@ -70,6 +70,11 @@ int main(int argc, char *argv[]) {
     source_files.push_back(source_folder + "norite_2013_Th_1ppb.dat");
     source_weights.push_back(5.715e3);
 
+  } else if (material_name == "G4_Si") {
+    // testing in pure Si: just assume 1 ppb U
+    source_files.push_back(source_folder + "norite_2013_U_1ppb.dat");
+    source_weights.push_back(1.);
+    
   } else {
     throw (std::runtime_error("Error in NT_Src: material not in candidate list."
     "\n    Material must be one of: Norite, "));
