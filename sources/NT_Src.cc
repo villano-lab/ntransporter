@@ -63,18 +63,13 @@ int main(int argc, char *argv[]) {
   //     (data from Table 6 of https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=383932067)
   // --> also need to divide out units of energy in source spectra by dividing
   //     by bin width of spectrum
-  if (material_name == "Norite") {
+  if (material_name == "Norite" || material_name == "G4_Si") {
     source_files.push_back(source_folder + "norite_2013_U_1ppb.dat");
     source_weights.push_back(1.095e3);
 
     source_files.push_back(source_folder + "norite_2013_Th_1ppb.dat");
     source_weights.push_back(5.715e3);
 
-  } else if (material_name == "G4_Si") {
-    // testing in pure Si: just assume 1 ppb U
-    source_files.push_back(source_folder + "norite_2013_U_1ppb.dat");
-    source_weights.push_back(1.);
-    
   } else {
     throw (std::runtime_error("Error in NT_Src: material not in candidate list."
     "\n    Material must be one of: Norite, "));
