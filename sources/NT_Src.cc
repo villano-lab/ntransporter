@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
   //     (data from Table 6 of https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=383932067)
   // --> also need to divide out units of energy in source spectra by dividing
   //     by bin width of spectrum
-  if (material_name == "Norite" || material_name == "G4_Si") {
+  if (material_name == "Norite" || material_name == "G4_Si" || material_name == "G4_Pb") {
     source_files.push_back(source_folder + "norite_2013_U_1ppb.dat");
     source_weights.push_back(1.095e3);
 
