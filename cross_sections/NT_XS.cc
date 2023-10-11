@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
   // get vector of neutron processes
   G4ProcessVector *processes = theMan->GetProcessList();
 
-  // hadronic processes (except nFission, (*processes)[5])
+  // hadronic processes
   std::cout << "Fetching neutron hadronic processes" << std::endl;
   G4HadronicProcess *elasticProc = dynamic_cast<G4HadronicProcess*>(
       (*processes)[2]);
@@ -166,8 +166,10 @@ int main(int argc, char *argv[]) {
       (*processes)[3]);
   G4HadronicProcess *captureProc = dynamic_cast<G4HadronicProcess*>(
       (*processes)[4]);
+  G4HadronicProcess *fissionProc = dynamic_cast<G4HadronicProcess*>(
+      (*processes)[5]);
 
-  if (!elasticProc || !inelasticProc || !captureProc) {
+  if (!elasticProc || !inelasticProc || !captureProc || !fissionProc) {
     throw std::runtime_error("Error in NT_XS: casting one or more processes as "
     "G4HadronicProcess failed. Exitting.");
   }
@@ -175,6 +177,7 @@ int main(int argc, char *argv[]) {
   G4CrossSectionDataStore *elasticDataStore = elasticProc->GetCrossSectionDataStore();
   G4CrossSectionDataStore *inelasticDataStore = inelasticProc->GetCrossSectionDataStore();
   G4CrossSectionDataStore *captureDataStore = captureProc->GetCrossSectionDataStore();
+  G4CrossSectionDataStore *fissionDataStore = fissionProc->GetCrossSectionDataStore();
 
   // dynamic particle: set energy, momentum
   std::cout << "Creating dynamic neutron" << std::endl;
@@ -216,8 +219,9 @@ int main(int argc, char *argv[]) {
             *(elasticDataStore->GetCrossSection(dynamicNeutron, material) 
             + inelasticDataStore->GetCrossSection(dynamicNeutron, material));
 
-      xa_eval[i] = cm*phi_eval[i]*captureDataStore->GetCrossSection(dynamicNeutron,
-                                  material);
+      xa_eval[i] = cm*phi_eval[i]
+            *(captureDataStore->GetCrossSection(dynamicNeutron, material)
+            + fissionDatastore->GetCrossSection(dynamicNeutron, material));
 
     }
     phi_g = trap(E_eval, phi_eval);
