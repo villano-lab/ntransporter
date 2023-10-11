@@ -221,7 +221,7 @@ int main(int argc, char *argv[]) {
 
       xa_eval[i] = cm*phi_eval[i]
             *(captureDataStore->GetCrossSection(dynamicNeutron, material)
-            + fissionDatastore->GetCrossSection(dynamicNeutron, material));
+            + fissionDataStore->GetCrossSection(dynamicNeutron, material));
 
     }
     phi_g = trap(E_eval, phi_eval);
