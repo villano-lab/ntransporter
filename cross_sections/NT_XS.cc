@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
   std::cout << "Beginning group constant calculations" << std::endl;
   for (int g = 1; g < G+2; ++g) { // group g
     if (g == G+1) { // thermal group
-      phi_func = MaxwellBoltzmannKernel;
+      phi_func = fast_kernel;
     } else { // fast group
       phi_func = fast_kernel;
     }
