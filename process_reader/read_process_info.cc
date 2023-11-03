@@ -88,6 +88,22 @@ int main(int argc, char *argv[]) {
 
     }
 
+    // hadronic processes
+    std::cout << "Fetching neutron hadronic processes" << std::endl;
+    G4HadronicProcess *elasticProc = dynamic_cast<G4HadronElasticProcess*>(
+        (*processes)[2]);
+    G4HadronicProcess *inelasticProc = dynamic_cast<G4HadronInelasticProcess*>(
+        (*processes)[3]);
+    G4HadronicProcess *captureProc = dynamic_cast<G4HadronCaptureProcess*>(
+        (*processes)[4]);
+    G4HadronicProcess *fissionProc = dynamic_cast<G4HadronFissionProcess*>(
+        (*processes)[5]);
+
+    if (!elasticProc || !inelasticProc || !captureProc || !fissionProc) {
+    throw std::runtime_error("Error: casting one or more processes as "
+    "G4HadronicProcess failed. Exitting.");
+  }
+
     G4cout.rdbuf(G4cout_oldbuf);
 
 }
