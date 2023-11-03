@@ -32,28 +32,20 @@
 
 
 // initialize Geant data with configured geometry and detector
-void initialize() {
-  // manager object to configure everything
-  std::cout << "Starting SuperSim_Main" << std::endl;
-  SuperSim_Main *sMain = new SuperSim_Main();
-
-  // set verbosity
-  sMain->SetVerboseLevel(0);
-  sMain->runManager.SetVerboseLevel(0);
-  
-  std::cout << "Configuring physics list" << std::endl;
-  sMain->Configure("full"); // full Shielding physics list, etc
-  
-  // configure geometry and detector (required for initialization)
-  std::cout << "Configuring environment geometry" << std::endl;
-  sMain->UImanager->ApplyCommand("/CDMS/lab NoLab");
-  sMain->UImanager->ApplyCommand("/CDMS/detector ZIP");
-  
-  // initialize: among other things, build physics processes and attach to 
-  // particle process managers
-  std::cout << "Initializing" << std::endl;
-  sMain->runManager.Initialize();
-}
+#define INITIALIZE() \
+do {\
+  std::cout << "Starting SuperSim_Main" << std::endl;\
+  SuperSim_Main *sMain = new SuperSim_Main();\
+  sMain->SetVerboseLevel(0);\
+  sMain->runManager.SetVerboseLevel(0);\
+  std::cout << "Configuring physics list" << std::endl;\
+  sMain->Configure("full");\
+  std::cout << "Configuring environment geometry" << std::endl;\
+  sMain->UImanager->ApplyCommand("/CDMS/lab NoLab");\
+  sMain->UImanager->ApplyCommand("/CDMS/detector ZIP");\
+  std::cout << "Initializing" << std::endl;\
+  sMain->runManager.Initialize();\
+} while (0)
 
 
 int main(int argc, char *argv[]) {
@@ -64,7 +56,7 @@ int main(int argc, char *argv[]) {
     G4cout.rdbuf(G4cout_file.rdbuf());
 
     // configure physics processes
-    initialize();
+    INITIALIZE();
 
     // neutron singleton
     std::cout << "Fetching neutron singleton" << std::endl;
@@ -110,6 +102,7 @@ int main(int argc, char *argv[]) {
     "G4HadronicProcess failed. Exitting.");
   }
 
+    delete sMain;
     G4cout.rdbuf(G4cout_oldbuf);
 
 }
