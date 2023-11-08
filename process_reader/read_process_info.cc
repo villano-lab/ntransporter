@@ -88,7 +88,22 @@ int main(int argc, char *argv[]) {
 
     }
 
-    // hadronic processes
+    G4HadronElasticProcess *elasticProc = static_cast<G4HadronElasticProcess*>((*processes)[2]);
+
+    G4CrossSectionDataStore *elasticDataStore = elasticProc->GetCrossSectionDataStore();
+
+    G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, G4ThreeVector(0.,0.,1.), 0.);
+
+    dynamicNeutron->SetKineticEnergy(10.*keV);
+    std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
+    dynamicNeutron->SetKineticEnergy(20.*keV);
+    std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
+    dynamicNeutron->SetKineticEnergy(10.*keV);
+    std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
+    dynamicNeutron->SetKineticEnergy(20.*keV);
+    std::cout << elasticDataStore->GetCrossSection(dynamicNeutron, material) << std::endl;
+
+    /*// hadronic processes
     std::cout << "Fetching neutron hadronic processes" << std::endl;
     G4HadronicProcess *elasticProc = dynamic_cast<G4HadronElasticProcess*>(
         (*processes)[2]);
@@ -102,7 +117,7 @@ int main(int argc, char *argv[]) {
     if (!elasticProc || !inelasticProc || !captureProc || !fissionProc) {
     throw std::runtime_error("Error: casting one or more processes as "
     "G4HadronicProcess failed. Exitting.");
-  }
+  }*/
 
     delete sMain;
     G4cout.rdbuf(G4cout_oldbuf);
