@@ -29,6 +29,8 @@
 
 #include "NTUtilities.hh"
 
+#include "CDMSMaterialTable.hh"
+
 
 int main(int argc, char *argv[]) {
 
@@ -87,6 +89,35 @@ int main(int argc, char *argv[]) {
         (*processes)[i]->ProcessDescription(std::cout);
 
     }
+
+    G4HadronElasticProcess *elasticProc = static_cast<G4HadronElasticProcess*>((*processes)[2]);
+
+    G4CrossSectionDataStore *elasticDataStore = elasticProc->GetCrossSectionDataStore();
+
+    G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, G4ThreeVector(0.,0.,1.), 0.);
+
+    //dynamicNeutron->SetKineticEnergy(50.*keV);
+    //G4cout << "Cross section for 50 keV neutron with Si = " << cm*elasticDataStore->GetCrossSection(dynamicNeutron, material) << " cm^-1" << G4endl;
+
+    std::ofstream outputStream("output1.txt");
+
+    outputStream << std::setprecision(17);
+
+    const CDMSMaterialTable *theTable = CDMSMaterialTable::GetInstance();
+    // pull material data
+    G4Material *material = theTable->GetMaterial("G4_Si");
+
+
+    std::vector<G4double> energies = {10.*keV, 20.*keV, 10.*keV, 20.*keV, 80.*eV, 2.*MeV};
+
+    for (auto e : energies) {
+        dynamicNeutron->SetKineticEnergy(e);
+        outputStream << e << " " << cm*elasticDataStore->GetCrossSection(dynamicNeutron, material) << G4endl;
+    }
+
+    outputStream.close();
+
+
 
 
     delete sMain;
