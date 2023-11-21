@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
     //physList->SetVerboseLevel(0);
     //G4cout << "phys list verbosity = " << physList->GetVerboseLevel() << G4endl;
     runManager->SetUserInitialization(new NeutronPhysicsList);
-    runManager->SetUserInitialization(new MinimalDetector(mat));
+    runManager->SetUserInitialization(new MinimalDetector);
     runManager->SetUserInitialization(new MinimalInitialization);
 
     //G4HadronicProcessStore::Instance()->SetVerbose(0); // this line throws warnings
