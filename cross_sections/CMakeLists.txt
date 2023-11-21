@@ -1,8 +1,11 @@
 add_executable(NT_XS NT_XS.cc ${SUPERSOURCES})
 add_executable(NT_XX NT_XX.cc ${SUPERSOURCES})
 
-target_include_directories(NT_XS PUBLIC "${CMAKE_SOURCE_DIR}") # for NTUtilities.hh
+target_include_directories(NT_XS PUBLIC "${CMAKE_SOURCE_DIR}") # for custom SuperSim_Main.hh
 target_include_directories(NT_XX PUBLIC "${CMAKE_SOURCE_DIR}")
+
+target_include_directories(NT_XS PUBLIC "${CMAKE_SOURCE_DIR}/include") # for NTUtilities.hh
+target_include_directories(NT_XX PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
 target_link_libraries(NT_XS PUBLIC "${Geant4_LIBRARIES}")
 target_link_libraries(NT_XS PUBLIC "${ROOT_LIBRARIES}")
@@ -25,5 +28,8 @@ target_include_directories(NT_XS PUBLIC "${CMAKE_BINARY_DIR}") # for CDMSVersion
 target_include_directories(NT_XX PUBLIC "${CMAKE_BINARY_DIR}")
 
 message("NT_XS & NT_XX linked")
+
+# ============================================
+# NT_DX
 
 

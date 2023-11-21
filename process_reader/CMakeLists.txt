@@ -1,5 +1,6 @@
 add_executable(PROCINFO read_process_info.cc ${SUPERSOURCES})
-target_include_directories(PROCINFO PUBLIC "${CMAKE_SOURCE_DIR}") # for NTUtilities.hh
+target_include_directories(PROCINFO PUBLIC "${CMAKE_SOURCE_DIR}") # for custom SuperSim_Main.hh
+target_include_directories(PROCINFO PUBLIC "${CMAKE_SOURCE_DIR}/include") # for NTUtilities.hh
 
 
 target_link_libraries(PROCINFO PUBLIC "${Geant4_LIBRARIES}")
