@@ -31,5 +31,9 @@ message("NT_XS & NT_XX linked")
 
 # ============================================
 # NT_DX
+add_executable(NT_DX NT_DX.cc "${CMAKE_SOURCE_DIR}/src/MinimalUserInitialization.cc")
 
+target_include_directories(NT_DX PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
+target_link_libraries(NT_DX PUBLIC "${Geant4_LIBRARIES}")
+#target_link_libraries(NT_DX PUBLIC "${CMAKE_SOURCE_DIR}/src")
