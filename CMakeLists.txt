@@ -18,6 +18,12 @@ set(CMAKE_CXX_STANDARD 14) # same as typically used for SuperSim
 
 add_definitions(-DG4MULTITHREADED) # needed for correct run manager initialization
 
+option(IGNORE_WARNINGS "Ignore all warnings with -w flag" OFF)
+if (IGNORE_WARNINGS)
+	add_definitions(-w)
+	message(WARNING "Ignoring all warnings")
+endif()
+
 # for IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
