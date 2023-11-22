@@ -90,7 +90,8 @@ int main(int argc, char *argv[]) {
     Eg[g] = Eg[g-1]*alpha;
   }
   // lower bound (basically zero)
-  Eg[G+1] = std::numeric_limits<double>::epsilon()*Eg[G];
+  //Eg[G+1] = std::numeric_limits<G4double>::epsilon()*Eg[G];
+  Eg[G+1] = 1e-6*Eg[G];
 
 
   // vectors of energies, source rates, and fluxes for which there is data in the .dat files
