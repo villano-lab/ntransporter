@@ -178,7 +178,6 @@ int main(int argc, char **argv) {
    
     G4DynamicParticle *dynamicNeutron = new G4DynamicParticle(theNeutron, G4ThreeVector(0.,0.,1.), 0.);
 
-    ///*
     G4StepPoint *thePoint = new G4StepPoint();
     thePoint->SetPosition(origin);
     G4Step *theStep = new G4Step();
@@ -186,13 +185,6 @@ int main(int argc, char **argv) {
     G4Track *neutronTrack = new G4Track(dynamicNeutron, 0., origin);
     neutronTrack->SetStep(theStep);
     G4HadProjectile *projectile = new G4HadProjectile(*neutronTrack);
-    //*/ 
-    /*
-    G4StepPoint *thePoint;
-    G4Step *theStep;
-    G4Track *neutronTrack;
-    G4HadProjectile *projectile;
-    //*/
 
     G4Nucleus *materialNucleus = new G4Nucleus;
 
@@ -218,43 +210,29 @@ int main(int argc, char **argv) {
     // materials loop
     for (G4String material_name : material_names) {
         
-        material = nist->FindOrBuildMaterial(material_name);
-        // zero-temp version
-        //material = nist->FindOrBuildMaterial(material_name + "_0");
-
-        G4cout << "Material temp = " << material->GetTemperature()/CLHEP::kelvin << " Kelvin" << G4endl; // 293.15
-
-        
-
-    /*
-    thePoint = new G4StepPoint();
-    thePoint->SetPosition(origin);
-    theStep = new G4Step();
-    theStep->SetPreStepPoint(thePoint);
-    neutronTrack = new G4Track(dynamicNeutron, 0., origin);
-    neutronTrack->SetStep(theStep);
-    projectile = new G4HadProjectile(*neutronTrack);
-    //*/
+        //material = nist->FindOrBuildMaterial(material_name);
+        material = nist->FindOrBuildMaterial(material_name + "_0"); // zero-temp version
         
         thePoint->SetMaterial(material);
 
-        G4cout << "Set material of thePoint" << G4endl;
+        G4cout << "Set material to " << material_name << G4endl;
+        G4cout << "Material temp = " << material->GetTemperature()/CLHEP::kelvin << " kelvin" << G4endl; // 293.15
 
         // loop over G
         for (G4int G : Gs) {
 
-            // reset counts and counts
+            // reset counts
             for (int g1 = 0; g1 < G+2; ++g1) {
                 for (int g2 = 0; g2 < G+2; ++g2) {
                     counts[g1][g2] = 0;
                 }
             }
 
-            G4cout << "Reset counts and counts" << G4endl;
+            G4cout << "Reset counts" << G4endl;
 
             // calculate Eg
             alpha = std::pow(Emin/Emax, 1./G);
-            G4cout << "alpha = " << alpha << G4endl;
+            //G4cout << "alpha = " << alpha << G4endl;
             Eg[0] = Emax;
 
             //G4cout << "Calculated group edges" << G4endl;
@@ -341,7 +319,7 @@ int main(int argc, char **argv) {
 
                     //G4cout << g << "/" << gf << " : counts: " << counts[g][g] << G4endl; 
 
-                } while (counts[g][gmax] < 100 && counts[g][g] < 10000);
+                } while (counts[g][gmax] < 1000 && counts[g][g] < 100000);
                 // when desired error reached, break
             
             } // end loop over initial group
