@@ -1,5 +1,10 @@
-# `ntransporter`
+# `ntransporter v1.0`
 Neutron transport code for background analysis.
+
+
+## Overview
+
+This code calculates the neutron flux in an infinite slab of material using the multigroup diffusion approximation with zeroth-order evaluated group constants (see below for derivation/description of this approximation).
 
 ## Directory Structure
 
@@ -11,6 +16,7 @@ This repository is divided into several directories by function. The overall rep
 |------- data/
 |---- cross_sections/
 |------- data/
+|------- examples/
 |---- process_reader/
 |---- include/
 |------- 
@@ -120,9 +126,7 @@ The top-level `ntransporter/` directory contains the following files:
 
 - `SuperSim_Main.hh` : overloaded `SuperSim_Main` header file from `SuperSim` - needed to redefine members of the `SuperSim_Main` class as public so they can be accessed by `ntransporter`
 
-## V1 Physics - Boundary Conditions (Infinite Slab)
-
-Version 1: Direct-coupled multigroup diffusion approximation with zeroth-order evaluated group constants
+## Version 1 Physics - Direct-Coupled Multigroup Diffusion Approximation with Zeroth-Order Evaluated Group Constants
 
 
 The full neutron transport equation is: 
@@ -157,7 +161,7 @@ and the neutron current density $\boldsymbol{J}$:
 
 $\boldsymbol{J}(E) \equiv \int_{4\pi} \boldsymbol{\hat{\Omega}} \psi(E,\boldsymbol{\hat{\Omega}}) d\boldsymbol{\Omega}$
 
-and make two physical assumptions. 
+(both with units neutrons per unit time per unit area per unit energy) and make two physical assumptions. 
 
 
 First, assume the angular flux $\psi$ can be modelled sufficiently with linear anisotropy:
@@ -233,6 +237,13 @@ Also note the spatial derivative term should be expanded as the following:
 
 $\nabla \cdot D_g \nabla \phi_g = \sum_j \nabla_j D_{gj} \nabla_j \phi_g$
 
+
+### Note on Group Structure
+
+We consider a group structure with fast groups between 0.1 eV and 20 MeV and a single thermal group below 0.1 eV. The actual numerical value of the lower bound of the thermal group is set as machine epsilon times 0.1 eV (note that going this low is unnecessary and causes a few minor numerical problems, and later version change this to 1e-7 eV).
+
+
+Given these specifications, a grouping (set of group boundaries) is specified by the number of fast groups. In the code this is what `G` in the code refers to, while $G$ in the derivations here refers to the *total* number of groups, `G+1`.
 
 
 
@@ -345,7 +356,7 @@ Note that calculations including the self-scattering effects are much more accur
 
 ### Evaluating Group Constants
 
-The evaluation of most group constants requires knowledge of the flux $\phi(E)$. We use a zeroth-order approximation $\phi(E)\propto 1/E$, the derivation of which relies on the following approximations:
+The evaluation of most group constants requires knowledge of the flux $\phi(E)$. We use a zeroth-order approximation for fast groups of $\phi(E)\propto 1/E$, the derivation of which relies on the following approximations:
 
 - Assume s-wave scattering: $\Sigma_s(E'\rightarrow E)=\frac{\Sigma_s(E')}{(1-\alpha)E'}$ when $E<E'<E/\alpha$
 
@@ -355,4 +366,4 @@ The evaluation of most group constants requires knowledge of the flux $\phi(E)$.
 
 These above assumptions result in an asymptotic solution $\phi(E)\propto \frac{1}{\Sigma_s(E) E}$ (note also this is the form used to derive the approximations for the self-scattering fraction $q$ above). We then neglect the variation in $\Sigma_s(E)$ over the group: $\phi(E)\propto \frac{1}{E}$.
 
-
+For the thermal group, we assume a Maxwell-Boltzmann distribution at room temperature (0.0257 eV).
