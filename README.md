@@ -151,7 +151,7 @@ $\Sigma_t = \Sigma_t(\boldsymbol{r}, E) =$ total neutron cross section (scatteri
 
 $s=s(\boldsymbol{r},E,\boldsymbol{\hat{\Omega}})=$ neutron source (neutrons per unit time per unit volume per unit energy per unit solid angle) 
 
-$\Sigma_s(E'\rightarrow E, \boldsymbol{\hat{\Omega}'}\rightarrow\boldsymbol{\hat{\Omega}})=\Sigma_s(E,E',\boldsymbol{\hat{\Omega}'}\cdot\boldsymbol{\hat{\Omega}}) = $ scattering cross section from primed to unprimed state (differential over final direction and final energy)
+$\Sigma_s(E'\rightarrow E,\boldsymbol{\hat{\Omega}'}\rightarrow\boldsymbol{\hat{\Omega}})=\Sigma_s(E,E',\boldsymbol{\hat{\Omega}'}\cdot\boldsymbol{\hat{\Omega}}) = $ scattering cross section from primed to unprimed state (differential over final direction and final energy)
 
 To move to the **neutron diffusion equation**, we first define the scalar flux $\phi$:
 
@@ -358,7 +358,7 @@ Note that calculations including the self-scattering effects are much more accur
 
 The evaluation of most group constants requires knowledge of the flux $\phi(E)$. We use a zeroth-order approximation for fast groups of $\phi(E)\propto 1/E$, the derivation of which relies on the following approximations:
 
-- Assume s-wave scattering: $\Sigma_s(E'\rightarrow E)=\frac{\Sigma_s(E')}{(1-\alpha)E'}$ when $E<E'<E/\alpha$
+- Assume s-wave scattering: $\Sigma_s(E'\rightarrow E)=\frac{\Sigma_s(E')}{(1-\alpha)E'}$ when $E\lt E'\lt E/\alpha$
 
 - Ignore absorption and inelastic scattering
 
