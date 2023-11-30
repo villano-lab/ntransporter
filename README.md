@@ -149,7 +149,7 @@ $\psi = \psi(\boldsymbol{r}, E, \boldsymbol{\hat{\Omega}},t) =$ angular neutron 
 
 $\Sigma_t = \Sigma_t(\boldsymbol{r}, E) =$ total neutron cross section (scattering plus absorption), units of inverse length
 
-$s=s(\boldsymbol{r}, E, \boldsymbol{\hat{\Omega}}) =$ neutron source (neutrons per unit time per unit volume per unit energy per unit solid angle) 
+$s=s(\boldsymbol{r},E,\boldsymbol{\hat{\Omega}})=$ neutron source (neutrons per unit time per unit volume per unit energy per unit solid angle) 
 
 $\Sigma_s(E'\rightarrow E, \boldsymbol{\hat{\Omega}'}\rightarrow\boldsymbol{\hat{\Omega}})=\Sigma_s(E,E',\boldsymbol{\hat{\Omega}'}\cdot\boldsymbol{\hat{\Omega}}) = $ scattering cross section from primed to unprimed state (differential over final direction and final energy)
 
@@ -193,7 +193,7 @@ $\frac{1}{v}\frac{\partial \phi}{\partial t} - \nabla  D(E) \nabla \phi(E) + \Si
 
 ### The Multigroup Approximation
 
-We now define a series of $G$ energy intervals called ``groups" delineated by the energies $E_g$, where $0\leq g\leq G$, such that $E_{g+1} < E_g \forall g$. Group $g$ refers to the range of energies $E_{g} \leq E \leq E_{g-1}$. $E_0$ corresponds to the maximum energy attainable by neutrons in the system (for radiogenic neutrons, $E_0\sim 20\,\text{MeV}$), and $E_G$ corresponds to the minimum energy of interest, typically thermal energies. Introduce the notation for integrating over group $g$: 
+We now define a series of $G$ energy intervals called ``groups" delineated by the energies $E_g$, where $0\leq g\leq G$, such that $E_{g+1} < E_g \forall g$. Group $g$ refers to the range of energies $E_{g} \leq E \leq E_{g-1}$. $E_0$ corresponds to the maximum energy attainable by neutrons in the system (for radiogenic neutrons, $E_0\sim$ 20 MeV), and $E_G$ corresponds to the minimum energy of interest, typically thermal energies. Introduce the notation for integrating over group $g$: 
 
 $\int_g dE \cdots \equiv \int_{E_{g}}^{E_{g-1}} dE \cdots$
 
@@ -201,7 +201,7 @@ $\int_g dE \cdots \equiv \int_{E_{g}}^{E_{g-1}} dE \cdots$
 Integrating the diffusion equation over group $g$ then yields the **multigroup diffusion equation**:
 
 
-$\frac{1}{v_g}\frac{\partial \phi_g}{\partial t} - \nabla \cdot D_g \nabla \phi_g + \Sigma_{tg} \phi_g = S_g + \sum_{g'=1}^\infty \Sigma_{sg'g} \phi_{g'}$
+$\frac{1}{v_g}\frac{\partial \phi_g}{\partial t} - \nabla \cdot D_g \nabla \phi_g + \Sigma_{tg} \phi_g = S_g + \sum_{g'=1}^{\infty} \Sigma_{sg'g} \phi_{g'}$
 
 
 where we've defined the group flux $\phi_g$:
@@ -252,7 +252,7 @@ With these in place, the bounds of the fast groups are $E_G$ = 0.1 eV and $E_0$ 
 
 From the neutron diffusion equation, we consider the steady-state, infinite medium case, and so can drop the time and spatial derivatives, resulting in the "slowing down equation:"
 
-$\Sigma_t(E) \phi(E) = S(E) + \int_0^\infty dE' \Sigma_s(E'\rightarrow E) \phi (E')$
+$\Sigma_t(E) \phi(E) = S(E) + \int_0^{\infty} dE' \Sigma_s(E'\rightarrow E) \phi (E')$
 
 where now everything is only a function of energy.
 
@@ -260,7 +260,7 @@ where now everything is only a function of energy.
 Once again integrating over group $g$, we arrive at the **multigroup slowing down equation**:
 
 
-$\Sigma_{tg} \phi_g = S_g + \sum_{g'=1}^\infty \Sigma_{sg'g} \phi_{g'}$
+$\Sigma_{tg} \phi_g = S_g + \sum\limits_{g'=1}^{\infty} \Sigma_{sg'g} \phi_{g'}$
 
 
 
@@ -269,7 +269,7 @@ $\Sigma_{tg} \phi_g = S_g + \sum_{g'=1}^\infty \Sigma_{sg'g} \phi_{g'}$
 
 We split up the scattering term into four separate terms:
 
-$\sum_{g'=1}^\infty \Sigma_{sg'g} \phi_{g'} = \sum_{g'=1}^{g-2} \Sigma_{sg'g} \phi_{g'} +\Sigma_{s,g-1,g}\phi_{g-1} + \Sigma_{sgg}\phi_g + \sum_{g'=g+1}^\infty \Sigma_{sg'g}\phi_{g'}$
+$\sum\limits_{g'=1}^\infty \Sigma_{sg'g} \phi_{g'} = \sum\limits_{g'=1}^{g-2} \Sigma_{sg'g} \phi_{g'} +\Sigma_{s,g-1,g}\phi_{g-1} + \Sigma_{sgg}\phi_g + \sum\limits_{g'=g+1}^\infty \Sigma_{sg'g}\phi_{g'}$
 
 It is common to consider neutron energies well above thermal energies, where upscattering can be neglected, and the last term vanishes. 
 
@@ -294,7 +294,7 @@ $\hspace{5ex}\equiv \Sigma_{s,g-1}$
 which is just the total scattering cross section integrated over group $g-1$, the analog of $\Sigma_{t,g-1}$ for only scattering events. Going from the second to the third line we used the same approximation as the direct coupling approximation, written slightly differently mathematically. We write the total scattering cross section as a sum over the groups of the differential scattering cross section:
 
 
-$\Sigma_s(E') = \int_0^\infty dE \Sigma_s(E'\rightarrow E) = \sum_{g=1}^\infty \int_g dE \Sigma_s(E'\rightarrow E) $
+$\Sigma_s(E') = \int_0^\infty dE \Sigma_s(E'\rightarrow E) = \sum\limits_{g=1}^\infty \int_g dE \Sigma_s(E'\rightarrow E) $
 
 $\hspace{5ex}= \sum_{g=1}^{g'-1} \int_g dE \Sigma_s(E'\rightarrow E )
     + \int_{g'} dE \Sigma_s(E'\rightarrow E) $
