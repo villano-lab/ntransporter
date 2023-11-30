@@ -151,7 +151,7 @@ $\Sigma_t = \Sigma_t(\boldsymbol{r}, E) =$ total neutron cross section (scatteri
 
 $s=s(\boldsymbol{r},E,\boldsymbol{\hat{\Omega}})=$ neutron source (neutrons per unit time per unit volume per unit energy per unit solid angle) 
 
-$\Sigma_s(E'\rightarrow E,\boldsymbol{\hat{\Omega}'}\rightarrow\boldsymbol{\hat{\Omega}})$ $=\Sigma_s(E,E',\boldsymbol{\hat{\Omega}'}\cdot\boldsymbol{\hat{\Omega}}) = $ scattering cross section from primed to unprimed state (differential over final direction and final energy)
+$\Sigma_s(E'\rightarrow E,\boldsymbol{\hat{\Omega}'}\rightarrow\boldsymbol{\hat{\Omega}})$ $=\Sigma_s(E,E',\boldsymbol{\hat{\Omega}'}\cdot\boldsymbol{\hat{\Omega}})=$ scattering cross section from primed to unprimed state (differential over final direction and final energy)
 
 To move to the **neutron diffusion equation**, we first define the scalar flux $\phi$:
 
