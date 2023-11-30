@@ -119,7 +119,7 @@ $\Sigma_{ig} = \frac{1}{\phi_g} \int_g dE \Sigma_i(E) \phi(E)$
 
 $\phi_g = \int_g dE \phi(E)$
 
-where we approximate $\phi(E)$ as a $1/E$ distribution. The group cross sections turn into:
+where we approximate $\phi(E)$ as a $1/E$ distribution in the fat groups. The group cross sections turn into:
 
 
 $\Sigma_{ig} = \left(\int_g dE \Sigma_i(E)/E \right)/\left(\int_g dE/E\right)$
@@ -131,5 +131,6 @@ $\Sigma_{ig} = \left(\sum\limits_{k=1}^{n_g}\Sigma_i(E_k)/E_k + \Sigma_i(E_{k-1}
 where the $E_k$ are logarithmically spaced between $E_g$ and $E_{g-1}$: $E_k = E_gr^k$, $r=(E_{g-1}/E_g)^{1/n_g}$
  
 
-
+In the thermal group, the flux is approximated as a Maxwell-Boltzmann distribution 
+ $\phi(E)\propto\sqrt{E}e^{-E/kT}$ at room temperature, $kT$ = 0.0257 eV, and is evaluated analogously to the fast groups. 
 
