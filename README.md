@@ -87,23 +87,23 @@ make NT_Src
 An overview of the executables built by `ntransporter` is given here. In general, the executables built by `ntransporter` begin with "`NT_`".
 
 - `NT_XS` : calculate group cross sections for one material/group number pair
-<br>
+
 Usage: `./NT_XS output_file_base_path material [ngroups=100] [points_per_group=10]`
 
 - `NT_XX` : calculate group cross sections for multiple material/group number pairs (note the results change depending on the order of pairs - use is not recommended)
-<br>
+
 Usage: `./NT_XX output_file_base_path material1 material2 ... [-n ngroups1=100 ngroups2 ...]`
 
 - `NT_Src` : calculate group sources 
-<br>
+
 Usage: `./NT_Src output_file_base_path material path_to_supersim [ngroups=100]`
 
 - `NT_BC` : calculate boundary conditions (infinite slab flux)
-<br>
+
 Usage: `./NT_BC output_file_base_path path_to_ntransporter_base material [ngroups=100]`
 
 - `PROCINFO` : print hadronic process info for the neutron in the "Shielding" physics list in `SuperSim` and calculate total cross sections for neutron of different energies
-<br>
+
 Usage: `./PROCINFO`
 
 ### Note About Outputs
@@ -245,7 +245,7 @@ We consider a group structure with fast groups between 0.1 eV and 20 MeV and a s
 
 Given these specifications, a grouping (set of group boundaries) is specified by the number of fast groups. In the code this is what `G` in the code refers to, while $G$ in the derivations here refers to the *total* number of groups, `G+1`.
 
-
+With these in place, the bounds of the fast groups are $E_G$ = 0.1 eV and $E_0$ = 20 MeV, and any particular group boundary can be calculated as $E_g=E_0\beta^g$, where $\beta=(E_G/E_0)^{1/G}$
 
 ### The Slowing-Down Equation
 
