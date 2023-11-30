@@ -126,7 +126,7 @@ $\Sigma_{ig} = \left(\int_g dE \Sigma_i(E)/E \right)/\left(\int_g dE/E\right)$
 
 We then approximate the integrals as trapezoidal integrals over $n_g$ trapezoids:
 
-$\Sigma_{ig} = \left(\sum_{k=1}^{n_g}\Sigma_i(E_k)/E_k + \Sigma_i(E_{k-1})/E_{k-1}\right)/\left(\sum_{k=1}^{n_g}1/E_k+1/E_{k-1}\right)$
+$\Sigma_{ig} = \left(\sum\limits_{k=1}^{n_g}\Sigma_i(E_k)/E_k + \Sigma_i(E_{k-1})/E_{k-1}\right)/\left(\sum\limits_{k=1}^{n_g}1/E_k+1/E_{k-1}\right)$
 
 where the $E_k$ are logarithmically spaced between $E_g$ and $E_{g-1}$: $E_k = E_gr^k$, $r=(E_{g-1}/E_g)^{1/n_g}$
  

@@ -201,7 +201,7 @@ $\int_g dE \cdots \equiv \int_{E_{g}}^{E_{g-1}} dE \cdots$
 Integrating the diffusion equation over group $g$ then yields the **multigroup diffusion equation**:
 
 
-$\frac{1}{v_g}\frac{\partial \phi_g}{\partial t} - \nabla \cdot D_g \nabla \phi_g + \Sigma_{tg} \phi_g = S_g + \sum_{g'=1}^{\infty} \Sigma_{sg'g} \phi_{g'}$
+$\frac{1}{v_g}\frac{\partial \phi_g}{\partial t} - \nabla \cdot D_g \nabla \phi_g + \Sigma_{tg} \phi_g = S_g + \sum\limits_{g'=1}^{\infty} \Sigma_{sg'g} \phi_{g'}$
 
 
 where we've defined the group flux $\phi_g$:
@@ -235,7 +235,7 @@ $\hspace{5ex}\Sigma_{sg'g} \equiv \frac{1}{\phi_{g'}} \int_g dE \int_{g'} dE' \S
 
 Also note the spatial derivative term should be expanded as the following:
 
-$\nabla \cdot D_g \nabla \phi_g = \sum_j \nabla_j D_{gj} \nabla_j \phi_g$
+$\nabla \cdot D_g \nabla \phi_g = \sum\limits_j \nabla_j D_{gj} \nabla_j \phi_g$
 
 
 ### Note on Group Structure
@@ -296,11 +296,11 @@ which is just the total scattering cross section integrated over group $g-1$, th
 
 $\Sigma_s(E') = \int_0^\infty dE \Sigma_s(E'\rightarrow E) = \sum\limits_{g=1}^\infty \int_g dE \Sigma_s(E'\rightarrow E) $
 
-$\hspace{5ex}= \sum_{g=1}^{g'-1} \int_g dE \Sigma_s(E'\rightarrow E )
+$\hspace{5ex}= \sum\limits_{g=1}^{g'-1} \int_g dE \Sigma_s(E'\rightarrow E )
     + \int_{g'} dE \Sigma_s(E'\rightarrow E) $
 
 $\hspace{5ex}+ \int_{g+1} dE \Sigma_s(E'\rightarrow E )
-    + \sum_{g=g'+2}^\infty \int_g dE \Sigma_s(E'\rightarrow E) $
+    + \sum\limits_{g=g'+2}^\infty \int_g dE \Sigma_s(E'\rightarrow E) $
 
 The first term represents upscattering, the second is the self-scattering term, the third term is the direct-coupling term, and the fourth term represents larger energy loss. We neglect all but the third term, leaving:
 
