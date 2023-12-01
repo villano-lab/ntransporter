@@ -24,6 +24,12 @@ The executable creates one output data file, with the form
 <output_file_base_path>_<material>_<ngroups>_<points_per_group>_xs.dat
 ```
 
+This file contains evaluated group cross section data in four columns. Each row looks like:
+
+$g\hspace{5ex}E_g\hspace{5ex}\Sigma_{sg}\hspace{5ex}\Sigma_{tg}$
+
+That is, the group number (starting with group "zero," for which the cross sections are zero), the group lower bound, the scattering group cross section, and the total group cross section.
+
 **Arguments:**
 
 `output_file_base_path` : base of file path of output data files, including base of filename
@@ -133,4 +139,20 @@ where the $E_k$ are logarithmically spaced between $E_g$ and $E_{g-1}$: $E_k = E
 
 In the thermal group, the flux is approximated as a Maxwell-Boltzmann distribution 
  $\phi(E)\propto\sqrt{E}e^{-E/kT}$ at room temperature, $kT$ = 0.0257 eV, and is evaluated analogously to the fast groups. 
+
+
+
+## Interactions
+
+The evaluated cross sections take data from four hadronic processes in `Geant4`:
+
+- `G4HadronElasticProcess` : elastic scattering
+- `` : inelastic scattering
+- `` : thermal capture ($(n,\gamma)$)
+- `` : neutron-induced fission
+
+See documentation for `ntransporter/process_reader/` for more information on these processes.
+
+
+Elastic and inelastic cross sections are added together to calculate the scattering cross sections $\Sigma_{sg}$, while all four are added together to calculate the total cross sections $\Sigma_{tg}$.
 
