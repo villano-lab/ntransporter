@@ -89,6 +89,8 @@ The executable creates output data files for each combination of material/ngroup
 .
 ```
 
+These files are formatted identically to the `NT_XS` output files.
+
 **Arguments:**
 
 `output_file_base_path` : base of file path of output data files, including base of filename
