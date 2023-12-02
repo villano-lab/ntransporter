@@ -13,17 +13,9 @@ This repository is divided into several directories by function. The overall rep
 ```
 |- ntransporter/
 |---- boundary_conditions/
-|------- data/
 |---- cross_sections/
-|------- data/
-|------- examples/
 |---- process_reader/
-|---- include/
-|------- 
 |---- sources/
-|------- 
-|---- src/
-|------- 
 ```
 
 More details on each top-level subdirectory can be found in individual `README`'s.
