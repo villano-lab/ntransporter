@@ -148,10 +148,10 @@ In the thermal group, the flux is approximated as a Maxwell-Boltzmann distributi
 
 The evaluated cross sections take data from four hadronic processes in `Geant4`:
 
-- `G4HadronElasticProcess` : elastic scattering
-- `` : inelastic scattering
-- `` : thermal capture ($(n,\gamma)$)
-- `` : neutron-induced fission
+- `hadElastic` : elastic scattering
+- `neutronInelastic` : inelastic scattering
+- `nCapture` : thermal capture ($(n,\gamma)$)
+- `nFission` : neutron-induced fission
 
 See documentation for `ntransporter/process_reader/` for more information on these processes.
 
