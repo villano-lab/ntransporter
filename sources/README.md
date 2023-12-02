@@ -24,7 +24,7 @@ The file contains the evaluated group source constants in three columns. Each ro
 
 $g\hspace{5ex}E_g\hspace{5ex}S_g$
 
-The group number (starting with group zero, for which the source term is zero), the group lower bound, and the group source.
+The group number (starting with group zero, for which the source term is zero), the group lower bound, and the group source separated by spaces.
 
 **Arguments:**
 

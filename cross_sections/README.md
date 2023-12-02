@@ -28,7 +28,7 @@ This file contains evaluated group cross section data in four columns. Each row 
 
 $g\hspace{5ex}E_g\hspace{5ex}\Sigma_{sg}\hspace{5ex}\Sigma_{tg}$
 
-That is, the group number (starting with group "zero," for which the cross sections are zero), the group lower bound, the scattering group cross section, and the total group cross section.
+That is, the group number (starting with group "zero," for which the cross sections are zero), the group lower bound, the scattering group cross section, and the total group cross section separated by spaces.
 
 **Arguments:**
 
