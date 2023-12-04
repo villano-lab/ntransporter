@@ -6,7 +6,7 @@ and calculating group constants
 
 ## Executables
 
-This directory generates two executables for group cross section evaluation
+This directory generates two executables for group cross section evaluation, `NT_XS` and `NT_XX`.
 
 ### `NT_XS`
 
@@ -28,7 +28,7 @@ This file contains evaluated group cross section data in four columns. Each row 
 
 $g\hspace{5ex}E_g\hspace{5ex}\Sigma_{sg}\hspace{5ex}\Sigma_{tg}$
 
-That is, the group number (starting with group "zero," for which the cross sections are zero), the group lower bound, the scattering group cross section, and the total group cross section separated by spaces.
+That is, the group number (starting with group "zero," for which the cross sections are zero), the group lower bound, the scattering group cross section, and the total group cross section, separated by spaces.
 
 **Arguments:**
 
@@ -54,7 +54,7 @@ From inside build directory `ntransporter/build`, run
 The resulting output file will then have the form 
 
 ```
-<...>/ntransporter/cross_sections/data/V1/cross_sections_G4_Si_50_20_xs.dat
+<...>/ntransporter/cross_sections/data/V1/cross_sections_G4_Si_100_20_xs.dat
 ```
 
 
@@ -97,7 +97,7 @@ These files are formatted identically to the `NT_XS` output files.
 
 `material<n>` : names of `G4Material` to calculate cross sections for (must be a named material in `CDMSMaterialTable` in `SuperSim`)
 
-`ngroups<n>` : (optional, default = 100) number of fast groups - note `-n` must be added after the list of materials and before the first of the `ngroup`'s
+`ngroups<n>` : (optional, default = 100) number of fast groups - note the flag `-n` must be added after the list of materials and before the first of the `ngroup`'s
 
 
 
@@ -127,7 +127,7 @@ $\Sigma_{ig} = \frac{1}{\phi_g} \int_g dE \Sigma_i(E) \phi(E)$
 
 $\phi_g = \int_g dE \phi(E)$
 
-where we approximate $\phi(E)$ as a $1/E$ distribution in the fat groups. The group cross sections turn into:
+where we approximate $\phi(E)$ as a $1/E$ distribution in the fast groups. The group cross sections turn into:
 
 
 $\Sigma_{ig} = \left(\int_g dE \Sigma_i(E)/E \right)/\left(\int_g dE/E\right)$
@@ -150,7 +150,7 @@ The evaluated cross sections take data from four hadronic processes in `Geant4`:
 
 - `hadElastic` : elastic scattering
 - `neutronInelastic` : inelastic scattering
-- `nCapture` : thermal capture ($(n,\gamma)$)
+- `nCapture` : thermal capture, $(n,\gamma)$
 - `nFission` : neutron-induced fission
 
 See documentation for `ntransporter/process_reader/` for more information on these processes.
