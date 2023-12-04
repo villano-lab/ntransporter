@@ -87,7 +87,7 @@ The first process is a `Transportation` process, which all particles have in `Ge
 
 - `hadElastic` : elastic scattering
 - `neutronInelastic` : inelastic scattering
-- `nCapture` : thermal capture, (n,\gamma)$
+- `nCapture` : thermal capture, $(n,\gamma)$
 - `nFission` : neutron-induced fission
 
 
