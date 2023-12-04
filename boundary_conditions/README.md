@@ -5,7 +5,7 @@ Directory for calculating infinite-slab neutron flux. In the full neutron transp
 
 ## Executables
 
-This directory builds one executable for calculating infinite slab flux using direct-coupling approximation without self-scattering. 
+This directory builds one executable called `NT_BC` for calculating infinite slab flux using direct-coupling approximation without self-scattering. 
 
 ### `NT_BC`
 
@@ -30,7 +30,7 @@ This file contains calculated infinite-slab fluxes. Each row looks like:
 
 $g\hspace{5ex}E_g\hspace{5ex}\phi_g$
 
-That is, the group number (including group zero, for which the flux is zero), the group lower bound, and the group flux separated by spaces.
+That is, the group number (including group zero, for which the flux is zero), the group lower bound, and the group flux, separated by spaces.
 
 
 **Arguments:**
@@ -64,7 +64,7 @@ That is, the group number (including group zero, for which the flux is zero), th
 
 The direct-coupled multigroup slowing down equation is
 
-$ \Sigma_{tg} \phi_g = S_g + \Sigma_{s,g-1} \phi_{g-1}$
+$\Sigma_{tg} \phi_g = S_g + \Sigma_{s,g-1} \phi_{g-1}$
 
 This is very straightforwardly implemented with a recursive algorithm with $\phi_0\equiv0$.
 
