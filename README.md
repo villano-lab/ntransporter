@@ -33,7 +33,7 @@ $ mkdir build
 $ cd build
 ```
 
-At the time of compilation, the environment must be configured just as one would in trying to build `SuperSim` itself. For example, if one wishes to run `ntransporter` on Cedar, follow the instructions on [this Confluence page](https://confluence.slac.stanford.edu/display/CDMS/Running+Simulations+on+ComputeCanada#RunningSimulationsonComputeCanada-CompilingSuperSimonCedar), and run the `setup_supersim.sh` script before compiling `ntransporter`. This should set all required environment variables. One can check if this is successful by checking the value of `CDMS_SUPERSIM`:
+At the time of compilation, the environment must be configured just as one would in trying to build SuperCDMS [`SuperSim`](https://gitlab.com/supercdms/Simulations/supersim). For example, if one wishes to run `ntransporter` on Cedar, follow the instructions on [this Confluence page](https://confluence.slac.stanford.edu/display/CDMS/Running+Simulations+on+ComputeCanada#RunningSimulationsonComputeCanada-CompilingSuperSimonCedar), and run the `setup_supersim.sh` script before compiling `ntransporter`. This should set all required environment variables. One can check if this is successful by checking the value of `CDMS_SUPERSIM`:
 
 ```
 $ echo $CDMS_SUPERSIM
@@ -114,7 +114,7 @@ The top-level `ntransporter/` directory contains the following files:
 
 - `NTUtilities.hh` : Header file containing functions and constants used in multiple of the top-level directories, ex. thermal energy, the kernel of the Maxwell-Boltzmann energy distribution, etc.
 
-- `SuperSim_include.txt` : list of directories within SuperCDMS [`SuperSim`](https://gitlab.com/supercdms/Simulations/supersim) needed for project
+- `SuperSim_include.txt` : list of directories within SuperSim needed for project
 
 - `SuperSim_Main.hh` : overloaded `SuperSim_Main` header file from `SuperSim` - needed to redefine members of the `SuperSim_Main` class as public so they can be accessed by `ntransporter`
 
