@@ -71,6 +71,6 @@ This is very straightforwardly implemented with a recursive algorithm with $\phi
 
 ## SuperSim Estimates
 
-The estimates of infinite-slab flux in different materials from SuperSim stored in `ntransporter/boundary_conditions/data/SuperSim_estimates/` were recorded using SuperSim simulations of 10^6? neutrons in a 1-km slab of the specified material. Every track of every neutron was summed up and contributed to the flux in the corresponding energy group with weights given by the track length. Overall normalization is given by the sum of the group source data. These data files also contain an additional $\delta\phi_g$ column giving the absolute uncertainty in the group flux due to statistical errors. 
+The estimates of infinite-slab flux in different materials from SuperSim stored in `ntransporter/boundary_conditions/data/SuperSim_estimates/` were recorded using SuperSim simulations of 10^5 neutrons in a 1-km slab of the specified material. Every track of every neutron was summed up and contributed to the flux in the corresponding energy group with weights given by the track length. Overall normalization is given by the sum of the group source data. These data files also contain an additional $\delta\phi_g$ column giving the absolute uncertainty in the group flux due to statistical errors. 
 
 
