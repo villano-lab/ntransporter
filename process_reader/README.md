@@ -21,7 +21,7 @@ Configuring environment geometry
 Initializing
 ```
 
-The program then calls up the `G4Neutron` and fetches its process manager, which is responsible for keeping track of and choosing what processes (interactions) influence a particular neutron at every simulation step.
+The program then calls up the `G4Neutron` and fetches its process manager, which is responsible for keeping track of and choosing what processes influence a particular neutron at every simulation step.
 
 ```
 Fetching neutron singleton
@@ -83,11 +83,11 @@ Process 8 :  name = Scorers, type = ------
 This process has not yet been described
 ```
 
-The first process is a `Transportation` process, which all particles have in `Geant4`. This covers unimpeded transportation through materials and across material boundaries. Process 2 is the natural decay process, again present in almost all particles. For neutrons the decay process is negligible, as the half-life of the neutron is on the order of 15 minutes (compare to ~ns time-of-flight for elastic scatters). The `nKiller`, `UserSpecialCut`, and `Scorers` processes are special user-controlled processes to kill or track neutrons and are not relevant to us. The four remaining processes represent real physical interactions that neutrons undergo during transport, and are the ones of interest to us:
+The first process is a `Transportation` process, which all particles have in `Geant4`. This covers unimpeded transportation through materials and across material boundaries. Process 2 is the natural decay process, again present in almost all particles. For neutrons the decay process is negligible, as the half-life of the neutron is on the order of 15 minutes (compare to ~ns time-of-flight between elastic scatters). The `nKiller`, `UserSpecialCut`, and `Scorers` processes are special user-controlled processes to kill or track neutrons and are not relevant to us. The four remaining processes represent real physical interactions that neutrons undergo during transport, and are the ones of interest to us:
 
 - `hadElastic` : elastic scattering
 - `neutronInelastic` : inelastic scattering
-- `nCapture` : thermal capture ($(n,\gamma)$)
+- `nCapture` : thermal capture, (n,\gamma)$
 - `nFission` : neutron-induced fission
 
 
