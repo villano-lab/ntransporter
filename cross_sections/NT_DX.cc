@@ -210,8 +210,8 @@ int main(int argc, char **argv) {
     // materials loop
     for (G4String material_name : material_names) {
         
-        //material = nist->FindOrBuildMaterial(material_name);
-        material = nist->FindOrBuildMaterial(material_name + "_0"); // zero-temp version
+        material = nist->FindOrBuildMaterial(material_name);
+        //material = nist->FindOrBuildMaterial(material_name + "_0"); // zero-temp version
         
         thePoint->SetMaterial(material);
 
