@@ -43,7 +43,7 @@ which should display the full path of the top-level `supersim` directory of `Sup
 
 In addition, `ntransporter` requires a few variables giving paths to important files or other programs. These are:
 
-- `SUPERSIM_INCLUDE` : the full path of the `SuperSim_include.txt` file. If one wishes to use the `SuperSim_include.txt` file included at the top level of this directory, the default value of "`SuperSim_include.txt`" will be fine.
+- `SUPERSIM_INCLUDE` : the full path of the `SuperSim_include.txt` file. If one wishes to use the `SuperSim_include.txt` file included at the top level of this repository, the default value ("`SuperSim_include.txt`") will be fine.
 
 
 
@@ -94,7 +94,7 @@ Usage: `./NT_Src output_file_base_path material path_to_supersim [ngroups=100]`
 
 Usage: `./NT_BC output_file_base_path path_to_ntransporter_base material [ngroups=100]`
 
-- `PROCINFO` : print hadronic process info for the neutron in the "Shielding" physics list in `SuperSim` and calculate total cross sections for neutron of different energies
+- `PROCINFO` : print hadronic process info for the neutron in the "Shielding" physics list in `SuperSim`
 
 Usage: `./PROCINFO`
 
@@ -158,7 +158,7 @@ $\boldsymbol{J}(E) \equiv \int_{4\pi} \boldsymbol{\hat{\Omega}} \psi(E,\boldsymb
 
 First, assume the angular flux $\psi$ can be modelled sufficiently with linear anisotropy:
 
-$\psi \approx \frac{1}{4\pi} \phi + \frac{3}{4\pi} \boldsymbol{J}\cdot \boldsymbol{\hat{\Omega}}$
+$\psi(\boldsymbol{\hat{\Omega}}) \approx \frac{1}{4\pi} \phi + \frac{3}{4\pi} \boldsymbol{J}\cdot \boldsymbol{\hat{\Omega}}$
 
 Second, assume the neutron current density $\boldsymbol{J}$ is proportional to the gradient of the scalar flux ("Fick's Law"):
 
@@ -185,7 +185,7 @@ $\frac{1}{v}\frac{\partial \phi}{\partial t} - \nabla  D(E) \nabla \phi(E) + \Si
 
 ### The Multigroup Approximation
 
-We now define a series of $G$ energy intervals called ``groups" delineated by the energies $E_g$, where $0\leq g\leq G$, such that $E_{g+1} < E_g \forall g$. Group $g$ refers to the range of energies $E_{g} \leq E \leq E_{g-1}$. $E_0$ corresponds to the maximum energy attainable by neutrons in the system (for radiogenic neutrons, $E_0\sim$ 20 MeV), and $E_G$ corresponds to the minimum energy of interest, typically thermal energies. Introduce the notation for integrating over group $g$: 
+We now define a series of $G$ energy intervals called "groups" delineated by the energies $E_g$, where $0\leq g\leq G$, such that $E_{g+1} < E_g \forall g$. Group $g$ refers to the range of energies $E_{g} \leq E \leq E_{g-1}$. $E_0$ corresponds to the maximum energy attainable by neutrons in the system (for radiogenic neutrons, $E_0\sim$ 20 MeV), and $E_G$ corresponds to the minimum energy of interest, typically thermal energies. Introduce the notation for integrating over group $g$: 
 
 $\int_g dE \cdots \equiv \int_{E_{g}}^{E_{g-1}} dE \cdots$
 
@@ -215,7 +215,7 @@ $\hspace{5ex}\Sigma_{tg} \equiv \frac{1}{\phi_g} \int_g dE \Sigma_t(E) \phi(E)$
 $\hspace{5ex}D_{gj} \equiv \frac{\int_g dE D(E) \nabla_j \phi(E) }{\int_g dE \nabla_j \phi(E)}$
 
 
-- The neutron speed:
+- The inverse neutron speed:
 
 $\hspace{5ex}\frac{1}{v_g} \equiv \frac{1}{\phi_g}\int_g dE \frac{1}{v}\phi(E)$
 
@@ -232,10 +232,10 @@ $\nabla \cdot D_g \nabla \phi_g = \sum\limits_j \nabla_j D_{gj} \nabla_j \phi_g$
 
 ### Note on Group Structure
 
-We consider a group structure with fast groups between 0.1 eV and 20 MeV and a single thermal group below 0.1 eV. The actual numerical value of the lower bound of the thermal group is set as machine epsilon times 0.1 eV (note that going this low is unnecessary and causes a few minor numerical problems, and later version change this to 1e-7 eV).
+We consider a group structure with fast groups between 0.1 eV and 20 MeV and a single thermal group below 0.1 eV. The actual numerical value of the lower bound of the thermal group is set as machine epsilon times 0.1 eV (note that going this low is unnecessary and causes a few minor numerical problems, and later versions change this to 1e-7 eV).
 
 
-Given these specifications, a grouping (set of group boundaries) is specified by the number of fast groups. In the code this is what `G` in the code refers to, while $G$ in the derivations here refers to the *total* number of groups, `G+1`.
+Given these specifications, a grouping (set of group boundaries) is specified by the number of fast groups. In the code this is what `G` refers to, while $G$ in the derivations here usually refers to the *total* number of groups, `G+1`.
 
 With these in place, the bounds of the fast groups are $E_G$ = 0.1 eV and $E_0$ = 20 MeV, and any particular group boundary can be calculated as $E_g=E_0\beta^g$, where $\beta=(E_G/E_0)^{1/G}$
 
