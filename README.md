@@ -23,7 +23,7 @@ More details on each top-level subdirectory can be found in individual `README`'
 
 ## Build Instructions
 
-The `ntransporter` program uses `cmake` utility to compile and build the executables in the program. Note that several steps in the build process require using the linux shell.
+The `ntransporter` program uses `cmake` utility to compile and build the executables in the program. Note that several steps in the cmake script require using the linux shell.
 
 To build the program, make a build directory. For these examples, it's assumed the build directory is located inside the top-level `ntransporter` directory:
 
