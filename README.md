@@ -41,6 +41,9 @@ $ echo $CDMS_SUPERSIM
 
 which should display the full path of the top-level `supersim` directory of `SuperSim`, e.g., `/home/ajbiffl3/supersim`.
 
+> [!NOTE]
+> `Geant4` must be built in multithreaded mode in order to interface correctly with `ntransporter`. One should set the cmake flag `GEANT4_BUILD_MULTITHREADED=ON` during compilation of `Geant4`
+
 In addition, `ntransporter` requires a few variables giving paths to important files or other programs. These are:
 
 - `SUPERSIM_INCLUDE` : the full path of the `SuperSim_include.txt` file. If one wishes to use the `SuperSim_include.txt` file included at the top level of this repository, the default value ("`SuperSim_include.txt`") will be fine.
