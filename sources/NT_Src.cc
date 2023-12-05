@@ -92,11 +92,6 @@ int main(int argc, char *argv[]) {
   // lower bound (basically zero)
   //Eg[G+1] = std::numeric_limits<G4double>::epsilon()*Eg[G];
   Eg[G+1] = 1e-6*Eg[G];
-
-
-  // vectors of energies, source rates, and fluxes for which there is data in the .dat files
-  doubles E_eval{0.};
-  doubles S_eval{0.};
   
 
   // vector of group sources (Sg[g] refers to group g)
@@ -108,7 +103,7 @@ int main(int argc, char *argv[]) {
 
 
   double gmin, gmax;
-  double E1, E2, dE1, dE2, s1, s2;
+  double E1, E2, dE1, dE2, s1, s2, stot;
 
   bool loop_again;
 
@@ -147,8 +142,7 @@ int main(int argc, char *argv[]) {
       gmin = Eg[g]; // lower bound of group
       gmax = Eg[g-1]; // upper bound of group
 
-      E_eval.clear();
-      S_eval.clear();
+      stot = 0.;
       loop_again = true;
 
       do {
@@ -157,33 +151,29 @@ int main(int argc, char *argv[]) {
             loop_again = false;
             break; // skip this group
           } else {
-            E_eval.push_back(E1);
-            S_eval.push_back(s1/dE1);            
+            stot += s1;           
           }
         } else {
-          E_eval.push_back(gmin);
-          S_eval.push_back(interp(gmin, E1, s1/dE1, E2, s2/dE2));
+          stot += (E2 - gmin)*s2/(E2 - E1);
         }
         if (E2 < gmax) { // read in next values
           E1 = E2;
           dE1 = dE2;
           s1 = s2;
           if (!(sourcefile >> E2 >> s2)) {
-            E_eval.push_back(E1);
-            S_eval.push_back(s1/dE1);
+            stot += s1;
             E1 = Eg[0] + 1.;
             E2 = Eg[0] + 1.;
             loop_again = false;
           }
         } else {
-          E_eval.push_back(gmax);
-          S_eval.push_back(interp(gmax, E1, s1/dE1, E2, s2/dE2));
+          stot += (gmax - E1)*s2/(E2 - E1);
           loop_again = false;
         }
       } while (loop_again);
 
-      if (E_eval.size() > 0) {
-        Sg[g] += source_weights[k]*trap(E_eval, S_eval);
+      if (stot > 0) {
+        Sg[g] += source_weights[k]*stot;
       }
     }
   }
