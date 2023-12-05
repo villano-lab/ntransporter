@@ -346,7 +346,8 @@ int main(int argc, char **argv) {
             G4cout << "Writing differential cross section data to " << fileName << G4endl;
 
             writeProbs(fileName, counts, G);
-            writeAllProbs("test_comp.txt", counts, G);
+            //writeAllProbs("test_comp.txt", counts, G);
+            writeAllProbs(output_file_base+"_"+material_name+"_"+std::to_string(G)+"_alldx.dat", counts, G);
 
         } // end loop over G
 
