@@ -77,6 +77,20 @@ Alternatively, one can build each executable individually, e.g.,
 make NT_Src
 ```
 
+
+### Dependencies
+
+The following packages must be installed/configured before building `ntransporter`:
+
+
+- **`ROOT`** : CERN's data processing language. Find installation instructions [here](https://root.cern/install/). Current versions of `ntransporter` have been tested on `ROOT` version `6.24/04`, but should work for any version `>= 6.02`
+
+- **`Geant4`** : the foundation of `SuperSim`, used for differential cross section calculations. Versions of `SuperSim` used by `ntransporter` (at time of writing, `<= V11.00.01`) use [`geant4-v10.6.3`](https://geant4.web.cern.ch/download/10.6.3.html). Installation instructions can be found [here](https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/) for the newest version, but should still work for 10.6.3.
+
+- **`SuperSim`** : SuperCDMS's main simulations software, used for configuring CDMS-specific physics lists and calculating total cross sections. Data under the `supersim` directory is used for source calculations. The entire source code must be available to this program, and the environment should be configured as when building/compiling the software yourself (see [this Confluence page](https://confluence.slac.stanford.edu/display/CDMS/Running+Simulations+at+Specific+Sites)). The code is available on the [Gitlab](https://gitlab.com/supercdms/Simulations/supersim). See also the [external package guide](https://confluence.slac.stanford.edu/display/CDMS/SuperSim+Reference+Manual#SuperSimReferenceManual-ExternalPackages): some environments may require `libuuid-dev` (`sudo apt-get install uuid-dev`).
+
+
+
 ## Executables Quick Guide
 
 An overview of the executables built by `ntransporter` is given here. In general, the executables built by `ntransporter` begin with "`NT_`".
