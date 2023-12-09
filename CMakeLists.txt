@@ -103,6 +103,13 @@ set(REGEN_CDMSVERSION OFF CACHE INTERNAL "" FORCE)
 # variable to hold list of SuperSim source files
 set(SUPERSOURCES "")
 
+file(READ "files.txt" SUPERSIM_FILES_FILE)
+string(REPLACE "\n" ";" SUPERSIM_FILES_FILE "${SUPERSIM_FILES_FILE}")
+foreach (FILE ${SUPERSIM_FILES_FILE})
+	if ("${FILE}" MATCHES "^[^#]")
+		list(APPEND SUPERSOURCES "${FILE}")
+        endif()
+endforeach()
 
 # read in all source files from directories listed in SuperSim_include
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
@@ -127,6 +134,14 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 				list(APPEND SUPERSOURCES "${SOURCE_FILE}")
 			endif()
 		endforeach()
+	endif()
+endforeach()
+
+file(READ "files.txt" SUPERSIM_FILES_FILE)
+string(REPLACE "\n" ";" SUPERSIM_FILES_FILE "${SUPERSIM_FILES_FILE}")
+foreach (FILE ${SUPERSIM_FILES_FILE})
+	if ("${FILE}" MATCHES "^[^#]")
+		list(APPEND SUPERSOURCES "${FILE}")
 	endif()
 endforeach()
 
