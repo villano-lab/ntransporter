@@ -70,10 +70,12 @@ include("${ROOT_USE_FILE}")
 
 # SuperSim_include file
 set(SUPERSIM_INCLUDE "SuperSim_include.txt" CACHE PATH "List of SuperSim directories to include")
+set(SUPERSIM_EXCLUDE "SuperSim_exclude.txt" CACHE PATH "List of filenames to exclude from compilation")
 
 message("Configuring SuperSim")
 message(STATUS "SuperSim base directory: $ENV{CDMS_SUPERSIM}")
 message(STATUS "Using SuperSim include list: ${SUPERSIM_INCLUDE}")
+message(STATUS "Excluding ${SUPERSIM_EXCLUDE}")
 
 
 # read SuperSim_include into list
@@ -100,18 +102,25 @@ endif()
 set(REGEN_CDMSVERSION OFF CACHE INTERNAL "" FORCE)
 
 
+# variable to hold list of filenames to skip
+set(EXCLUDE "")
+
+file(READ "${SUPERSIM_EXCLUDE}" SUPERSIM_EXCLUDE_FILE)
+string(REPLACE "\n" ";" SUPERSIM_EXCLUDE_FILE "${SUPERSIM_EXCLUDE_FILE}")
+foreach (FILE ${SUPERSIM_EXCLUDE_FILE})
+	if ("${FILE}" MATCHES "^[^#]")
+		list(APPEND EXCLUDE "${FILE}")
+    endif()
+endforeach()
+
+
 # variable to hold list of SuperSim source files
 set(SUPERSOURCES "")
 
-file(READ "files.txt" SUPERSIM_FILES_FILE)
-string(REPLACE "\n" ";" SUPERSIM_FILES_FILE "${SUPERSIM_FILES_FILE}")
-foreach (FILE ${SUPERSIM_FILES_FILE})
-	if ("${FILE}" MATCHES "^[^#]")
-		list(APPEND SUPERSOURCES "${FILE}")
-        endif()
-endforeach()
 
-# read in all source files from directories listed in SuperSim_include
+option(EXCLUDE_VERBOSE "Print additional information about excluding files from linking/compilation" ON)
+
+# read in all source files from directories listed in SuperSim_include, excluding files with names listed in SuperSim_exclude
 foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	message(STATUS "Finding source in $ENV{CDMS_SUPERSIM}/${SUBDIR}")
 	execute_process(
@@ -124,12 +133,25 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	else()
 		string(REPLACE "\n" ";" SUBDIR_SOURCES "${SUBDIR_SOURCES}")
 		foreach(SOURCE_FILE ${SUBDIR_SOURCES})
-			#message(${SOURCE_FILE})
-			if (("${SUBDIR}" STREQUAL "CDMSapps") AND 
-				(("${SOURCE_FILE}" MATCHES "CDMS_.*") OR 
-				("${SOURCE_FILE}" MATCHES "readbackTiming.*") OR 
-				("${SOURCE_FILE}" MATCHES "tetraNeighbors.*")))
-				message("Skipping ${SOURCE_FILE}")
+			#message("Source file: ${SOURCE_FILE}")
+			set(SKIPTHIS FALSE)
+			foreach(IGNORE ${EXCLUDE})
+				#message("Checking to ignore ${IGNORE}")
+				if ("${SOURCE_FILE}" MATCHES "/${IGNORE}$")
+					#message("Matched ${IGNORE}")
+					set(SKIPTHIS TRUE)
+					break()
+				endif()
+			endforeach()
+			#if (${SOURCE_FILE} IN_LIST EXCLUDE)
+			#if (("${SUBDIR}" STREQUAL "CDMSapps") AND 
+			#	(("${SOURCE_FILE}" MATCHES "CDMS_.*") OR 
+			#	("${SOURCE_FILE}" MATCHES "readbackTiming.*") OR 
+			#	("${SOURCE_FILE}" MATCHES "tetraNeighbors.*")))
+			if (SKIPTHIS)
+				if (EXCLUDE_VERBOSE)
+					message("Skipping ${SOURCE_FILE}")
+				endif()
 			else()
 				list(APPEND SUPERSOURCES "${SOURCE_FILE}")
 			endif()
@@ -137,13 +159,13 @@ foreach(SUBDIR ${SUPERSIM_LIBRARIES})
 	endif()
 endforeach()
 
-file(READ "files.txt" SUPERSIM_FILES_FILE)
-string(REPLACE "\n" ";" SUPERSIM_FILES_FILE "${SUPERSIM_FILES_FILE}")
-foreach (FILE ${SUPERSIM_FILES_FILE})
-	if ("${FILE}" MATCHES "^[^#]")
-		list(APPEND SUPERSOURCES "${FILE}")
-	endif()
-endforeach()
+#file(READ "files.txt" SUPERSIM_FILES_FILE)
+#string(REPLACE "\n" ";" SUPERSIM_FILES_FILE "${SUPERSIM_FILES_FILE}")
+#foreach (FILE ${SUPERSIM_FILES_FILE})
+#	if ("${FILE}" MATCHES "^[^#]")
+#		list(APPEND SUPERSOURCES "${FILE}")
+#	endif()
+#endforeach()
 
 
 # ============================================
@@ -155,6 +177,7 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # add subdirectories
 
 option(SUBDIRS_VERBOSE "Print additional linking info for executables" OFF)
+
 
 add_subdirectory(cross_sections)
 add_subdirectory(sources)

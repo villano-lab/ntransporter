@@ -63,10 +63,44 @@ void writeAllProbs(G4String fileName, G4int **data, G4int G) {
 }
 
 
+void writeColumns(G4String fileName, G4int **data, G4int G) {
+    std::ofstream os(fileName);
+    for (int g2 = 0; g2 < G+2; ++g2) {
+        os << g2;
+        for (int g1 = g2; g1 > 0; --g1) {
+            if (data[g1][g2] > 0) {
+                os << ' ' << data[g1][g2];
+            } else {
+                break;
+            }
+        }
+        os << G4endl;
+    }
+    os.close();
+}
+
+
+void writeColumns(G4String fileName, G4double **data, G4int G) {
+    std::ofstream os(fileName);
+    os << std::setprecision(17);
+    for (int g2 = 0; g2 < G+2; ++g2) {
+        os << g2;
+        for (int g1 = g2; g1 > 0; --g1) {
+            if (data[g1][g2] > 0) {
+                os << ' ' << data[g1][g2];
+            } else {
+                break;
+            }
+        }
+        os << G4endl;
+    }
+    os.close();
+}
+
+
 G4double reciprocalDistribution(G4double a, G4double b) {
     // draw from 1/x distribution between a and b
-    //return a*std::pow(b/a, G4UniformRand());
-    return a + (b-a)*G4UniformRand();
+    return a*std::pow(b/a, G4UniformRand());
 }
 
 const G4String ERRORSTRING = "\n=========================================\n" 
@@ -196,22 +230,30 @@ int main(int argc, char **argv) {
 
     const G4int Gmax = *max_element(Gs.begin(), Gs.end());
     G4double Eg[Gmax+2], alpha;
-    //G4double counts[Gmax+2][Gmax+2];
+
     G4int **counts;
+    G4double **probs, **sigs, **uncers;
+    
     G4int gf, totalCounts, gmax;
 
     // allocate space
-    counts = (G4int**)malloc((Gmax+2)*sizeof(G4int*));
+    counts = (G4int**)malloc((Gmax+2)*sizeof(G4int*)); // MC counts
+    probs = (G4double**)malloc((Gmax+2)*sizeof(G4double*)); // MC probabilities
+    sigs = (G4double**)malloc((Gmax+2)*sizeof(G4double*)); // differential cross sections
+    uncers = (G4double**)malloc((Gmax+2)*sizeof(G4double*)); // relative uncertainties
 
     for (int g = 0; g < Gmax + 2; ++g) {
         counts[g] = (G4int*)malloc((Gmax+2)*sizeof(G4int));
+        probs[g] = (G4double*)malloc((Gmax+2)*sizeof(G4double));
+        sigs[g] = (G4double*)malloc((Gmax+2)*sizeof(G4double));
+        uncers[g] = (G4double*)malloc((Gmax+2)*sizeof(G4double));
     }
 
     // materials loop
     for (G4String material_name : material_names) {
         
-        material = nist->FindOrBuildMaterial(material_name);
-        //material = nist->FindOrBuildMaterial(material_name + "_0"); // zero-temp version
+        //material = nist->FindOrBuildMaterial(material_name);
+        material = nist->FindOrBuildMaterial(material_name + "_0"); // zero-temp version
         
         thePoint->SetMaterial(material);
 
@@ -225,10 +267,13 @@ int main(int argc, char **argv) {
             for (int g1 = 0; g1 < G+2; ++g1) {
                 for (int g2 = 0; g2 < G+2; ++g2) {
                     counts[g1][g2] = 0;
+                    probs[g1][g2] = 0;
+                    sigs[g1][g2] = 0;
+                    uncers[g1][g2] = 0;
                 }
             }
 
-            G4cout << "Reset counts" << G4endl;
+            G4cout << "Reset arrays" << G4endl;
 
             // calculate Eg
             alpha = std::pow(Emin/Emax, 1./G);
@@ -325,7 +370,7 @@ int main(int argc, char **argv) {
             } // end loop over initial group
 
             // calculate probs from counts
-            /*for (int g1 = 1; g1 < G+2; ++g1) {
+            for (int g1 = 1; g1 < G+2; ++g1) {
                 totalCounts = 0;
                 for (int g2 = 1; g2 < G+2; ++g2) {
                     totalCounts += counts[g1][g2];
@@ -334,6 +379,16 @@ int main(int argc, char **argv) {
                     probs[g1][g2] = static_cast<G4double>(counts[g1][g2])/totalCounts;
                 }
             }//*/
+
+
+            // calculate stats uncertainties
+            for (int g1 = 1; g1 < G+2; ++g1) {
+                for (int g2 = 1; g2 < G+2; ++g2) {
+                    if (counts[g1][g2] > 0) {
+                        uncers[g1][g2] = 1./std::sqrt(counts[g1][g2]);
+                    }
+                }
+            }
 
             G4cout << "Calculated counts" << G4endl;
             
@@ -347,7 +402,7 @@ int main(int argc, char **argv) {
 
             writeProbs(fileName, counts, G);
             //writeAllProbs("test_comp.txt", counts, G);
-            writeAllProbs(output_file_base+"_"+material_name+"_"+std::to_string(G)+"_alldx.dat", counts, G);
+            //writeAllProbs(output_file_base+"_"+material_name+"_"+std::to_string(G)+"_alldx.dat", counts, G);
 
         } // end loop over G
 
