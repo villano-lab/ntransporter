@@ -2,6 +2,9 @@
 CDMSg4base
 CDMSapps
 CDMSactions
+CDMSphysics
+CDMShits
+CDMSsensitive
 CDMSgeometry/interface
 CDMSgeometry/detectors
 #
