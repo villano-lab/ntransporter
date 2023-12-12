@@ -6,7 +6,9 @@ CDMSg4base
 CDMSreadout
 CDMSinfo
 CDMSphysics
+CDMSfastdmc
 CDMSsources
+CDMSgeometry/attach
 CDMSgeometry/detectors
 CDMSgeometry/interface
 CDMSgeometry/labs
