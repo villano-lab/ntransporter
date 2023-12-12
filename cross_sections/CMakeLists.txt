@@ -1,7 +1,7 @@
 add_executable(NT_XS NT_XS.cc ${SUPERSOURCES})
 add_executable(NT_XX NT_XX.cc ${SUPERSOURCES})
 
-#target_include_directories(NT_XS PUBLIC "$ENV{CVODE_BASE}/instdir/include")
+target_include_directories(NT_XS PUBLIC "$ENV{CVODE_HOME}/include")
 
 
 #target_link_libraries(NT_XS PUBLIC CVODE)
