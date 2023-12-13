@@ -20,6 +20,8 @@ add_definitions(-DG4MULTITHREADED) # needed for correct run manager initializati
 
 add_definitions(-DCDMS_USE_CVODE) # ensure CVODE packages are included
 
+option(FORCE_LIBUUID_LINK "Force linking of libuuid shared object files with NT_XS and NT_XX" OFF)
+
 option(IGNORE_WARNINGS "Ignore all warnings with -w flag" OFF)
 if (IGNORE_WARNINGS)
 	add_definitions(-w)
@@ -175,11 +177,16 @@ endforeach()
 
 #file(GLOB CVODE_LIBRARIES "$ENV{CVODE_HOME}/lib/*.dylib")
 
-message(STATUS "Linking CVODE objects in $ENV{CVODE_HOME}")
+set(CVODE_LIB_FOLDER "lib" CACHE STRING "lib folder under CVODE_HOME containing CVODE objects")
+
+message(STATUS "Linking CVODE objects in $ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}")
 #add_subdirectory("$ENV{CVODE_CMAKE_DIR}" build)
 #add_library(CVODE OBJECT IMPORTED)
-file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/lib/*.so")
-#message("CVODE_OBJ: ${CVODE_OBJ}")
+
+file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.so")
+
+
+message("CVODE_OBJ: ${CVODE_OBJ}")
 #set_target_properties(CVODE PROPERTIES IMPORTED_OBJECTS ${CVODE_OBJ})
 
 

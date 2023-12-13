@@ -7,9 +7,16 @@ target_include_directories(NT_XX PUBLIC "$ENV{CVODE_HOME}/include")
 target_link_libraries(NT_XS PUBLIC ${CVODE_OBJ})
 target_link_libraries(NT_XX PUBLIC ${CVODE_OBJ})
 #target_link_libraries(NT_XS PUBLIC "/usr/lib/x86_64-linux-gnu/libuuid.so")
-target_link_libraries(NT_XS PUBLIC "/home/ajbiffl3/miniconda3/envs/root_env/lib/libuuid.so")
-target_link_libraries(NT_XX PUBLIC "/home/ajbiffl3/miniconda3/envs/root_env/lib/libuuid.so")
 
+if (FORCE_LIBUUID_LINK)
+	message(STATUS "Linking libuuid object as $ENV{LIBUUID_OBJ}")
+	if (DEFINED ENV{LIBUUID_OBJ})
+		target_link_libraries(NT_XS PUBLIC "$ENV{LIBUUID_OBJ}")
+		target_link_libraries(NT_XX PUBLIC "$ENV{LIBUUID_OBJ}")
+	else()
+		message(FATAL_ERROR "Error: env var LIBUUID_OBJ must be set with -DFORCE_LIBUUID_LINK=ON")
+	endif()
+endif()
 #target_include_directories(NT_XS PUBLIC "/usr/include")
 
 
