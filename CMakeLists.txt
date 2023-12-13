@@ -14,7 +14,7 @@ project(NTransporter VERSION 1.0
         DESCRIPTION "Direct-coupled multigroup diffusion approximation with zeroth-order evaluated group constants")
 
 
-set(CMAKE_CXX_STANDARD 14) # 14 typically used for SuperSim, 17 used in conda installations of root
+set(CMAKE_CXX_STANDARD 17) # 14 typically used for SuperSim, 17 used in conda installations of root
 
 add_definitions(-DG4MULTITHREADED) # needed for correct run manager initialization
 
@@ -175,8 +175,12 @@ endforeach()
 
 #file(GLOB CVODE_LIBRARIES "$ENV{CVODE_HOME}/lib/*.dylib")
 
-message(STATUS "Linking CVODE source in $ENV{CVODE_BASE}")
-add_subdirectory("$ENV{CVODE_CMAKE_DIR}" build)
+message(STATUS "Linking CVODE objects in $ENV{CVODE_HOME}")
+#add_subdirectory("$ENV{CVODE_CMAKE_DIR}" build)
+#add_library(CVODE OBJECT IMPORTED)
+file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/lib/*.so")
+#message("CVODE_OBJ: ${CVODE_OBJ}")
+#set_target_properties(CVODE PROPERTIES IMPORTED_OBJECTS ${CVODE_OBJ})
 
 
 #set(CVODE_FILES "cvode/cvode.c;cvode/cvode_direct.c;nvector/serial/nvector_serial.c;sunmatrix/dense/sunmatrix_dense.c;sunlinsol/dense/sunlinsol_dense.c")
