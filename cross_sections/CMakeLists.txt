@@ -2,9 +2,17 @@ add_executable(NT_XS NT_XS.cc ${SUPERSOURCES})
 add_executable(NT_XX NT_XX.cc ${SUPERSOURCES})
 
 target_include_directories(NT_XS PUBLIC "$ENV{CVODE_HOME}/include")
+target_include_directories(NT_XX PUBLIC "$ENV{CVODE_HOME}/include")
+
+target_link_libraries(NT_XS PUBLIC ${CVODE_OBJ})
+target_link_libraries(NT_XX PUBLIC ${CVODE_OBJ})
+#target_link_libraries(NT_XS PUBLIC "/usr/lib/x86_64-linux-gnu/libuuid.so")
+target_link_libraries(NT_XS PUBLIC "/home/ajbiffl3/miniconda3/envs/root_env/lib/libuuid.so")
+target_link_libraries(NT_XX PUBLIC "/home/ajbiffl3/miniconda3/envs/root_env/lib/libuuid.so")
+
+#target_include_directories(NT_XS PUBLIC "/usr/include")
 
 
-#target_link_libraries(NT_XS PUBLIC CVODE)
 #target_link_libraries(NT_XS PUBLIC "$ENV{CVODE_BASE}/instdir/lib")
 #message(STATUS "NT_XS & NT_XX linking CVODE source in $ENV{CVODE_HOME}")
 #message("CVODE_LIBRARIES = ${CVODE_LIBRARIES}")
