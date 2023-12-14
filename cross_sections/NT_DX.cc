@@ -32,7 +32,7 @@ typedef std::vector<G4int> ints;
 typedef std::vector<G4String> strings;
 
 
-void writeProbs(G4String fileName, G4int **data, G4int G) {
+void writeRows(G4String fileName, G4double **data, G4int G) {
     std::ofstream os(fileName);
     os << std::setprecision(17);
     for (int g1 = 0; g1 < G+2; ++g1) {
@@ -50,29 +50,12 @@ void writeProbs(G4String fileName, G4int **data, G4int G) {
 }
 
 
-void writeAllProbs(G4String fileName, G4int **data, G4int G) {
+void writeAllRows(G4String fileName, G4double **data, G4int G) {
     std::ofstream os(fileName);
     os << std::setprecision(17);
     for (int g1 = 0; g1 < G+2; ++g1) {
         for (int g2 = 0; g2 < G+2; ++g2) {
             os << data[g1][g2] << ' ';
-        }
-        os << G4endl;
-    }
-    os.close();
-}
-
-
-void writeColumns(G4String fileName, G4int **data, G4int G) {
-    std::ofstream os(fileName);
-    for (int g2 = 0; g2 < G+2; ++g2) {
-        os << g2;
-        for (int g1 = g2; g1 > 0; --g1) {
-            if (data[g1][g2] > 0) {
-                os << ' ' << data[g1][g2];
-            } else {
-                break;
-            }
         }
         os << G4endl;
     }
@@ -400,9 +383,11 @@ int main(int argc, char **argv) {
 
             G4cout << "Writing differential cross section data to " << fileName << G4endl;
 
-            writeProbs(fileName, counts, G);
+            writeAllProbs(fileName, uncers, G);
             //writeAllProbs("test_comp.txt", counts, G);
             //writeAllProbs(output_file_base+"_"+material_name+"_"+std::to_string(G)+"_alldx.dat", counts, G);
+
+            writeColumns(fileName, sigs, G);
 
         } // end loop over G
 
