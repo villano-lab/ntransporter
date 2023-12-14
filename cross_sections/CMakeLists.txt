@@ -1,6 +1,30 @@
 add_executable(NT_XS NT_XS.cc ${SUPERSOURCES})
 add_executable(NT_XX NT_XX.cc ${SUPERSOURCES})
 
+target_include_directories(NT_XS PUBLIC "$ENV{CVODE_HOME}/include")
+target_include_directories(NT_XX PUBLIC "$ENV{CVODE_HOME}/include")
+
+target_link_libraries(NT_XS PUBLIC ${CVODE_OBJ})
+target_link_libraries(NT_XX PUBLIC ${CVODE_OBJ})
+#target_link_libraries(NT_XS PUBLIC "/usr/lib/x86_64-linux-gnu/libuuid.so")
+
+if (FORCE_LIBUUID_LINK)
+	message(STATUS "Linking libuuid object as $ENV{LIBUUID_OBJ}")
+	if (DEFINED ENV{LIBUUID_OBJ})
+		target_link_libraries(NT_XS PUBLIC "$ENV{LIBUUID_OBJ}")
+		target_link_libraries(NT_XX PUBLIC "$ENV{LIBUUID_OBJ}")
+	else()
+		message(FATAL_ERROR "Error: env var LIBUUID_OBJ must be set with -DFORCE_LIBUUID_LINK=ON")
+	endif()
+endif()
+#target_include_directories(NT_XS PUBLIC "/usr/include")
+
+
+#target_link_libraries(NT_XS PUBLIC "$ENV{CVODE_BASE}/instdir/lib")
+#message(STATUS "NT_XS & NT_XX linking CVODE source in $ENV{CVODE_HOME}")
+#message("CVODE_LIBRARIES = ${CVODE_LIBRARIES}")
+#target_link_libraries(NT_XS PUBLIC ${CVODE_LIBRARIES})
+
 target_include_directories(NT_XS PUBLIC "${CMAKE_SOURCE_DIR}") # for custom SuperSim_Main.hh
 target_include_directories(NT_XX PUBLIC "${CMAKE_SOURCE_DIR}")
 

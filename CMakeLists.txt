@@ -14,9 +14,17 @@ project(NTransporter VERSION 1.0
         DESCRIPTION "Direct-coupled multigroup diffusion approximation with zeroth-order evaluated group constants")
 
 
-set(CMAKE_CXX_STANDARD 14) # same as typically used for SuperSim
+set(CXX_STD 14 CACHE STRING "C++ standard to use")
+
+set(CMAKE_CXX_STANDARD ${CXX_STD}) # 14 typically used for SuperSim, 17 used in conda installations of root
+
+message("using C-std = C++${CMAKE_CXX_STANDARD}")
 
 add_definitions(-DG4MULTITHREADED) # needed for correct run manager initialization
+
+add_definitions(-DCDMS_USE_CVODE) # ensure CVODE packages are included
+
+option(FORCE_LIBUUID_LINK "Force linking of libuuid shared object files with NT_XS and NT_XX" OFF)
 
 option(IGNORE_WARNINGS "Ignore all warnings with -w flag" OFF)
 if (IGNORE_WARNINGS)
@@ -167,6 +175,46 @@ endforeach()
 #	endif()
 #endforeach()
 
+
+# ============================================
+# gather CVODE source files
+
+#file(GLOB CVODE_LIBRARIES "$ENV{CVODE_HOME}/lib/*.dylib")
+
+set(CVODE_LIB_FOLDER "lib" CACHE STRING "lib folder under CVODE_HOME containing CVODE objects (e.g., lib, lib64)")
+
+message(STATUS "Linking CVODE objects in $ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}")
+#add_subdirectory("$ENV{CVODE_CMAKE_DIR}" build)
+#add_library(CVODE OBJECT IMPORTED)
+
+
+if (${CMAKE_CXX_COMPILER_ID} MATCHES "AppleClang")
+	file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.dylib")
+else()
+	file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.so")
+endif()
+# ^ these conditions may not be perfect: can modify in future
+
+
+message("CVODE_OBJ: ${CVODE_OBJ}")
+#set_target_properties(CVODE PROPERTIES IMPORTED_OBJECTS ${CVODE_OBJ})
+
+
+#set(CVODE_FILES "cvode/cvode.c;cvode/cvode_direct.c;nvector/serial/nvector_serial.c;sunmatrix/dense/sunmatrix_dense.c;sunlinsol/dense/sunlinsol_dense.c")
+
+#set(CVODE_SRC "")
+#foreach(FILE ${CVODE_FILES})
+#	message(STATUS "Adding CVODE files $ENV{CVODE_BASE}/${FILE}")
+#	list(APPEND CVODE_SRC "$ENV{CVODE_BASE}/src/${FILE}")
+#endforeach()
+
+#add_library(CVODE SHARED "${CVODE_SRC}")
+#add_library(CVODE SHARED "$ENV{CVODE_BASE}")
+#add_subdirectory("$ENV{CVODE_BASE}/instdir/lib")
+#add_library(CVODE OBJECT IMPORTED ${CVODE_SRC})
+#set_target_properties(CVODE PROPERTIES IMPORTED_OBJECTS "$ENV{CVODE_BASE}/builddir/src")
+#add_library(CVODE STATIC IMPORTED ${CVODE_SRC})
+#set_target_properties(CVODE PROPERTIES IMPORTED_OBJECTS "$ENV{CVODE_BASE}/builddir/src")
 
 # ============================================
 # configure executables to all be put in base build directory
