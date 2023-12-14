@@ -14,7 +14,11 @@ project(NTransporter VERSION 1.0
         DESCRIPTION "Direct-coupled multigroup diffusion approximation with zeroth-order evaluated group constants")
 
 
-set(CMAKE_CXX_STANDARD 17) # 14 typically used for SuperSim, 17 used in conda installations of root
+set(CXX_STD 14 CACHE STRING "C++ standard to use")
+
+set(CMAKE_CXX_STANDARD ${CXX_STD}) # 14 typically used for SuperSim, 17 used in conda installations of root
+
+message("using C-std = C++${CMAKE_CXX_STANDARD}")
 
 add_definitions(-DG4MULTITHREADED) # needed for correct run manager initialization
 
