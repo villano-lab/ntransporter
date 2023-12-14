@@ -1,7 +1,7 @@
 // estimate differential cross sections for given materials
 //
-// usage: ./NT_DX output_file_base_path material1 material2 ...  
-//                [-n ngroups1=100 ngroups2 ...]
+// usage: ./NT_DX output_file_base_path path_to_ntransporter_base   
+//                material1 material2 ... [-n ngroups1=100 ngroups2 ...]
 
 
 #include <iostream>
@@ -107,23 +107,24 @@ int main(int argc, char **argv) {
     G4cout << "sequential mode" << G4endl;
 #endif
 
-    G4String output_file_base;
+    G4String output_file_base, NT_path_base;
     std::vector<G4String> material_names;
     ints Gs;
 
     // parse command line args
-    if (argc < 3)  {
+    if (argc < 4)  {
         G4cout << ERRORSTRING 
             << "Error in NT_DX: Not enough arguments." 
-            << "\n    Usage: ./NT_DX output_file_base_path material1 material2 "
-            << "... [-n ngroups1=100 ngroups2 ...]" << G4endl;
+            << "\n    Usage: ./NT_DX output_file_base_path path_to_ntransporter_base "
+            "material1 material2 ... [-n ngroups1=100 ngroups2 ...]" << G4endl;
         return 1;
     } else {
         try {
 
             output_file_base = argv[1];
+            NT_path_base = argv[2];
 
-            size_t i = 2;
+            size_t i = 3;
             while (i < argc && argv[i][0] != '-' && argv[i][1] != 'n') {
                 material_names.push_back(argv[i]);
                 ++i;
@@ -138,11 +139,13 @@ int main(int argc, char **argv) {
             G4cout << ERRORSTRING 
                 << "Error in NT_DX: Invalid arguments. "
                 << "ngroups must be numeric."
-                << "\n    Usage: ./NT_DX output_file_base_path material1 material2 "
-                << "... [-n ngroups1=100 ngroups2 ...]" << G4endl;
+                << "\n    Usage: ./NT_DX output_file_base_path path_to_ntransporter_base "
+            "material1 material2 ... [-n ngroups1=100 ngroups2 ...]" << G4endl;
             return 2;
         }
     }
+
+    G4cout << "Pulling data from nTransporter at " << NT_path_base << G4endl;
 
     G4cout << "Gs: ";
     for (int G : Gs) {
@@ -177,7 +180,7 @@ int main(int argc, char **argv) {
     // bounds of fast energies
     const G4double Emin = 0.1*eV, Emax = 20.*MeV; 
 
-    G4cout << Emin << ' ' << Emax << G4endl;
+    G4cout << "fast energy range " << Emin << " to " << Emax << " MeV" << G4endl;
 
     
     const G4ParticleDefinition *theNeutron = G4Neutron::Definition();
@@ -216,14 +219,23 @@ int main(int argc, char **argv) {
 
     G4int **counts;
     G4double **probs, **sigs, **uncers;
+
+    const G4Element *theElement;
     
-    G4int gf, totalCounts, gmax;
+    G4int gf, totalCounts, gmax, gdummy, numthrown;
+
+    // variables for total cross section data
+    G4String xs_tots_filename;
+    G4double *xs_tots, Edummy, xdummy;
+
+    //G4Element *theElement;
 
     // allocate space
     counts = (G4int**)malloc((Gmax+2)*sizeof(G4int*)); // MC counts
     probs = (G4double**)malloc((Gmax+2)*sizeof(G4double*)); // MC probabilities
     sigs = (G4double**)malloc((Gmax+2)*sizeof(G4double*)); // differential cross sections
     uncers = (G4double**)malloc((Gmax+2)*sizeof(G4double*)); // relative uncertainties
+    xs_tots = (G4double*)malloc((Gmax+2)*sizeof(G4double)); // total scattering cross section
 
     for (int g = 0; g < Gmax + 2; ++g) {
         counts[g] = (G4int*)malloc((Gmax+2)*sizeof(G4int));
@@ -241,7 +253,7 @@ int main(int argc, char **argv) {
         thePoint->SetMaterial(material);
 
         G4cout << "Set material to " << material_name << G4endl;
-        G4cout << "Material temp = " << material->GetTemperature()/CLHEP::kelvin << " kelvin" << G4endl; // 293.15
+        //G4cout << "Material temp = " << material->GetTemperature()/CLHEP::kelvin << " kelvin" << G4endl; // 293.15
 
         // loop over G
         for (G4int G : Gs) {
@@ -273,14 +285,20 @@ int main(int argc, char **argv) {
             }
             Eg[G+1] = 1e-6*Eg[G];
 
+            G4cout << "numthrown: ";
+
 
             // initial energy loop
             for (int g = 1; g < G+2; g++) {
 
                 gmax = g;
+
+                numthrown = 0;
                 
                 // throw until desired statistics reached
                 do {
+
+                    ++numthrown;
 
                     initialEnergy = reciprocalDistribution(Eg[g], Eg[g-1]);
                     //G4cout << "initial energy = " << initialEnergy << G4endl;
@@ -294,7 +312,7 @@ int main(int argc, char **argv) {
 
                     // select which nucleus gets hit
                     elasticDataStore->ComputeCrossSection(dynamicNeutron, material); // need to compute cross sections in material before sampling Z/A 
-                    const G4Element *theElement = elasticDataStore->SampleZandA(dynamicNeutron, material, *materialNucleus);
+                    theElement = elasticDataStore->SampleZandA(dynamicNeutron, material, *materialNucleus);
 
                     //G4cout << "Sampled Z and A" << G4endl;
                     //G4cout << "Nucleus A = " << materialNucleus->GetA_asInt() << G4endl;
@@ -347,10 +365,17 @@ int main(int argc, char **argv) {
 
                     //G4cout << g << "/" << gf << " : counts: " << counts[g][g] << G4endl; 
 
+                    //delete theElement;
+                    delete neutronTrack;
+
                 } while (counts[g][gmax] < 1000 && counts[g][g] < 100000);
                 // when desired error reached, break
-            
+
+                G4cout << ' ' << numthrown << ' ';
+
             } // end loop over initial group
+
+            G4cout << G4endl;
 
             // calculate probs from counts
             for (int g1 = 1; g1 < G+2; ++g1) {
@@ -362,6 +387,40 @@ int main(int argc, char **argv) {
                     probs[g1][g2] = static_cast<G4double>(counts[g1][g2])/totalCounts;
                 }
             }//*/
+
+
+            // read in total cross section data
+            xs_tots_filename = NT_path_base + "/cross_sections/data/V1/data_"
+                                + material_name + "_"
+                                + std::to_string(G)
+                                + "_20_xs.dat";
+
+            std::ifstream xs_stream(xs_tots_filename);
+
+            G4cout << "Reading cross section data from " << xs_tots_filename << G4endl;
+
+            for (int g = 0; g < G+2; ++g) {
+                if (!(xs_stream >> gdummy >> Edummy >> xs_tots[g] >> xdummy)) {
+                    G4cout << ERRORSTRING << "Error in NT_DX: reading variables for g = " << g << " failed in " << xs_tots_filename << G4endl;
+                    return 101;
+                }
+                if (gdummy != g) {
+                    G4cout << ERRORSTRING << "Error in NT_DX: line indices in " << xs_tots_filename << " don't match, g = " << g << G4endl;
+                    return 102;
+                }
+                if (Eg[g] > 0 && g < G+1 && (std::abs(Edummy - Eg[g])/Eg[g] > 1e-12)) {
+                    G4cout << ERRORSTRING << "Error in NT_DX: group boundary mismatch with " << xs_tots_filename << ", g = " << g << G4endl;
+                    return 103;
+                }
+            }
+
+            xs_stream.close();
+
+            for (int g1 = 1; g1 < G+2; ++g1) {
+                for (int g2 = 1; g2 < G+2; ++g2) {
+                    sigs[g1][g2] = xs_tots[g1]*probs[g1][g2];
+                }
+            }
 
 
             // calculate stats uncertainties
@@ -378,16 +437,16 @@ int main(int argc, char **argv) {
             // write this material/group number to file
             G4String fileName = output_file_base + "_" 
                                 + material_name + "_" 
-                                + std::to_string(G)
-                                + "_dx.dat";
+                                + std::to_string(G);
 
-            G4cout << "Writing differential cross section data to " << fileName << G4endl;
+            G4cout << "Writing differential cross section data to " << fileName << "_dx.dat" << G4endl;
 
-            writeAllProbs(fileName, uncers, G);
+            writeColumns(fileName + "_dx.dat", sigs, G);
+            writeAllRows(fileName + "_uncers.dat", uncers, G);
+            writeAllRows(fileName + "_alldx.dat", sigs, G);
             //writeAllProbs("test_comp.txt", counts, G);
             //writeAllProbs(output_file_base+"_"+material_name+"_"+std::to_string(G)+"_alldx.dat", counts, G);
 
-            writeColumns(fileName, sigs, G);
 
         } // end loop over G
 
