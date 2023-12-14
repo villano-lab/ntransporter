@@ -366,7 +366,7 @@ int main(int argc, char **argv) {
                     //G4cout << g << "/" << gf << " : counts: " << counts[g][g] << G4endl; 
 
                     //delete theElement;
-                    delete neutronTrack;
+                    //delete neutronTrack;
 
                 } while (counts[g][gmax] < 1000 && counts[g][g] < 100000);
                 // when desired error reached, break
