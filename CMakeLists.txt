@@ -116,7 +116,7 @@ message("looking for $ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/*.${OBJ_EXT}")
 set(SUPERSIM_OBJ "")
 
 #foreach(LIB "qhull" "qhull_p" "G4cmp" "CDMSsensitive" "CDMSfields" "CDMSreadout" "CDMSg4base" "CDMSsources" "CDMSgeometry" "CDMSfastdmc" "CDMSactions" "CDMShits" "CDMSinfo" "CDMSphysics" "CDMSapps")
-foreach(LIB "CDMSapps" "CDMSphysics" "CDMSinfo" "CDMShits" "CDMSactions" "CDMSfastdmc" "CDMSgeometry" "CDMSsources" "CDMSg4base" "CDMSreadout" "CDMSfields" "CDMSsensitive" "G4cmp" "qhull_p" "qhull")
+foreach(LIB "CDMSapps" "CDMSphysics" "CDMSactions" "CDMSgeometry" "CDMSsources" "CDMShits" "CDMSg4base" "CDMSreadout" "CDMSinfo" "CDMSfields" "CDMSsensitive" "CDMSfastdmc" "G4cmp" "qhull_p" "qhull")
 	file(GLOB FILE "$ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/lib${LIB}.${OBJ_EXT}")
 	list(APPEND SUPERSIM_OBJ ${FILE})
 endforeach()
