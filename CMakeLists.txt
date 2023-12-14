@@ -177,13 +177,19 @@ endforeach()
 
 #file(GLOB CVODE_LIBRARIES "$ENV{CVODE_HOME}/lib/*.dylib")
 
-set(CVODE_LIB_FOLDER "lib" CACHE STRING "lib folder under CVODE_HOME containing CVODE objects")
+set(CVODE_LIB_FOLDER "lib" CACHE STRING "lib folder under CVODE_HOME containing CVODE objects (e.g., lib, lib64)")
 
 message(STATUS "Linking CVODE objects in $ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}")
 #add_subdirectory("$ENV{CVODE_CMAKE_DIR}" build)
 #add_library(CVODE OBJECT IMPORTED)
 
-file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.so")
+
+if (${CMAKE_CXX_COMPILER_ID} MATCHES "AppleClang")
+	file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.dylib")
+else()
+	file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.so")
+endif()
+# ^ these conditions may not be perfect: can modify in future
 
 
 message("CVODE_OBJ: ${CVODE_OBJ}")
