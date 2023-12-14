@@ -1,8 +1,12 @@
-add_executable(NT_XS NT_XS.cc ${SUPERSOURCES})
+#add_executable(NT_XS NT_XS.cc ${SUPERSOURCES})
+add_executable(NT_XS NT_XS.cc)
 add_executable(NT_XX NT_XX.cc ${SUPERSOURCES})
 
 target_include_directories(NT_XS PUBLIC "$ENV{CVODE_HOME}/include")
 target_include_directories(NT_XX PUBLIC "$ENV{CVODE_HOME}/include")
+
+target_include_directories(NT_XS PUBLIC "$ENV{G4WORKDIR}/include")
+target_link_libraries(NT_XS PUBLIC "${SUPERSIM_OBJ}")
 
 target_link_libraries(NT_XS PUBLIC ${CVODE_OBJ})
 target_link_libraries(NT_XX PUBLIC ${CVODE_OBJ})
@@ -50,6 +54,7 @@ endforeach()
 
 target_include_directories(NT_XS PUBLIC "${CMAKE_BINARY_DIR}") # for CDMSVersion.hh
 target_include_directories(NT_XX PUBLIC "${CMAKE_BINARY_DIR}")
+
 
 message("NT_XS & NT_XX linked")
 
