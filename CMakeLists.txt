@@ -190,13 +190,15 @@ message(STATUS "Linking CVODE objects in $ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}")
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "AppleClang")
 	file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.dylib")
+	file(GLOB SUPERSIM_OBJ CONFIGURE_DEPENDS "$ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/*.dylib")
 else()
 	file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.so")
+	file(GLOB SUPERSIM_OBJ CONFIGURE_DEPENDS "$ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/*.so")
 endif()
 # ^ these conditions may not be perfect: can modify in future
 
 
-message("CVODE_OBJ: ${CVODE_OBJ}")
+message("SUPERSIM_OBJ: ${SUPERSIM_OBJ}")
 #set_target_properties(CVODE PROPERTIES IMPORTED_OBJECTS ${CVODE_OBJ})
 
 
