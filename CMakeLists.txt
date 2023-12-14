@@ -74,7 +74,20 @@ include("${ROOT_USE_FILE}")
 
 
 # ============================================
+# determine file extension for object/library files
+
+
+if (${CMAKE_CXX_COMPILER_ID} MATCHES "AppleClang")
+	set(OBJ_EXT "dylib")
+else()
+	set(OBJ_EXT "so")
+endif()
+# ^ these conditions may not be perfect: can modify in future
+
+
+# ============================================
 # SuperSim
+
 
 # SuperSim_include file
 set(SUPERSIM_INCLUDE "SuperSim_include.txt" CACHE PATH "List of SuperSim directories to include")
@@ -95,6 +108,21 @@ foreach (LIB ${SUPERSIM_LIBRARIES_FILE})
 		list(APPEND SUPERSIM_LIBRARIES "${LIB}")
 	endif()
 endforeach()
+
+message("looking for $ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/*.${OBJ_EXT}")
+#file(GLOB SUPERSIM_OBJ_ALL CONFIGURE_DEPENDS "$ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/*.${OBJ_EXT}")
+
+
+set(SUPERSIM_OBJ "")
+
+#foreach(LIB "qhull" "qhull_p" "G4cmp" "CDMSsensitive" "CDMSfields" "CDMSreadout" "CDMSg4base" "CDMSsources" "CDMSgeometry" "CDMSfastdmc" "CDMSactions" "CDMShits" "CDMSinfo" "CDMSphysics" "CDMSapps")
+foreach(LIB "CDMSapps" "CDMSphysics" "CDMSinfo" "CDMShits" "CDMSactions" "CDMSfastdmc" "CDMSgeometry" "CDMSsources" "CDMSg4base" "CDMSreadout" "CDMSfields" "CDMSsensitive" "G4cmp" "qhull_p" "qhull")
+	file(GLOB FILE "$ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/lib${LIB}.${OBJ_EXT}")
+	list(APPEND SUPERSIM_OBJ ${FILE})
+endforeach()
+
+
+message("SUPERSIM_OBJ: ${SUPERSIM_OBJ}")
 
 # execute script to configure SuperSim version header file in build directory
 option(REGEN_CDMSVERSION "force re-generate CDMSVersion header in build directory" OFF)
@@ -187,18 +215,9 @@ message(STATUS "Linking CVODE objects in $ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}")
 #add_subdirectory("$ENV{CVODE_CMAKE_DIR}" build)
 #add_library(CVODE OBJECT IMPORTED)
 
-
-if (${CMAKE_CXX_COMPILER_ID} MATCHES "AppleClang")
-	file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.dylib")
-	file(GLOB SUPERSIM_OBJ CONFIGURE_DEPENDS "$ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/*.dylib")
-else()
-	file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.so")
-	file(GLOB SUPERSIM_OBJ CONFIGURE_DEPENDS "$ENV{G4WORKDIR}/lib/$ENV{G4SYSTEM}/*.so")
-endif()
-# ^ these conditions may not be perfect: can modify in future
+file(GLOB CVODE_OBJ CONFIGURE_DEPENDS "$ENV{CVODE_HOME}/${CVODE_LIB_FOLDER}/*.${OBJ_EXT}")
 
 
-message("SUPERSIM_OBJ: ${SUPERSIM_OBJ}")
 #set_target_properties(CVODE PROPERTIES IMPORTED_OBJECTS ${CVODE_OBJ})
 
 
