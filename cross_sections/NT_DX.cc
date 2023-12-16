@@ -287,6 +287,8 @@ int main(int argc, char **argv) {
 
             G4cout << "numthrown: ";
 
+            
+
 
             // initial energy loop
             for (int g = 1; g < G+2; g++) {
@@ -294,6 +296,8 @@ int main(int argc, char **argv) {
                 gmax = g;
 
                 numthrown = 0;
+
+
                 
                 // throw until desired statistics reached
                 do {
@@ -303,16 +307,26 @@ int main(int argc, char **argv) {
                     initialEnergy = reciprocalDistribution(Eg[g], Eg[g-1]);
                     //G4cout << "initial energy = " << initialEnergy << G4endl;
                     dynamicNeutron->SetKineticEnergy(initialEnergy);
-                    neutronTrack = new G4Track(dynamicNeutron, 0., origin);
-                    neutronTrack->SetStep(theStep);
+                    
+                    
+                    
+                    
+                    //neutronTrack = new G4Track(dynamicNeutron, 0., origin);
+                    neutronTrack->SetKineticEnergy(initialEnergy);
+                    
+                    
+                    
+                    
+                    
+                    //neutronTrack->SetStep(theStep);
                     projectile->Initialise(*neutronTrack);
 
                     //G4cout << "Set energy" << G4endl;
                     //G4cout << Emin << " < " << Eg[g] << " < Projectile energy = " << projectile->GetKineticEnergy() << " < " << Eg[g-1] << " < " << Emax << G4endl;
 
                     // select which nucleus gets hit
-                    elasticDataStore->ComputeCrossSection(dynamicNeutron, material); // need to compute cross sections in material before sampling Z/A 
-                    theElement = elasticDataStore->SampleZandA(dynamicNeutron, material, *materialNucleus);
+                    //elasticDataStore->ComputeCrossSection(dynamicNeutron, material); // need to compute cross sections in material before sampling Z/A 
+                    //theElement = elasticDataStore->SampleZandA(dynamicNeutron, material, *materialNucleus);
 
                     //G4cout << "Sampled Z and A" << G4endl;
                     //G4cout << "Nucleus A = " << materialNucleus->GetA_asInt() << G4endl;
