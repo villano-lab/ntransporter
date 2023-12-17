@@ -66,7 +66,7 @@ void writeAllRows(G4String fileName, G4double **data, G4int G) {
 void writeColumns(G4String fileName, G4double **data, G4int G) {
     std::ofstream os(fileName);
     os << std::setprecision(17);
-    for (int g2 = 0; g2 < G+2; ++g2) {
+    for (int g2 = 1; g2 < G+2; ++g2) {
         os << g2;
         for (int g1 = g2; g1 > 0; --g1) {
             if (data[g1][g2] > 0) {
@@ -336,6 +336,8 @@ int main(int argc, char **argv) {
 
                     //G4cout << "Applied self" << G4endl;
                     finalEnergy = neutronFS->GetEnergyChange();
+                    neutronFS->Clear();
+                    neutronFS->ClearSecondaries();
 
                     //G4cout << "Set final energy" << G4endl;
                     //G4cout << "Final energy = " << finalEnergy << G4endl;
