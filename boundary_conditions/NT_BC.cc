@@ -18,6 +18,7 @@
 #include <iomanip>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <stdexcept>
 #include <cmath>
 #include <cstdlib>
@@ -108,13 +109,75 @@ int main(int argc, char *argv[]) {
     std::cout << "Done reading group source data" << std::endl;
 
 
-    // calculate fluxes
-    doubles phi(G+2);
+    std::string dx_filename = NT_path_base + "/cross_sections/data/V2/data_" 
+                        + material_name + "_" 
+                        + std::to_string(G) 
+                        + "_dx.dat";
+
+    std::cout << "Reading differential cross section data from " << dx_filename << std::endl;
+
+    std::ifstream dx_stream(dx_filename);
+
+    // variables used in loop
+    int g1, gp; // counters
+    double emission_density; // incoming "emission" rate
+    double sig; // differential group scattering cross section
+    double sigself; // self-scattering cross section
+    std::stringstream line; // line stringstream
+    std::string theLine;
+
+    doubles phi(G+2); // group fluxes
     phi[0] = 0.;
 
+    // calculate fluxes
     for (int g = 1; g < G+2; ++g) {
-        phi[g] = (xs[g-1]*phi[g-1] + Sg[g])/xt[g];
+        
+        if (!dx_stream.eof()) {
+            getline(dx_stream, theLine);
+        } else {
+            throw std::runtime_error("Error in NT_BC: no more lines in dx file " + dx_filename);
+        }
+
+        //std::cout << "line contents pre-insertion: " << line.str() << std::endl;
+
+        line.str(theLine);
+        line.clear(); // clear error state
+        
+        //std::cout << "line contents post-insertion: " << line.str() << std::endl;
+
+        //std::cout << "g = " << g << " : theLine = " << theLine << std::endl;
+
+        line >> g1;
+
+        //std::cout << "g1 = " << g1 << std::endl;
+
+        if (g1 != g) {
+            throw std::runtime_error("Error in NT_BC: Index mismatch at " + std::to_string(g) + " in dx file " + dx_filename);
+        }
+
+        if (!(line >> sigself)) {
+            throw std::runtime_error("Error in NT_BC: no self-scattering cross section in " + dx_filename);
+        } 
+
+        //std::cout << "sigself: " << sigself << std::endl;
+
+        emission_density = Sg[g];
+
+        gp = g-1;
+
+        while (line >> sig) {
+            if (g <= 0) {
+                throw std::runtime_error("Error in NT_BC: Too many entries in line " + std::to_string(g) + " of " + dx_filename);
+            }
+            emission_density += sig*phi[gp];
+            --gp;
+        }
+
+        //phi[g] = (xs[g-1]*phi[g-1] + Sg[g])/xt[g];
+        phi[g] = emission_density/(xt[g] - sigself);
     }
+    
+    dx_stream.close();
 
     std::string output_filename = output_file_base + "_"
                         + material_name + "_"
