@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
     std::string output_filename = output_file_base + "_"
                         + material_name + "_"
                         + std::to_string(G) 
-                        + "_BC_V1.dat";
+                        + "_BC_V2.dat";
 
     std::cout << "Writing flux data to " << output_filename << std::endl;
 
