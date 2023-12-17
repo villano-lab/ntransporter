@@ -9,9 +9,9 @@ message("cmake version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}")
 message("cmake install prefix: ${CMAKE_INSTALL_PREFIX}")
 message("source directory: ${CMAKE_CURRENT_SOURCE_DIR}")
 
-project(NTransporter VERSION 1.0
+project(NTransporter VERSION 2.0
         LANGUAGES CXX
-        DESCRIPTION "Direct-coupled multigroup diffusion approximation with zeroth-order evaluated group constants")
+        DESCRIPTION "Zero-temperature multigroup diffusion approximation with zeroth-order evaluated group constants")
 
 
 set(CXX_STD 14 CACHE STRING "C++ standard to use")
