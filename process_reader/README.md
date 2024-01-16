@@ -21,7 +21,7 @@ Configuring environment geometry
 Initializing
 ```
 
-The program then calls up the `G4Neutron` and fetches its process manager, which is responsible for keeping track of and choosing what processes influence a particular neutron at every simulation step.
+The program then calls up the `G4Neutron` singleton and fetches its process manager, which is responsible for keeping track of and choosing what processes influence a particular neutron at every simulation step.
 
 ```
 Fetching neutron singleton
