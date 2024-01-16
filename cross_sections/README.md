@@ -153,7 +153,7 @@ The evaluated cross sections take data from four hadronic processes in `Geant4`:
 - `nCapture` : thermal capture, $(n,\gamma)$
 - `nFission` : neutron-induced fission
 
-See documentation for `ntransporter/process_reader/` for more information on these processes.
+See documentation in the `process_reader` subdirectory for more information on these processes.
 
 
 Elastic and inelastic cross sections are added together to calculate the scattering cross sections $\Sigma_{sg}$, while all four are added together to calculate the total cross sections $\Sigma_{tg}$.
