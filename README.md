@@ -4,11 +4,11 @@ Neutron transport code for background analysis.
 
 ## Overview
 
-This code calculates the neutron flux in an infinite slab of material using the multigroup diffusion approximation with zeroth-order evaluated group constants (see below for derivation/description of this approximation).
+This code calculates the neutron flux in an infinite slab of material using the multigroup diffusion approximation with zeroth-order evaluated group constants (see below for description of this approximation).
 
 ## Directory Structure
 
-This repository is divided into several directories by function. The overall repository structure is:
+This repository is divided into several directories by functionality. The overall repository structure is:
 
 ```
 |- ntransporter/
@@ -54,7 +54,7 @@ Some other optional cmake options can be used to personalize the build:
 
 - `REGEN_CDMSVERSION` : boolean option (default `OFF`) to force re-generation of the `CDMSVersion.hh` header file. This option will always reset to `OFF` after running, so must be explicitly set every time one wants to regenerate the version header file. This should be done any time the `SuperSim` version is changed.
 
-- `SUBDIRS_VERBOSE` : boolean option (default `OFF`) to print additional information about linking executables in top-level subdirectories
+- `SUBDIRS_VERBOSE` : boolean option (default `OFF`) to print additional information about linking executables in first-level subdirectories
 
 - `BUILD_PROCINFO` : boolean option (default `OFF`) to build the `PROCINFO` executable from the `process_reader` subdirectory (see that `README` for more info)
 
@@ -85,7 +85,7 @@ The following packages must be installed/configured before building `ntransporte
 
 - **`ROOT`** : CERN's data processing language. Find installation instructions [here](https://root.cern/install/). Current versions of `ntransporter` have been tested on `ROOT` version `6.24/04`, but should work for any version `>= 6.02`
 
-- **`Geant4`** : the foundation of `SuperSim`, used for differential cross section calculations. Versions of `SuperSim` used by `ntransporter` (at time of writing, `<= V11.00.01`) use [`geant4-v10.6.3`](https://geant4.web.cern.ch/download/10.6.3.html). Installation instructions can be found [here](https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/) for the newest version, but should still work for 10.6.3.
+- **`Geant4`** : required by `SuperSim`, also used for differential cross section calculations. Versions of `SuperSim` used by `ntransporter` (at time of writing, `<= V11.00.01`) use [`geant4-v10.6.3`](https://geant4.web.cern.ch/download/10.6.3.html). Installation instructions can be found [here](https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/) for the newest version, but should still work for 10.6.3.
 
 - **`SuperSim`** : SuperCDMS's main simulations software, used for configuring CDMS-specific physics lists and calculating total cross sections. Data under the `supersim` directory is used for source calculations. The entire source code must be available to this program, and the environment should be configured as when building/compiling the software yourself (see [this Confluence page](https://confluence.slac.stanford.edu/display/CDMS/Running+Simulations+at+Specific+Sites)). The code is available on the [Gitlab](https://gitlab.com/supercdms/Simulations/supersim). See also the [external package guide](https://confluence.slac.stanford.edu/display/CDMS/SuperSim+Reference+Manual#SuperSimReferenceManual-ExternalPackages): some environments may require `libuuid-dev` (`sudo apt-get install uuid-dev`)[^2].
 
