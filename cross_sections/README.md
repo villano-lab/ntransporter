@@ -64,7 +64,7 @@ The resulting output file will then have the form
 `NT_XX` is an expanded version of `NT_XS` that performs calculations for multiple material/group number combinations within a single `SuperSim` instance. 
 
 > [!CAUTION]
-> The results of cross section calculations in `Geant4` depend on the order in which values are calculated, meaning that if multiple material/grouping calculations are performed in the same instance of `SuperSim`, as is done by `NT_XX`, the results will change depending on the order of arguments. See [Issue #2](https://github.com/villano-lab/ntransporter/issues/2)
+> The results of cross section calculations in `Geant4` depend on the order in which values are calculated, meaning that if multiple material/grouping calculations are performed in the same instance of `SuperSim`, as is done by `NT_XX`, the results will change depending on the order of arguments. Use of this executable is not recommended. See [Issue #2](https://github.com/villano-lab/ntransporter/issues/2)
 
 Call signature:
 
