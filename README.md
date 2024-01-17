@@ -1,4 +1,4 @@
-# `ntransporter v1.0`
+# `ntransporter v2.0`
 Neutron transport code for background analysis.
 
 
@@ -14,14 +14,88 @@ This repository is divided into several directories by functionality. The overal
 |- ntransporter/
 |---- boundary_conditions/
 |---- cross_sections/
+|---- include/
 |---- process_reader/
 |---- sources/
+|---- src/
 ```
 
 More details on each top-level subdirectory can be found in individual `README`'s.
 
 
 ## Build Instructions
+
+### Dependencies
+
+The following packages must be installed/configured before building `ntransporter`:
+
+- **`Geant4`** : required by `SuperSim`, also used for differential cross section calculations. Versions of `SuperSim` used by `ntransporter` (at time of writing, `<= V11.00.01`) use [`geant4-v10.6.3`](https://geant4.web.cern.ch/download/10.6.3.html). Installation instructions can be found [here](https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/) for the newest version, but should still work for 10.6.3.
+
+
+> [!NOTE]
+> `Geant4` must be built in multithreaded mode in order to interface correctly with `ntransporter`. One should set the cmake flag `GEANT4_BUILD_MULTITHREADED=ON` during compilation of `Geant4`
+
+- **`SuperSim`** : SuperCDMS's main simulations software, used for configuring CDMS-specific physics lists and calculating total cross sections. Data under the `supersim` directory is used for source calculations. The entire source code must be available to this program, and the environment should be configured as when building/compiling the software yourself (see [this Confluence page](https://confluence.slac.stanford.edu/display/CDMS/Running+Simulations+at+Specific+Sites)). The code is available on the [Gitlab](https://gitlab.com/supercdms/Simulations/supersim). 
+
+    Linking to `SuperSim` is managed by the `SuperSim_include` and `SuperSim_exclude` files. An example of each is included in the top level of this repository (see [Top-level files](#top-level-files) section below). The `SuperSim_include` file gives a list of directories (under the `$CDMS_SUPERSIM` environment variable) to link and compile files in. The `SuperSim_exclude` file gives a list of file names (not including directory paths) to exclude from explicit linking. By default, the build system will parse all files matching `*.cc` by Linux [`find`](https://man7.org/linux/man-pages/man1/find.1.html) command unless the full filename matches "`/X`" for `X` any line given in the `SuperSim_exclude` file. 
+
+    
+    At the time of compilation, the environment must be configured just as one would in trying to build `SuperSim`. For example, if one wishes to run `ntransporter` on Cedar, follow the instructions on [this Confluence page](https://confluence.slac.stanford.edu/display/CDMS/Running+Simulations+on+ComputeCanada#RunningSimulationsonComputeCanada-CompilingSuperSimonCedar), and run the `setup_supersim.sh` script before compiling `ntransporter`. 
+
+
+Depending on the system, `SuperSim` may require some additional packages to be correctly installed/configured. See also the [external package guide](https://confluence.slac.stanford.edu/display/CDMS/SuperSim+Reference+Manual#SuperSimReferenceManual-ExternalPackages). These include:
+
+
+- **`ROOT`** : CERN's data processing language. Find installation instructions [here](https://root.cern/install/). Current versions of `ntransporter` have been tested on `ROOT` version `6.24/04`, but should work for any version `>= 6.02`. One should also note the C++ standard used to compile `ROOT` for setting the `CXX_STD` `cmake` variable
+
+- `G4CMP` : Mike Kelsey's solid-state physics extension to `Geant4`. Available on [Github](https://github.com/kelseymh/G4CMP). Required by certain components of `SuperSim`, though not used directly by any `ntransporter` functionality. If one wishes to avoid this dependency, they may investigate modifying the `SuperSim_include` and `SuperSim_exclude`
+
+- `CVODE` : LLNL's differential equation solver package. Can be downloaded as a component of the `SUNDIALS` package (find `v5.1.0` [here](https://github.com/LLNL/sundials/releases/tag/v5.1.0)), and find installation instructions [here](https://sundials.readthedocs.io/en/latest/Install_link.html). Note that `cmake` assumes the `CVODE` object files are built with the suffix `.so` unless the compiler matches "`AppleClang`", in which case it looks for `.dylib` files. The base `CMakeLists.txt` file must be modified directly if this is not the case.
+
+- `uuid-dev` : utility package for generating 128-bit University Unique IDs (UUIDs) for random number generation. Can be downloaded with `sudo apt-get install uuid-dev`
+
+
+
+### Environment variables
+
+A few environment variables (denoted by `$` before the variable name) must be set before compiling `ntransporter` (in addition to the ones either set or required by the `SuperSim` configuration process, e.g., `$CDMS_INSTALL`, `$ROOTSYS`, or `$G4WORKDIR`). These are:
+
+- `$G4CMPINSTALL` : path to the system's `G4CMP` installation (note: it does not appear to be necessary to source the `$G4CMPINSTALL/g4cmp_env.sh` script), e.g., `/home/ajbiffl3/G4CMP`. This one should also be set *before* sourcing the `SuperSim` `g4setup` script.
+
+- `$CVODE_HOME` : path to installation directory of `CVODE`, e.g., (if following the installation guide) `/home/ajbiffl3/SUNDIALS/sundials-5.1.0/instdir`
+
+- `$LIBUUID_OBJ` : (only used if `cmake` option `FORCE_LIBUUID_LINK` is set) path to `uuid-dev` object file, e.g., `/usr/lib/libuuid.so`
+
+### `cmake` variables
+
+`cmake` requires some variables giving paths to important files or other programs be set correctly in order to compile:
+
+- `SUPERSIM_INCLUDE` : the full path of the `SuperSim_include` file. If one wishes to use `SuperSim_include.txt` included at the top level of this repository, the default value ("`SuperSim_include.txt`") will be fine.
+
+- `SUPERSIM_EXCLUDE` : the full path of the `SuperSim_exclude` file. Once again, the default value ("`SuperSim_exclude.txt`") will use the `SuperSim_exclude` file included in this repository.
+
+- `CXX_STD` : integer (default `14`) specifying the C++ standard to compile the program with. It is recommended to compile against the same version used by `ROOT`. The default value of `14` is typically used to compile `SuperSim`. Conda installations of `ROOT` use `17`.
+
+- `FORCE_LIBUUID_LINK` boolean option (default `OFF`) to force linking of the `libuuid` object file specified by the `$LIBUUID_OBJ` environment variable (if set, `$LIBUUID_OBJ` must be specified in the current environment to point to the `libuuid.so` object file on the current system, e.g., `/usr/lib/libuuid.so`). 
+
+- `CVODE_LIB_FOLDER` : name of folder under environment variable `$CVODE_HOME` containing object files for `CVODE` (probably either `lib`, the default value, or `lib64`). 
+
+
+Some other optional cmake options can be used to personalize the build:
+
+- `REGEN_CDMSVERSION` : boolean option (default `OFF`) to force re-generation of the `CDMSVersion.hh` header file. This option will always reset to `OFF` after running, so must be explicitly set every time one wants to regenerate the version header file. This should be done any time the `SuperSim` version is changed.
+
+- `IGNORE_WARNINGS` : boolean option (default `OFF`) to ignore compiler warnings (passes `-w` flag to compiler if set)
+
+- `SUBDIRS_VERBOSE` : boolean option (default `OFF`) to print additional information about linking executables in first-level subdirectories
+
+- `EXCLUDE_VERBOSE` : boolean option (default `ON`) to print files excluded from compilation/linking by the `SuperSim_exclude` file
+
+- `BUILD_PROCINFO` : boolean option (default `OFF`) to build the `PROCINFO` executable from the `process_reader` subdirectory (see that `README` for more info)
+
+These options can be set when calling `cmake` or by modifying the `CMakeCache.txt` file in the build directory directly. All but `REGEN_CDMSVERSION` will be saved in `CMakeCache.txt` for subsequent calls of `cmake`.
+
+### Building the program
 
 The `ntransporter` program uses `cmake` utility to compile and build the executables in the program. Note that several steps in the cmake script require using the linux shell.
 
@@ -33,43 +107,22 @@ $ mkdir build
 $ cd build
 ```
 
-At the time of compilation, the environment must be configured just as one would in trying to build SuperCDMS [`SuperSim`](https://gitlab.com/supercdms/Simulations/supersim). For example, if one wishes to run `ntransporter` on Cedar, follow the instructions on [this Confluence page](https://confluence.slac.stanford.edu/display/CDMS/Running+Simulations+on+ComputeCanada#RunningSimulationsonComputeCanada-CompilingSuperSimonCedar), and run the `setup_supersim.sh` script before compiling `ntransporter`. This should set all required environment variables. One can check if this is successful by checking the value of `CDMS_SUPERSIM`:
+
+Once the environment variables are correctly set up, the dependencies configured, and the necessary `cmake` variables set, `cmake` can be run, e.g.,
 
 ```
-$ echo $CDMS_SUPERSIM
+cmake -DFORCE_LIBUUID_LINK=ON -DCVODE_LIB_FOLDER="lib64" -DCXX_STD=17 ../
 ```
 
-which should display the full path of the top-level `supersim` directory of `SuperSim`, e.g., `/home/ajbiffl3/supersim`.
-
-> [!NOTE]
-> `Geant4` must be built in multithreaded mode in order to interface correctly with `ntransporter`. One should set the cmake flag `GEANT4_BUILD_MULTITHREADED=ON` during compilation of `Geant4`
-
-In addition, `ntransporter` requires a few variables giving paths to important files or other programs. These are:
-
-- `SUPERSIM_INCLUDE` : the full path of the `SuperSim_include.txt` file. If one wishes to use the `SuperSim_include.txt` file included at the top level of this repository, the default value ("`SuperSim_include.txt`") will be fine.
 
 
-
-Some other optional cmake options can be used to personalize the build:
-
-- `REGEN_CDMSVERSION` : boolean option (default `OFF`) to force re-generation of the `CDMSVersion.hh` header file. This option will always reset to `OFF` after running, so must be explicitly set every time one wants to regenerate the version header file. This should be done any time the `SuperSim` version is changed.
-
-- `SUBDIRS_VERBOSE` : boolean option (default `OFF`) to print additional information about linking executables in first-level subdirectories
-
-- `BUILD_PROCINFO` : boolean option (default `OFF`) to build the `PROCINFO` executable from the `process_reader` subdirectory (see that `README` for more info)
-
-These options can be set when calling `cmake`, e.g., from the build directory:
-
-```
-cmake -DREGEN_CDMSVERSION=ON -DSUPERSIM_INCLUDE="../SuperSim_include.txt" ../
-```
-
-And then `make` all targets:
+If this is successful, `make` all targets:
 
 ```
 make all
 ```
 
+This will build all executables in `ntransporter` into the build directory.
 
 Alternatively, one can build each executable individually, e.g.,
 
@@ -77,47 +130,37 @@ Alternatively, one can build each executable individually, e.g.,
 make NT_Src
 ```
 
-
-### Dependencies
-
-The following packages must be installed/configured before building `ntransporter`:
-
-
-- **`ROOT`** : CERN's data processing language. Find installation instructions [here](https://root.cern/install/). Current versions of `ntransporter` have been tested on `ROOT` version `6.24/04`, but should work for any version `>= 6.02`
-
-- **`Geant4`** : required by `SuperSim`, also used for differential cross section calculations. Versions of `SuperSim` used by `ntransporter` (at time of writing, `<= V11.00.01`) use [`geant4-v10.6.3`](https://geant4.web.cern.ch/download/10.6.3.html). Installation instructions can be found [here](https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/) for the newest version, but should still work for 10.6.3.
-
-- **`SuperSim`** : SuperCDMS's main simulations software, used for configuring CDMS-specific physics lists and calculating total cross sections. Data under the `supersim` directory is used for source calculations. The entire source code must be available to this program, and the environment should be configured as when building/compiling the software yourself (see [this Confluence page](https://confluence.slac.stanford.edu/display/CDMS/Running+Simulations+at+Specific+Sites)). The code is available on the [Gitlab](https://gitlab.com/supercdms/Simulations/supersim). See also the [external package guide](https://confluence.slac.stanford.edu/display/CDMS/SuperSim+Reference+Manual#SuperSimReferenceManual-ExternalPackages): some environments may require `libuuid-dev` (`sudo apt-get install uuid-dev`)[^2].
-
-[^2]: Configuring and linking dependencies on some systems may require editing the `CMakeLists.txt` files -- see, e.g., [73af121](https://github.com/villano-lab/ntransporter/tree/73af121bf3bfa1f5dd8778a1db886447d62c4703)
-
 ## Executables Quick Guide
 
 An overview of the executables built by `ntransporter` is given here. In general, the executables built by `ntransporter` begin with "`NT_`".
 
 - `NT_XS` : calculate group cross sections for one material/group number pair
 
-Usage: `./NT_XS output_file_base_path material [ngroups=100] [points_per_group=10]`
+    Usage: `./NT_XS output_file_base_path material [ngroups=100] [points_per_group=10]`
 
 - `NT_XX` : calculate group cross sections for multiple material/group number pairs (note the results change depending on the order of pairs - use is not recommended)
 
-Usage: `./NT_XX output_file_base_path material1 material2 ... [-n ngroups1=100 ngroups2 ...]`
+    Usage: `./NT_XX output_file_base_path material1 material2 ... [-n ngroups1=100 ngroups2 ...]`
+
+- `NT_DX` : calculate differential cross sections for multiple material/group number pairs
+
+    Usage: `./NT_DX output_file_base_path path_to_ntransporter_base material1 material2 ... [-n ngroups1=100 ngroups2 ...]`
 
 - `NT_Src` : calculate group sources 
 
-Usage: `./NT_Src output_file_base_path material path_to_supersim [ngroups=100]`
+    Usage: `./NT_Src output_file_base_path material path_to_supersim [ngroups=100]`
 
 - `NT_BC` : calculate boundary conditions (infinite slab flux)
 
-Usage: `./NT_BC output_file_base_path path_to_ntransporter_base material [ngroups=100]`
+    Usage: `./NT_BC output_file_base_path path_to_ntransporter_base material [ngroups=100]`
 
 - `PROCINFO` : print hadronic process info for the neutron in the "Shielding" physics list in `SuperSim`
 
-Usage: `./PROCINFO`
+    Usage: `./PROCINFO`
 
 ### Note About Outputs
 
-The repository currently includes many output files from the executables in `data/V1` directories under the subdirectory of the corresponding executable, e.g., `ntransporter/sources/data/V1` contains files generated with the `NT_Src` executable.
+The repository currently includes many output files from the executables in `data/V1` and `data/V2` directories under the subdirectory of the corresponding executable, e.g., `ntransporter/sources/data/V1` contains files generated with the `NT_Src` executable.
 
 ## Top-level files
 
@@ -129,13 +172,13 @@ The top-level `ntransporter/` directory contains the following files:
 
 - `LICENSE` :  Standard MIT license
 
-- `NTUtilities.hh` : Header file containing functions and constants used in multiple of the top-level directories, ex. thermal energy, the kernel of the Maxwell-Boltzmann energy distribution, etc.
+- `SuperSim_include.txt` : `SuperSim_include` file, list of directories within SuperSim needed for project
 
-- `SuperSim_include.txt` : list of directories within SuperSim needed for project
+- `SuperSim_exclude.txt` : `SuperSim_exclude` file, list of filenames to exclude from linking if found in any of the `SuperSim_include` directories
 
 - `SuperSim_Main.hh` : overloaded `SuperSim_Main` header file from `SuperSim` - needed to redefine members of the `SuperSim_Main` class as public so they can be accessed by `ntransporter`
 
-## Version 1 Physics - Direct-Coupled Multigroup Diffusion Approximation with Zeroth-Order Evaluated Group Constants
+## Version 2 Physics - Zero-Temperature Multigroup Diffusion Approximation with Zeroth-Order Evaluated Group Constants
 
 
 The full neutron transport equation is: 
@@ -249,7 +292,7 @@ $\nabla \cdot D_g \nabla \phi_g = \sum\limits_j \nabla_j D_{gj} \nabla_j \phi_g$
 
 ### Note on Group Structure
 
-We consider a group structure with fast groups between 0.1 eV and 20 MeV and a single thermal group below 0.1 eV. The actual numerical value of the lower bound of the thermal group is set as machine epsilon times 0.1 eV (note that going this low is unnecessary and causes a few minor numerical problems, and later versions change this to 1e-7 eV).
+We consider a group structure with fast groups between 0.1 eV and 20 MeV and a single thermal group below 0.1 eV. The actual numerical value of the lower bound of the thermal group is set to 1e-7 eV
 
 
 Given these specifications, a grouping (set of group boundaries) is specified by the number of fast groups. In the code this is what `G` refers to, while $G$ in the derivations here usually refers to the *total* number of groups, `G+1`.
@@ -274,93 +317,13 @@ $\Sigma_{tg} \phi_g = S_g + \sum\limits_{g'=1}^{\infty} \Sigma_{sg'g} \phi_{g'}$
 
 
 
-### Direct Coupling
+### Zero-Temperature Approximation
 
-We split up the scattering term into four separate terms:
-
-$\sum\limits_{g'=1}^\infty \Sigma_{sg'g} \phi_{g'} = \sum\limits_{g'=1}^{g-2} \Sigma_{sg'g} \phi_{g'} +\Sigma_{s,g-1,g}\phi_{g-1} + \Sigma_{sgg}\phi_g + \sum\limits_{g'=g+1}^\infty \Sigma_{sg'g}\phi_{g'}$
-
-It is common to consider neutron energies well above thermal energies, where upscattering can be neglected, and the last term vanishes. 
-
-In the "direct coupling" approximation, it is also common to only consider scattering events that increase a neutron's group number by one, corresponding to the second term in the sum, and the first term vanishes. We also neglect self scattering for now, where a scattering event will leave a neutron's group number unchanged, corresponding to the third term. 
-
-With these approximations, the multigroup slowing down equation becomes:
-
-$\Sigma_{tg} \phi_g = S_g +  \Sigma_{s,g-1,g} \phi_{g-1}$
-
-We also note that we can approximate the scattering cross section as:
-
-$\Sigma_{s,g-1,g} = \frac{1}{\phi_{g-1}} \int_g dE \int_{g-1} dE' \Sigma_s(E'\rightarrow E) \phi(E') $
-
-$\hspace{5ex}= \frac{1}{\phi_{g-1}} \int_{g-1} dE' \phi(E') \int_g dE \Sigma_s(E'\rightarrow E)$
-
-$\hspace{5ex}\approx \frac{1}{\phi_{g-1}} \int_{g-1} dE' \phi(E') \int_0^\infty dE \Sigma_s(E'\rightarrow E)$
-
-$\hspace{5ex}= \frac{1}{\phi_{g-1}} \int_{g-1} dE'\phi(E')\Sigma_s(E') $
-
-$\hspace{5ex}\equiv \Sigma_{s,g-1}$
-    
-which is just the total scattering cross section integrated over group $g-1$, the analog of $\Sigma_{t,g-1}$ for only scattering events. Going from the second to the third line we used the same approximation as the direct coupling approximation, written slightly differently mathematically. We write the total scattering cross section as a sum over the groups of the differential scattering cross section:
+In the zero-temperature approximation, it is impossible for a neutron to increase in energy (decrease in group number) after a collision, so the multigroup slowing down equation becomes:
 
 
-$\Sigma_s(E') = \int_0^\infty dE \Sigma_s(E'\rightarrow E) = \sum\limits_{g=1}^\infty \int_g dE \Sigma_s(E'\rightarrow E) $
+$(\Sigma_{tg} -\Sigma_{sgg})\phi_g = S_g + \sum\limits_{g'=1}^{g-1} \Sigma_{sg'g} \phi_{g'}$
 
-$\hspace{5ex}= \sum\limits_{g=1}^{g'-1} \int_g dE \Sigma_s(E'\rightarrow E )
-    + \int_{g'} dE \Sigma_s(E'\rightarrow E) $
-
-$\hspace{5ex}+ \int_{g+1} dE \Sigma_s(E'\rightarrow E )
-    + \sum\limits_{g=g'+2}^\infty \int_g dE \Sigma_s(E'\rightarrow E) $
-
-The first term represents upscattering, the second is the self-scattering term, the third term is the direct-coupling term, and the fourth term represents larger energy loss. We neglect all but the third term, leaving:
-
-$\Sigma_s(E') \approx \int_{g'+1} dE \Sigma_s(E'\rightarrow E )$
-
-or,
-
-$\Sigma_{s,g-1,g} \approx \Sigma_{s,g-1}$
-
-This is the version of the slowing-down equation implemented in Version 1.0 of `ntransporter`. 
-
-
-### Including Self Scattering
-
-
-Now including the self-scattering term in the in-scattering term in the multigroup slowing down equation, we get:
-
-$\Sigma_{tg} \phi_g = S_g +  \Sigma_{s,g-1,g} \phi_{g-1} + \Sigma_{sgg} \phi_g$
-
-
-Before, we had approximated $\Sigma_{s,g-1,g}$ as $\Sigma_{s,g-1}$, but now we keep the self-scattering term:
-
-$\Sigma_{s,g-1,g} = \frac{1}{\phi_{g-1}} \int_g dE \int_{g-1} dE' \Sigma_s(E'\rightarrow E) \phi(E') $
-
-$\hspace{5ex}= \frac{1}{\phi_{g-1}} \int_{g-1} dE' \phi(E') \int_g dE \Sigma_s(E'\rightarrow E)  $
-
-$\hspace{5ex}\approx \frac{1}{\phi_{g-1}} \int_{g-1} dE' \phi(E') \left[\int_0^\infty dE \Sigma_s(E'\rightarrow E) -  \int_{g-1} dE \Sigma_s(E'\rightarrow E)\right]$
-
-$\hspace{5ex} = \Sigma_{s,g-1} - \Sigma_{s,g-1,g-1}$
-
-
-The slowing down equation then becomes:
-
-$(\Sigma_{tg} - \Sigma_{sgg})\phi_g  = (\Sigma_{s,g-1} - \Sigma_{s,g-1,g-1})\phi_{g-1} + S_g$
-
-
-Some additional calculations were done outside of `ntransporter` including the self-scattering term, and assuming the ratio of $\Sigma_{sgg}$ and $\Sigma_{s,g,g+1}$ is a constant at all energies. The resulting ratio is parameterized with the value $q$, $\Sigma_{sgg} = q\Sigma_{sg}$. Then we calculate the following:
-
-$\frac{\Sigma_{sgg}}{\Sigma_{s,g,g+1}} = \frac{q}{1-q} = \frac{A}{B}$
-
-with the values of $A$ and $B$ given by:
-
-|  | $\alpha<\beta^2$           | $\beta^2 < \alpha < \beta$ | $\beta < \alpha$ 
-|---| ------------- | ------------- |-------|
-|$A$| $\beta-\ln \beta -1 $  | $\beta-\ln \beta -1 $  | $(1-\alpha)\left(\ln \frac{\alpha}{\beta} - 1\right) - \ln \alpha$  |
-|$B$| $(1-\beta)^2$  | $1 + \alpha-2\beta-\alpha\ln \frac{\alpha}{\beta^2}$  | $1-\alpha+\alpha\ln\alpha$ |
-
-
-with $\alpha=\left(\frac{A-1}{A+1}\right)^2$ (for mass number $A$) and $\beta=E_g/E_{g-1}$.
-
-Note that calculations including the self-scattering effects are much more accurate for most heavy materials than the approximation without used in `ntransporter` version 1.
 
 
 ### Evaluating Group Constants
@@ -376,3 +339,5 @@ The evaluation of most group constants requires knowledge of the flux $\phi(E)$.
 These above assumptions result in an asymptotic solution $\phi(E)\propto \frac{1}{\Sigma_s(E) E}$ (note also this is the form used to derive the approximations for the self-scattering fraction $q$ above). We then neglect the variation in $\Sigma_s(E)$ over the group: $\phi(E)\propto \frac{1}{E}$.
 
 For the thermal group, we assume a Maxwell-Boltzmann distribution at room temperature (0.0257 eV).
+
+More details on evaluating the differential cross sections $\Sigma_{sg'g}$ can be found in the `cross_sections` documentation.
