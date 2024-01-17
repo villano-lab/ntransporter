@@ -55,7 +55,7 @@ The directory substructure under `sources` is the following:
 |---- sources/
 |------- data/
 |---------- V1/
-|               output data from NT_Src v1.0
+|               output data from NT_Src v2.0
 ```
 
 ## Source Calculations
@@ -63,9 +63,9 @@ The directory substructure under `sources` is the following:
 The group sources are evaluated with radiogenic neutron spectrum calculations from [`SOURCES4A`](https://www.osti.gov/biblio/15215)[^1], stored in data files within SuperSim (in `supersim/CDMSsources/spectra/neutron/`) for different materials.
 [^1]: Note the version of `S4` used was likely a modified version provided by Prof. Vitaly Kudryavstev of the University of Sheffield, but we are still untangling all the details
 
-These data files contain (energy, spectrum) information with the "energy" column in MeV and the "spectrum" column representing the total emission rate (neutrons per second per cubic centimeter) in the corresponding bin (with each bin spanning from the energy value in the same row down to the previous energy value). It is assumed the lower bound of the first bin is zero. To return these values to a differential quantity, each spectrum value is divided by its corresponding bin width.
+These data files contain (energy, spectrum) information with the "energy" column in MeV and the "spectrum" column representing the total emission rate (neutrons per second per cubic centimeter) in the corresponding bin (with each bin spanning from the energy value in the same row down to the previous energy value). It is assumed the lower bound of the first bin is zero.
 
-The trapezoidal integral over the data is then taken over each bin, linearly interpolating between points to estimate the value at the group edges. The value over each group is then the total emission rate in each group (neutrons per second per cubic centimeter) for one ppb of each radioactive contaminant. The values are then multiplied by measured contaminant concentrations in the material.
+The differential spectrum represented by this data is assumed to consist of rectangular regions. The integral over the data is then taken over each bin. The value over each group is then the total emission rate in each group (neutrons per second per cubic centimeter) for one ppb of each radioactive contaminant. The values are then multiplied by measured contaminant concentrations in the material.
 
 
 ### `Norite`

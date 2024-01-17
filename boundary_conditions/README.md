@@ -23,7 +23,7 @@ This directory builds one executable called `NT_BC` for calculating infinite sla
 `NT_BC` outputs one data file with the form
 
 ```
-<output_file_base>_<material>_<ngroups>_BC_V1.dat
+<output_file_base>_<material>_<ngroups>_BC_V2.dat
 ```
 
 This file contains calculated infinite-slab fluxes. Each row looks like:
@@ -44,7 +44,7 @@ That is, the group number (including group zero, for which the flux is zero), th
 `ngroups` : (optional, default = 100) number of fast groups
 
 > [!Note]
-> In order to run, the corresponding files must exist: `<path_to_ntransporter_base>/cross_sections/data/V1/data_<material>_<ngroups>_20_xs.dat` and `<path_to_ntransporter_base>/sources/data/V1/data_<material>_<ngroups>_Sg.dat`. These paths to the needed cross section and source data files are hard-coded in and can be changed if desired
+> In order to run, the corresponding files must exist: `<path_to_ntransporter_base>/cross_sections/data/V1/data_<material>_<ngroups>_20_xs.dat`, `<path_to_ntransporter_base>/cross_sections/data/V2/data_<material>_<ngroups>_dx.dat` and `<path_to_ntransporter_base>/sources/data/V1/data_<material>_<ngroups>_Sg.dat`. These paths to the needed cross section and source data files are hard-coded in and can be changed if desired
 
 ## Subdirectories
 
@@ -54,7 +54,9 @@ That is, the group number (including group zero, for which the flux is zero), th
 |---- boundary_conditions/
 |------- data/
 |---------- V1/
-|               output data from NT_Src v1.0
+|               output data from NT_BC v1.0
+|---------- V2/
+|               output data from NT_BC v2.0
 |---------- SuperSim_estimates/
 |               estimates of infinite slab flux from SuperSim
 ```
@@ -62,11 +64,11 @@ That is, the group number (including group zero, for which the flux is zero), th
 ## Implementation
 
 
-The direct-coupled multigroup slowing down equation is
+The zero-temperature multigroup slowing down equation is
 
-$\Sigma_{tg} \phi_g = S_g + \Sigma_{s,g-1} \phi_{g-1}$
+$(\Sigma_{tg}-\Sigma_{sgg})\phi_g =S_g+\sum_{g'=1}^{g-1}\Sigma_{sg'g} \phi_{g'}$
 
-This is very straightforwardly implemented with a recursive algorithm with $\phi_0\equiv0$.
+This is very straightforwardly implemented with $\phi_0\equiv0$.
 
 
 ## SuperSim Estimates

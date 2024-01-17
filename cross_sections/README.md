@@ -101,6 +101,60 @@ These files are formatted identically to the `NT_XS` output files.
 
 
 
+### `NT_DX`
+
+`NT_DX` uses `Geant4` to estimate the differential cross sections for multiple combinations of material/group number specified at the command line. The call signature is:
+
+```
+./NT_DX output_file_base_path path_to_ntransporter_base material1 material2 ... [-n ngroups1=100 ngroups2 ...]
+```
+
+
+**Outputs:**
+
+Similar to `NT_XX`, `NT_DX` will output files for every combination of material/group number specified in the command line arguments. For each combination, the executable creates three files:
+
+1. `<output_file_base>_<material<x>>_<ngroups<y>>_dx.dat`
+
+    The main output file containing differential cross section data, what is eventually used by `NT_BC`. This file contains rows of the form
+
+    $g\hspace{5ex}\Sigma_{sgg}\hspace{5ex}\Sigma_{s,g-1,g}\hspace{5ex}\Sigma_{s,g-2,g}\hspace{5ex}\cdots$
+
+    That is, the group number $g$ (starting at group 1), followed by the self-scattering cross section for group $g$ and then subsequent in-scattering cross sections to group $g$ from the next groups up. Only nonzero contributions are included, and if there are any "gaps" in a column of the cross section matrix $\Sigma_{s}$, all points after the gap are ignored.
+
+2. `<output_file_base>_<material<x>>_<ngroups<y>>_uncers.dat`
+
+    This file contains the relative uncertainty in the cross section estimates due to statistical uncertainty (see the [Evaluating differential cross sections](#evaluating-differential-cross-sections) section below) written row-by-row. The uncertainty is calculated simply as the square root of the number of counts in the bin at the end of the program -- that is, if the number of counts in the bin is $C_{g'g}$, this file contains $1/\sqrt{C_{g'g}}$ in the $g$ column of the $g'$ row.
+
+    This data is not employed anywhere in the core code base of `ntransporter`, but this data can be read into python for analysis with a command such as:
+
+    ```
+    uncer_data = np.fromfile(path_to_data + f'{material}_{G}_uncers.dat', sep = ' ', dtype = float).reshape((G+2,G+2))
+    ```
+
+    The element `uncer_data[i,j]` is then the uncertainty $1/\sqrt{C_{ij}}$
+
+
+3. `<output_file_base>_<material<x>>_<ngroups<y>>_alldx.dat`
+
+    Redundancy file containing all differential cross section data, including zero entries. Data is formatted analogously to the `*_uncers.dat` file, with the entries the $\Sigma_{sg'g}$ data.
+
+
+**Arguments:**
+
+
+- `output_file_base_path` : base of file path of output data files, including base of filename
+
+- `path_to_ntransporter_base` : path to top-level `ntransporter` directory, e.g., `/home/ajbiffl3/ntransporter`
+
+- `material<n>` : names of `G4Material` to calculate cross sections for (must be a named material in `G4NistManager`; note in this version `SuperSim`-specific materials are not supported)
+
+- `ngroups<n>` : (optional, default = 100) number of fast groups - note the flag `-n` must be added after the list of materials and before the first of the `ngroup`'s
+
+> [!Note]
+> In order to run, the file `<path_to_ntransporter_base>/cross_sections/data/V1/data_<material<x>>_<ngroups<y>>_20_xs.dat` must exist for all input material/group number combinations
+
+
 ## Subdirectories
 
 The directory substructure under `cross_sections` is the following:
@@ -111,6 +165,8 @@ The directory substructure under `cross_sections` is the following:
 |------- data/
 |---------- V1/
 |               output data from NT_XS v1.0
+|---------- V2/
+|               output data from NT_DX v2.0
 |------- examples/
 |---------- reading_writing/
 |               self-contained example program 
@@ -120,7 +176,7 @@ The directory substructure under `cross_sections` is the following:
 
 ## Group Cross Section Evaluation
 
-Version 1 of `ntransporter` uses a zeroth-order approximation for the flux in the expressions for the group cross sections:
+Version 2 of `ntransporter` uses a zeroth-order approximation for the flux in the expressions for the group cross sections:
 
 $\Sigma_{ig} = \frac{1}{\phi_g} \int_g dE \Sigma_i(E) \phi(E)$
 
@@ -143,7 +199,6 @@ In the thermal group, the flux is approximated as a Maxwell-Boltzmann distributi
  $\phi(E)\propto\sqrt{E}e^{-E/kT}$ at room temperature, $kT$ = 0.0257 eV, and is evaluated analogously to the fast groups. 
 
 
-
 ## Interactions
 
 The evaluated cross sections take data from four hadronic processes in `Geant4`:
@@ -157,4 +212,26 @@ See documentation in the `process_reader` subdirectory for more information on t
 
 
 Elastic and inelastic cross sections are added together to calculate the scattering cross sections $\Sigma_{sg}$, while all four are added together to calculate the total cross sections $\Sigma_{tg}$.
+
+
+## Evaluating Differential Cross Sections
+
+The differential cross sections in `NT_DX` are evaluated using Monte Carlo methods with `Geant4`. For each value of $g'$ (initial group) from 1 to $G$, we generate a sample of energies $E_{g'k}$ (indexed by the variable $k$) according to a $1/E$ distribution between $E_{g'}$ and $E_{g'-1}$. 
+
+The `Geant4` method `G4ParticleHPElastic::ApplyYourself` is called on the neutron of each generated energy, which simulates a single elastic scatter and returns the parameters of the neutron post-collision. The final energy $E_{fk}$ is recorded. A matrix of counts is kept, and when the final energy is generated, the entry of the counts matrix $C_{g'g}$ is incremented, where $E_{g}\leq{E_{fk}\leq}E_{g-1}$. 
+
+This procedure is calculated for each initial group $g'$ until the desired statistics are reached. As currently implemented, there are two halting criteria for the simulation. When either one of the following is met, the simulation halts and moves on to the next initial group $g'$:
+
+1. The counts in the group representing the largest energy loss, i.e., the maximum $g$ such that $C_{g'g}>0$, reaches 1,000. This ensures, when the "tail" of the differential cross section does not extend too far (particularly in heavy nuclei), that the statistics in the few groups that *do* involve energy loss will maintain reasonable statistical uncertainty, approx. 3.1%. 
+
+2. The self-scattering count $C_{g'g'}$ reaches $10^5$. This saves a substantial amount of computation time for differential cross sections with long tails, particularly in hydrogenated materials. This ensures that the tail entries, which may take an extremely long time to reach $10^3$ counts and will have much larger relative uncertainties, are guaranteed to be no larger than 1% of the total cross section $\Sigma_{sg'}$.
+
+
+After all simulation is complete, the elements of the differential cross section matrix $\Sigma_{sg'g}$ are calculated as:
+
+$\Sigma_{sg'g}=\Sigma_{sg'}C_{g'g}/\sum_{g''}C_{g'g''}$
+
+(recall the differential cross section is normalized over final states, thus the summation in the denominator is over the second index).
+
+
 
