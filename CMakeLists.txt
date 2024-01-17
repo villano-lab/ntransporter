@@ -196,7 +196,7 @@ endif()
 # ^ these conditions may not be perfect: can modify in future
 
 
-message("CVODE_OBJ: ${CVODE_OBJ}")
+#message("CVODE_OBJ: ${CVODE_OBJ}")
 #set_target_properties(CVODE PROPERTIES IMPORTED_OBJECTS ${CVODE_OBJ})
 
 
